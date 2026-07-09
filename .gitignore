@@ -1,0 +1,21 @@
+# Generated at runtime by the optimization layer (never commit)
+CLAUDE.md
+AGENTS.md
+RTK.md
+.claude/
+.claudeignore
+.copilotignore
+
+# Secrets
+.env
+.mcp.json
+
+# Logs
+*.log
+
+# Runtime backups
+*.bak
+
+# Dependencies and caches
+node_modules/
+__pycache__/
