@@ -1,2 +1,4 @@
 # Force LF line endings for shell scripts on all platforms
 *.sh text eol=lf
+# PowerShell scripts: normalize in the index, native endings on checkout
+*.ps1 text

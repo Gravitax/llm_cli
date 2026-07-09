@@ -19,6 +19,7 @@ consumption and gives both agents a precise, pre-built view of each project.
 common/    shared scripts, parameterized by tool profile (claude | copilot)
 claude/    Claude Code orchestrator + Claude-only scripts (RTK, PostToolUse hooks)
 copilot/   Copilot CLI orchestrator
+windows/   Windows PowerShell 5.1 port (Claude only) — mirror tree of the above
 ```
 
 `common/tool_profile.sh` resolves all tool-specific paths (`~/.claude` vs `~/.copilot`,
@@ -42,6 +43,29 @@ Each orchestrator syncs the scripts to the tool home (`~/.claude/scripts/` or
 `~/.copilot/scripts/`), writes the global instructions file, installs the shell
 wrapper and hooks, then defines the wrapped command for the current shell.
 After the first activation, just run `claude` or `copilot` from any project.
+
+## Windows (PowerShell 5.1)
+
+The `windows/` tree is a native port of the core (Claude only — no Copilot,
+no Atlassian/MCP setup). It expects `python` (>= 3.9), Node >= 20, git for
+Windows, and a Windows `rtk.exe` on PATH.
+
+```powershell
+. .\windows\bootstrap.ps1        # dot-source it: wizard + activation + diagnostics
+```
+
+Notable differences from the bash layer, everything else is equivalent:
+
+- The `claude` wrapper function is written to `$PROFILE.CurrentUserAllHosts`
+  (marker-delimited block) instead of `~/.bashrc`/`~/.zshrc`.
+- The project hash is always delegated to Python (`Get-ProjectHash` in
+  `lib_cache.ps1`) so it matches `gen_context_cache.py` regardless of path
+  casing or separators; nothing else may compute it.
+- Git hooks stay `sh` scripts (git for Windows runs hooks under its own
+  `sh.exe`) but delegate to `git_hook_refresh.ps1` via `cygpath -w`.
+- `settings.json` is edited natively (`lib_settings.ps1`) — jq is not needed.
+- `setup_rtk.ps1` never installs RTK itself (the curl|sh installer is
+  Unix-only); it configures the hook and prints install guidance if missing.
 
 ## MCP — Atlassian & Bitbucket (global, one-time)
 
