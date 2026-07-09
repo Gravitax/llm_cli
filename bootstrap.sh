@@ -80,26 +80,30 @@ else
     fi
 fi
 
-# --- 3. per-project MCP (.mcp.json) ---
+# --- 3. global MCP registration (user scope, one-time) ---
 
-print_step "Project MCP (.mcp.json)"
-PROJECT_PATH="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
-print_info "Project: $PROJECT_PATH"
-
-if [ -f "$PROJECT_PATH/.mcp.json" ]; then
-    print_ok ".mcp.json already present for this project."
-else
-    if [ -f "$CREDS_FILE" ] && ask_yes_no "  Enable Atlassian/Bitbucket MCP for this project?"; then
-        bash "$COMMON_DIR/setup_mcp_project.sh" "$PROJECT_PATH" || print_err "MCP project setup failed."
+print_step "Global MCP registration (user scope)"
+if [ -f "$CREDS_FILE" ]; then
+    if grep -q "io.github.b1ff/atlassian-dc-mcp-jira" "$HOME/.claude.json" 2>/dev/null \
+        || grep -q "io.github.b1ff/atlassian-dc-mcp-jira" "$HOME/.copilot/mcp-config.json" 2>/dev/null; then
+        print_ok "Atlassian/Bitbucket MCP already registered globally."
     else
-        print_info "Skipped — enable later with:"
-        print_info "  bash $COMMON_DIR/setup_mcp_project.sh $PROJECT_PATH"
+        print_info "Atlassian/Bitbucket MCP not yet registered globally."
+        if ask_yes_no "  Register now (active in every session for this user)?" "y"; then
+            bash "$COMMON_DIR/setup_mcp_global.sh" || print_err "Global MCP setup failed."
+        else
+            print_info "Skipped — enable later with:"
+            print_info "  bash $COMMON_DIR/setup_mcp_global.sh"
+        fi
     fi
+else
+    print_info "No credentials yet — configure them first (step above) to enable MCP."
 fi
 
 # --- 4. verification ---
 
 print_step "Verifying setup"
+PROJECT_PATH="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
 for tool in claude copilot; do
     [ -d "$HOME/.$tool" ] || continue
     bash "$HOME/.$tool/scripts/check_optimizations.sh" "$tool" "$PROJECT_PATH"

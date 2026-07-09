@@ -27,8 +27,9 @@ project symbol index when stale, then launches Copilot CLI.
     instead of an automatic hook.
 - Global instructions include "code only, no explanation" — output tokens cost ~5x
   input tokens under usage-based billing.
-- `GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP=true` is exported so the project-local
-  `.mcp.json` (see root README, MCP section) is also loaded in prompt mode (`copilot -p`).
+- `GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP=true` is exported so any project-local
+  `.mcp.json` is also loaded in prompt mode (`copilot -p`). Atlassian/Bitbucket MCP
+  itself is registered globally (see root README, MCP section), not per project.
 
 ## Files
 

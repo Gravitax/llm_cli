@@ -11,7 +11,7 @@ consumption and gives both agents a precise, pre-built view of each project.
 | Compact global instructions | Behavioral rules kept short — loaded every turn, every session | ✓ | ✓ |
 | CLI output compression (RTK) | PreToolUse hook rewrites bash commands, ~70-80% savings on output | hook | via instructions |
 | Auto cache refresh | Shell wrapper + git hooks (+ PostToolUse hooks for Claude) | ✓ | ✓ |
-| Atlassian & Bitbucket MCP | Per-project `.mcp.json` — ~150 tool definitions load only where needed | ✓ | ✓ |
+| Atlassian & Bitbucket MCP | Global, user-scope registration — enabled once for every session | ✓ | ✓ |
 
 ## Layout
 
@@ -43,21 +43,23 @@ Each orchestrator syncs the scripts to the tool home (`~/.claude/scripts/` or
 wrapper and hooks, then defines the wrapped command for the current shell.
 After the first activation, just run `claude` or `copilot` from any project.
 
-## MCP — Atlassian & Bitbucket (per project)
+## MCP — Atlassian & Bitbucket (global, one-time)
 
-Registering MCP servers at user scope injects their ~150 tool definitions into
-**every** session — tens of thousands of tokens wasted in projects that never
-touch Jira. Instead, credentials are stored once and MCP is enabled per project:
+MCP servers are registered globally (user scope), once, so Jira/Confluence/
+Bitbucket tools are available in every session without per-project setup.
+This trades the ~150 tool definitions being loaded in every session (token
+cost) for a simpler, one-time init:
 
 ```bash
-bash common/setup_atlassian.sh              # one-time: prompt + validate + store tokens
-cd <project> && bash common/setup_mcp_project.sh   # per project that needs Atlassian
-bash common/setup_mcp_project.sh -u         # disable for a project
+bash common/setup_atlassian.sh       # one-time: prompt + validate + store tokens, then registers MCP globally
+bash common/setup_mcp_global.sh      # (re)apply the global registration on its own
+bash common/setup_mcp_global.sh -u   # remove the global registration
 ```
 
-`setup_mcp_project.sh` writes a local `.mcp.json` — read natively by both Claude
-Code and Copilot CLI — and excludes it from git via `.git/info/exclude` (it
-contains tokens). Tokens live in `~/.config/llm_cli/atlassian.env` (chmod 600).
+`setup_mcp_global.sh` writes the servers directly into each tool's user-scope
+config (`~/.claude.json` for Claude Code, `~/.copilot/mcp-config.json` for
+Copilot CLI). Tokens live in `~/.config/llm_cli/atlassian.env` (chmod 600) and
+are passed through the environment, never through argv.
 
 The three servers use the exact IDs of the enterprise MCP registry
 (`mcp-registry.exail.com`): `io.github.b1ff/atlassian-dc-mcp-{jira,confluence,bitbucket}`.

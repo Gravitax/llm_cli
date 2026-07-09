@@ -171,15 +171,21 @@ check_instructions() {
     fi
 }
 
-check_project_mcp() {
-    print_step "Project MCP (optional)"
+check_global_mcp() {
+    print_step "Global MCP (optional)"
 
-    local project_path="$1"
-    if [ -f "$project_path/.mcp.json" ]; then
-        check_ok "Project .mcp.json present — Atlassian/Bitbucket tools active here"
+    local mcp_config
+    if [ "$TOOL_NAME" = "claude" ]; then
+        mcp_config="$HOME/.claude.json"
     else
-        check_info "No .mcp.json — MCP disabled here (saves ~150 tool definitions/session)"
-        check_info "Enable if needed: bash $TOOL_HOME/scripts/setup_mcp_project.sh $project_path"
+        mcp_config="$HOME/.copilot/mcp-config.json"
+    fi
+
+    if grep -q "io.github.b1ff/atlassian-dc-mcp-jira" "$mcp_config" 2>/dev/null; then
+        check_ok "Atlassian/Bitbucket MCP registered globally ($mcp_config)"
+    else
+        check_info "MCP not registered globally — Jira/Confluence/Bitbucket tools unavailable"
+        check_info "Enable if needed: bash $TOOL_HOME/scripts/setup_mcp_global.sh"
     fi
 }
 
@@ -203,7 +209,7 @@ fi
 check_shell_wrapper
 check_context_cache "$project_path"
 check_instructions "$project_path"
-check_project_mcp "$project_path"
+check_global_mcp
 
 echo ""
 echo "=============================="

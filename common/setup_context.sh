@@ -45,10 +45,10 @@ Be concise. For code tasks: return code only, no explanation, unless the user as
 Read the project context index first (see the local {{INSTRUCTIONS_LOCAL}}) and open only the 2-3 relevant files
 instead of scanning the tree. Avoid re-reading files already in context.
 
-# MCP tools — Atlassian & Bitbucket (per project)
-MCP servers are enabled per project via a local .mcp.json — not globally (token economy).
-If Jira/Confluence/Bitbucket tools are needed but unavailable, enable them once:
-  bash {{TOOL_HOME}}/scripts/setup_mcp_project.sh
+# MCP tools — Atlassian & Bitbucket (global, user scope)
+MCP servers are registered globally (user scope), once, for this user — active in every session.
+If Jira/Confluence/Bitbucket tools are needed but unavailable, (re)run:
+  bash {{TOOL_HOME}}/scripts/setup_mcp_global.sh
 Three Data Center servers (io.github.b1ff/atlassian-dc-mcp-*): Jira (issues, search, comments),
 Confluence (pages, search), Bitbucket (repos, files, code search — REST API, no git operations).
 Prefer MCP browsing to read individual files; git clone only to run code or tests locally:
@@ -58,7 +58,7 @@ URL pattern: https://git.exail.com/scm/<PROJECT_KEY>/<repo-slug>.git (key upperc
 # Maintenance scripts ({{TOOL_HOME}}/scripts/)
 - setup_env.sh — full environment repair (scripts sync, instructions, hooks). Run when anything seems out of date.
 - setup_context_cache.sh [path] — regenerate the project symbol index after structural changes (-u to remove).
-- setup_mcp_project.sh [path] — enable Atlassian+Bitbucket MCP for a project (-u to remove).
+- setup_mcp_global.sh — enable Atlassian+Bitbucket MCP globally, once (-u to remove).
 - check_optimizations.sh [path] — diagnose the optimization setup (cache, wrapper, hooks).
 - git_clone_exail.sh <PROJECT>/<repo> — clone from git.exail.com with stored credentials.
 EOF

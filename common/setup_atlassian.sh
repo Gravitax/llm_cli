@@ -7,11 +7,10 @@
 #   - stores them in ~/.config/llm_cli/atlassian.env (chmod 600)
 #   - stores git credentials for git.exail.com
 #   - allows read-only git commands in Claude Code settings
-#   - removes legacy user-scope MCP registrations (they injected ~150 tool
-#     definitions into EVERY session; MCP is now enabled per project)
+#   - registers the MCP servers globally (user scope), once, for both tools
 #
-# To enable the MCP servers in a project that needs them:
-#   bash setup_mcp_project.sh [project_path]
+# To (re)apply or remove the global MCP registration later:
+#   bash setup_mcp_global.sh [-u]
 #
 # Usage:
 #   bash setup_atlassian.sh       first-time setup or token rotation
@@ -142,7 +141,7 @@ validate_all_tokens() {
 
 # --- configuration ---
 
-# Stores validated credentials for setup_mcp_project.sh (chmod 600).
+# Stores validated credentials for setup_mcp_global.sh (chmod 600).
 store_credentials() {
     mkdir -p "$(dirname "$CREDS_FILE")"
     cat > "$CREDS_FILE" << EOF
@@ -205,22 +204,6 @@ fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');
 EOF
 }
 
-# Removes legacy user/global-scope MCP registrations from both tools.
-# Per-project .mcp.json is now the only registration path.
-remove_user_scope_registrations() {
-    local tool server
-    for tool in claude copilot; do
-        command -v "$tool" > /dev/null 2>&1 || continue
-        for server in confluence mcp-atlassian bitbucket \
-            "io.github.b1ff/atlassian-dc-mcp-jira" \
-            "io.github.b1ff/atlassian-dc-mcp-confluence" \
-            "io.github.b1ff/atlassian-dc-mcp-bitbucket"; do
-            "$tool" mcp remove "$server" > /dev/null 2>&1 || true
-        done
-        print_ok "user-scope MCP registrations removed from $tool."
-    done
-}
-
 # --- main ---
 
 check_prerequisites
@@ -245,12 +228,12 @@ if command -v claude > /dev/null 2>&1 || [ -d "$HOME/.claude" ]; then
     print_ok "read-only git commands allowed in ~/.claude/settings.json."
 fi
 
-print_step "Removing user-scope MCP registrations (token economy)"
-remove_user_scope_registrations
+print_step "Registering MCP servers globally (user scope)"
+bash "$SCRIPT_DIR/setup_mcp_global.sh"
 
 echo ""
-echo "Credentials ready. MCP servers are now enabled PER PROJECT (not globally):"
-echo "  cd <project> && bash $SCRIPT_DIR/setup_mcp_project.sh"
-echo "This writes a local .mcp.json read by both Claude Code and Copilot CLI,"
-echo "so the ~150 Atlassian/Bitbucket tool definitions only load where needed."
+echo "Credentials ready. Atlassian + Bitbucket MCP servers are registered GLOBALLY"
+echo "(user scope) for both Claude Code and Copilot CLI — active in every session."
+echo "To remove the global registration later:"
+echo "  bash $SCRIPT_DIR/setup_mcp_global.sh -u"
 echo ""
