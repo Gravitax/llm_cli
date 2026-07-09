@@ -24,9 +24,10 @@ bash "$COMMON_DIR/setup_shell_wrapper.sh"
 # Load the project-local .mcp.json in prompt mode too (interactive mode loads it by default).
 export GITHUB_COPILOT_PROMPT_MODE_WORKSPACE_MCP=true
 
-source "$COMMON_DIR/lib_cache.sh"
-
 copilot() {
+    # Source the INSTALLED lib: its profile.env pins the copilot profile even if
+    # another tool's env script was sourced last in this shell.
+    source "$HOME/.copilot/scripts/lib_cache.sh"
     _check_and_build_cache
     echo "Starting Copilot..."
     command copilot "$@"

@@ -49,36 +49,50 @@ import json, os, sys
 mcp_file = sys.argv[1]
 env = os.environ
 
+# Server names MUST be the exact IDs from the enterprise MCP registry
+# (mcp-registry.exail.com): Copilot's "Registry only" allowlist policy matches
+# on server name only. Claude Code has no such policy and accepts any name.
+# Packages and env vars mirror the registry entries (version pinned to registry).
 config = {
     "mcpServers": {
-        "mcp-atlassian": {
-            "command": "uvx",
-            "args": ["mcp-atlassian"],
+        "io.github.b1ff/atlassian-dc-mcp-jira": {
+            "command": "npx",
+            "args": ["-y", "@atlassian-dc-mcp/jira@0.19.0"],
             "env": {
-                "CONFLUENCE_URL": env["CONFLUENCE_URL"],
-                "CONFLUENCE_PERSONAL_TOKEN": env["CONFLUENCE_TOKEN"],
-                "JIRA_URL": env["JIRA_URL"],
-                "JIRA_PERSONAL_TOKEN": env["JIRA_TOKEN"],
+                "JIRA_HOST": env["JIRA_URL"],
+                "JIRA_API_TOKEN": env["JIRA_TOKEN"],
             },
         },
-        "bitbucket": {
+        "io.github.b1ff/atlassian-dc-mcp-confluence": {
             "command": "npx",
-            "args": ["-y", "@nexus2520/bitbucket-mcp-server"],
+            "args": ["-y", "@atlassian-dc-mcp/confluence@0.19.0"],
             "env": {
-                "BITBUCKET_USERNAME": env["BITBUCKET_USERNAME"],
-                "BITBUCKET_TOKEN": env["BITBUCKET_TOKEN"],
-                "BITBUCKET_BASE_URL": env["BITBUCKET_URL"],
-                # files, search, discovery only — no PR management tools.
-                "BITBUCKET_TOOL_GROUPS": "files,search,discovery",
+                # Confluence is served on a subpath, so the full API base path is
+                # required (CONFLUENCE_HOST would be ignored).
+                "CONFLUENCE_API_BASE_PATH": env["CONFLUENCE_URL"] + "/rest",
+                "CONFLUENCE_API_TOKEN": env["CONFLUENCE_TOKEN"],
+            },
+        },
+        "io.github.b1ff/atlassian-dc-mcp-bitbucket": {
+            "command": "npx",
+            "args": ["-y", "@atlassian-dc-mcp/bitbucket@0.19.0"],
+            "env": {
+                "BITBUCKET_HOST": env["BITBUCKET_URL"],
+                "BITBUCKET_API_BASE_PATH": env["BITBUCKET_URL"] + "/rest/api/latest/",
+                "BITBUCKET_API_TOKEN": env["BITBUCKET_TOKEN"],
             },
         },
     }
 }
 
-# Preserve unrelated servers if a .mcp.json already exists.
+# Preserve unrelated servers if a .mcp.json already exists, but drop the
+# legacy names this script used to manage (blocked by the Copilot allowlist).
 try:
     existing = json.load(open(mcp_file))
-    existing.setdefault("mcpServers", {}).update(config["mcpServers"])
+    servers = existing.setdefault("mcpServers", {})
+    for legacy in ("mcp-atlassian", "bitbucket"):
+        servers.pop(legacy, None)
+    servers.update(config["mcpServers"])
     config = existing
 except (FileNotFoundError, json.JSONDecodeError):
     pass
@@ -110,8 +124,15 @@ import json, os, sys
 mcp_file = sys.argv[1]
 config = json.load(open(mcp_file))
 servers = config.get("mcpServers", {})
-servers.pop("mcp-atlassian", None)
-servers.pop("bitbucket", None)
+# Current registry-named servers + legacy names from earlier versions.
+for name in (
+    "io.github.b1ff/atlassian-dc-mcp-jira",
+    "io.github.b1ff/atlassian-dc-mcp-confluence",
+    "io.github.b1ff/atlassian-dc-mcp-bitbucket",
+    "mcp-atlassian",
+    "bitbucket",
+):
+    servers.pop(name, None)
 if servers:
     with open(mcp_file, "w") as f:
         json.dump(config, f, indent=2)

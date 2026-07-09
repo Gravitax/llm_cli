@@ -208,12 +208,15 @@ EOF
 # Removes legacy user/global-scope MCP registrations from both tools.
 # Per-project .mcp.json is now the only registration path.
 remove_user_scope_registrations() {
-    local tool
+    local tool server
     for tool in claude copilot; do
         command -v "$tool" > /dev/null 2>&1 || continue
-        "$tool" mcp remove confluence    > /dev/null 2>&1 || true
-        "$tool" mcp remove mcp-atlassian > /dev/null 2>&1 || true
-        "$tool" mcp remove bitbucket     > /dev/null 2>&1 || true
+        for server in confluence mcp-atlassian bitbucket \
+            "io.github.b1ff/atlassian-dc-mcp-jira" \
+            "io.github.b1ff/atlassian-dc-mcp-confluence" \
+            "io.github.b1ff/atlassian-dc-mcp-bitbucket"; do
+            "$tool" mcp remove "$server" > /dev/null 2>&1 || true
+        done
         print_ok "user-scope MCP registrations removed from $tool."
     done
 }

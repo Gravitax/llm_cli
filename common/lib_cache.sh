@@ -26,7 +26,9 @@ _isCacheStale() {
     age_min=$(( (now - cache_mtime) / 60 ))
     [ "$age_min" -ge "$CACHE_MAX_AGE_MIN" ] && return 0
 
-    find "$project_dir" -maxdepth 6 \
+    # -type f: directory mtimes bump on any child creation/removal (even ignored
+    # files like .claudeignore), which would flag the cache stale on every launch.
+    find "$project_dir" -maxdepth 6 -type f \
         -not -name ".*" \
         -newer "$cache_file" \
         -not -path "*/.git/*" \

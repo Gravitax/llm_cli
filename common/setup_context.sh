@@ -49,8 +49,8 @@ instead of scanning the tree. Avoid re-reading files already in context.
 MCP servers are enabled per project via a local .mcp.json — not globally (token economy).
 If Jira/Confluence/Bitbucket tools are needed but unavailable, enable them once:
   bash {{TOOL_HOME}}/scripts/setup_mcp_project.sh
-`mcp-atlassian`: jira_get_issue, jira_search, jira_create_issue, jira_add_comment, confluence_search, confluence_get_page, ...
-`bitbucket`: list_repositories, list_directory_content, get_file_content, search_code (REST API — no git operations).
+Three Data Center servers (io.github.b1ff/atlassian-dc-mcp-*): Jira (issues, search, comments),
+Confluence (pages, search), Bitbucket (repos, files, code search — REST API, no git operations).
 Prefer MCP browsing to read individual files; git clone only to run code or tests locally:
   bash {{TOOL_HOME}}/scripts/git_clone_exail.sh <PROJECT>/<repo>
 URL pattern: https://git.exail.com/scm/<PROJECT_KEY>/<repo-slug>.git (key uppercase, slug lowercase).

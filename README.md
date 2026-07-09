@@ -28,6 +28,12 @@ Every shared script reads the profile instead of hardcoding a tool.
 ## Setup
 
 ```bash
+source bootstrap.sh             # interactive wizard: activation + Atlassian + MCP + diagnostics
+```
+
+or activate a single tool directly:
+
+```bash
 source claude/claude_env.sh     # Claude Code
 source copilot/copilot_env.sh   # Copilot CLI
 ```
@@ -52,6 +58,11 @@ bash common/setup_mcp_project.sh -u         # disable for a project
 `setup_mcp_project.sh` writes a local `.mcp.json` — read natively by both Claude
 Code and Copilot CLI — and excludes it from git via `.git/info/exclude` (it
 contains tokens). Tokens live in `~/.config/llm_cli/atlassian.env` (chmod 600).
+
+The three servers use the exact IDs of the enterprise MCP registry
+(`mcp-registry.exail.com`): `io.github.b1ff/atlassian-dc-mcp-{jira,confluence,bitbucket}`.
+Copilot's enterprise "Registry only" allowlist matches on server name — a server
+configured under any other name (e.g. `jira`, `mcp-atlassian`) is blocked.
 
 ## Diagnostics
 
