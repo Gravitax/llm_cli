@@ -56,22 +56,24 @@ echo "    3) Both"
 prompt_reply "  Choice [3]: "
 tool_choice="${REPLY:-3}"
 
+# Array form: zsh does not word-split unquoted variables, so a plain string
+# would be passed/iterated as the single word "claude copilot".
 case "$tool_choice" in
-    1) selected_tools="claude" ;;
-    2) selected_tools="copilot" ;;
-    3|*) selected_tools="claude copilot" ;;
+    1) selected_tools=(claude) ;;
+    2) selected_tools=(copilot) ;;
+    3|*) selected_tools=(claude copilot) ;;
 esac
 
 # --- 2. dependencies (fully automatic: installs anything missing) ---
 
-bash "$COMMON_DIR/setup_dependencies.sh" $selected_tools \
+bash "$COMMON_DIR/setup_dependencies.sh" "${selected_tools[@]}" \
     || print_err "Some dependencies could not be installed — the related steps may fail below."
 # Installers drop binaries in ~/.local/bin; make them visible to this shell now.
 export PATH="$HOME/.local/bin:$PATH"
 
 # --- 3. tool activation ---
 
-for tool in $selected_tools; do
+for tool in "${selected_tools[@]}"; do
     source "$ROOT_DIR/$tool/${tool}_env.sh" || return 1
 done
 
