@@ -106,7 +106,7 @@ if [ "$TOOL_HEADROOM_MODE" = "launcher" ]; then
     print_ok "$TOOL_NAME routes through headroom at launch (shell wrapper)."
     _headroom_export_ghe_env
     if ! _headroom_copilot_mode > /dev/null; then
-        print_info "Routing needs credentials: export ANTHROPIC_API_KEY=... or $(_headroom_login_hint)"
+        _headroom_print_login_warning
     fi
     print_info "Opt out per session with: LLM_CLI_NO_HEADROOM=1 $TOOL_NAME"
     exit 0

@@ -29,6 +29,18 @@ _headroom_login_hint() {
     fi
 }
 
+# Prints a highly visible red banner with the exact OAuth login commands —
+# shown whenever compression would stay idle for lack of credentials.
+_headroom_print_login_warning() {
+    printf '\033[1;31m'
+    echo "  ╔══════════════════════════════════════════════════════════════════╗"
+    echo "    Headroom compression is IDLE — no credentials. Connect it with:"
+    echo "      $(_headroom_login_hint)"
+    echo "    then verify with: headroom copilot-auth status"
+    echo "  ╚══════════════════════════════════════════════════════════════════╝"
+    printf '\033[0m'
+}
+
 # True when the tool settings durably route API calls through the local proxy.
 headroom_is_wrapped() {
     grep -Eq "headroom|ANTHROPIC_BASE_URL.*(localhost|127\.0\.0\.1)" \
@@ -67,7 +79,7 @@ _launch_with_headroom() {
     _headroom_export_ghe_env
     local mode
     if ! mode=$(_headroom_copilot_mode); then
-        echo "headroom idle: set ANTHROPIC_API_KEY or run '$(_headroom_login_hint)' to enable compression."
+        _headroom_print_login_warning
         command "$tool" "$@"
         return
     fi

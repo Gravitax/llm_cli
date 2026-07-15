@@ -34,12 +34,12 @@ copilot() {
 }
 unalias copilot 2>/dev/null
 
-# Surface the exact OAuth commands whenever compression would stay idle.
+# Surface the exact OAuth commands (red banner) whenever compression would stay idle.
 if command -v headroom > /dev/null 2>&1; then
     source "$HOME/.copilot/scripts/lib_headroom.sh"
     _headroom_export_ghe_env
     if ! _headroom_copilot_mode > /dev/null 2>&1; then
-        echo "Headroom idle — log in with: $(_headroom_login_hint)  (then verify: headroom copilot-auth status)"
+        _headroom_print_login_warning
     fi
 fi
 
