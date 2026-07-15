@@ -10,6 +10,7 @@ consumption and gives both agents a precise, pre-built view of each project.
 | Project symbol index | `path \| LOC \| symbols` cache read at session start instead of scanning files | ✓ | ✓ |
 | Compact global instructions | Behavioral rules kept short — loaded every turn, every session | ✓ | ✓ |
 | CLI output compression (RTK) | PreToolUse hook rewrites bash commands, ~70-80% savings on output | hook | via instructions |
+| API-level compression (Headroom) | Durable proxy wrap, ~15-20% savings on coding agents (60-95% on JSON) | ✓ | not yet |
 | Auto cache refresh | Shell wrapper + git hooks (+ PostToolUse hooks for Claude) | ✓ | ✓ |
 | Atlassian & Bitbucket MCP | Global, user-scope registration — enabled once for every session | ✓ | ✓ |
 
@@ -29,7 +30,7 @@ Every shared script reads the profile instead of hardcoding a tool.
 ## Setup
 
 ```bash
-source bootstrap.sh             # interactive wizard: activation + Atlassian + MCP + diagnostics
+source bootstrap.sh             # interactive wizard: activation + Atlassian + MCP + Headroom + diagnostics
 ```
 
 or activate a single tool directly:
@@ -82,20 +83,37 @@ bash common/setup_mcp_global.sh -u   # remove the global registration
 
 `setup_mcp_global.sh` writes the servers directly into each tool's user-scope
 config (`~/.claude.json` for Claude Code, `~/.copilot/mcp-config.json` for
-Copilot CLI). Tokens live in `~/.config/llm_cli/atlassian.env` (chmod 600) and
-are passed through the environment, never through argv.
+Copilot CLI). The instance URLs and tokens are prompted by `setup_atlassian.sh`
+(nothing company-specific is hardcoded) and live in
+`~/.config/llm_cli/atlassian.env` (chmod 600), passed through the environment,
+never through argv.
 
-The three servers use the exact IDs of the enterprise MCP registry
-(`mcp-registry.exail.com`): `io.github.b1ff/atlassian-dc-mcp-{jira,confluence,bitbucket}`.
+The three servers use the exact IDs of your enterprise MCP registry (if any):
+`io.github.b1ff/atlassian-dc-mcp-{jira,confluence,bitbucket}`.
 Copilot's enterprise "Registry only" allowlist matches on server name — a server
 configured under any other name (e.g. `jira`, `mcp-atlassian`) is blocked.
+
+## Headroom — API-level context compression (optional)
+
+[Headroom](https://github.com/headroomlabs-ai/headroom) compresses the request
+payload between the agent and the provider API through a local proxy, on top of
+RTK (CLI output) and the symbol index (project context) — three independent
+layers. `headroom wrap` writes a durable proxy routing into the tool settings;
+the shell wrapper starts the proxy automatically before each launch.
+
+```bash
+bash common/setup_headroom.sh        # install + wrap + verify (per TOOL_PROFILE)
+bash common/setup_headroom.sh -u     # unwrap — restore direct API access
+headroom perf                        # token savings after a session
+```
 
 ## Diagnostics
 
 ```bash
 bash common/check_optimizations.sh claude  [project_path]
 bash common/check_optimizations.sh copilot [project_path]
-rtk gain    # RTK token savings after a session
+rtk gain         # RTK token savings after a session
+headroom perf    # Headroom savings (if wrapped)
 ```
 
 See `claude/README.md` and `copilot/README.md` for tool-specific details.
