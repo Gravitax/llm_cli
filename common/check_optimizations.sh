@@ -221,11 +221,12 @@ check_headroom() {
             check_fail "shell wrapper does not launch $TOOL_NAME through headroom"
             check_warn "Fix: bash $TOOL_HOME/scripts/setup_shell_wrapper.sh"
         fi
+        _headroom_export_ghe_env
         if _headroom_copilot_mode > /dev/null; then
             check_ok "routing credentials available (mode: $(_headroom_copilot_mode))"
         else
             check_info "no ANTHROPIC_API_KEY and no Copilot OAuth — launches stay plain (compression idle)"
-            check_info "Enable: export ANTHROPIC_API_KEY=... or headroom copilot-auth login"
+            check_info "Enable: export ANTHROPIC_API_KEY=... or $(_headroom_login_hint)"
         fi
         return
     fi

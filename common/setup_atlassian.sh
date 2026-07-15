@@ -98,6 +98,10 @@ prompt_all_urls() {
     echo ""
     read -rp "  MCP registry URL (optional, Enter to skip) [${MCP_REGISTRY_URL:-}]: " input
     MCP_REGISTRY_URL="${input:-${MCP_REGISTRY_URL:-}}"
+
+    echo ""
+    read -rp "  GitHub Enterprise domain for Copilot (optional, e.g. mycompany.ghe.com) [${GITHUB_COPILOT_ENTERPRISE_DOMAIN:-}]: " input
+    GITHUB_COPILOT_ENTERPRISE_DOMAIN="${input:-${GITHUB_COPILOT_ENTERPRISE_DOMAIN:-}}"
 }
 
 prompt_all_credentials() {
@@ -162,6 +166,8 @@ JIRA_TOKEN=$JIRA_TOKEN
 BITBUCKET_TOKEN=$BITBUCKET_TOKEN
 EOF
     [ -n "${MCP_REGISTRY_URL:-}" ] && echo "MCP_REGISTRY_URL=$MCP_REGISTRY_URL" >> "$CREDS_FILE"
+    [ -n "${GITHUB_COPILOT_ENTERPRISE_DOMAIN:-}" ] \
+        && echo "GITHUB_COPILOT_ENTERPRISE_DOMAIN=$GITHUB_COPILOT_ENTERPRISE_DOMAIN" >> "$CREDS_FILE"
     chmod 600 "$CREDS_FILE"
 }
 

@@ -109,6 +109,8 @@ layers. Two routing modes, resolved by the tool profile:
   launches through `headroom wrap copilot` when credentials allow it
   (`ANTHROPIC_API_KEY` → BYOK, or `headroom copilot-auth login` → subscription);
   plain launch otherwise. Opt out per session: `LLM_CLI_NO_HEADROOM=1`.
+  GitHub Enterprise Copilot is supported: set the domain once via
+  `setup_atlassian.sh` (`GITHUB_COPILOT_ENTERPRISE_DOMAIN`) — see `copilot/README.md`.
 
 ```bash
 bash common/setup_headroom.sh        # install + wrap + verify (per TOOL_PROFILE)

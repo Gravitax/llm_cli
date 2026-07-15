@@ -6,9 +6,28 @@
 
 _LIB_HEADROOM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
 source "$_LIB_HEADROOM_DIR/tool_profile.sh" || return 1
+source "$_LIB_HEADROOM_DIR/lib_config.sh"
 
 # Default port of `headroom proxy`. Override with: export HEADROOM_PROXY_PORT=8787
 HEADROOM_PROXY_PORT="${HEADROOM_PROXY_PORT:-8787}"
+
+# Exports the GitHub Enterprise Copilot domain from the llm_cli config, so the
+# headroom auth module (login, token exchange, upstream routing) targets the
+# enterprise instance instead of github.com. No-op when not configured.
+_headroom_export_ghe_env() {
+    load_llm_cli_config || return 0
+    [ -n "${GITHUB_COPILOT_ENTERPRISE_DOMAIN:-}" ] || return 0
+    export GITHUB_COPILOT_ENTERPRISE_DOMAIN
+}
+
+# Prints the copilot OAuth login command, with --domain when GHE is configured.
+_headroom_login_hint() {
+    if [ -n "${GITHUB_COPILOT_ENTERPRISE_DOMAIN:-}" ]; then
+        echo "headroom copilot-auth login --domain $GITHUB_COPILOT_ENTERPRISE_DOMAIN"
+    else
+        echo "headroom copilot-auth login"
+    fi
+}
 
 # True when the tool settings durably route API calls through the local proxy.
 headroom_is_wrapped() {
@@ -45,9 +64,10 @@ _launch_with_headroom() {
         return
     fi
 
+    _headroom_export_ghe_env
     local mode
     if ! mode=$(_headroom_copilot_mode); then
-        echo "headroom idle: set ANTHROPIC_API_KEY or run 'headroom copilot-auth login' to enable compression."
+        echo "headroom idle: set ANTHROPIC_API_KEY or run '$(_headroom_login_hint)' to enable compression."
         command "$tool" "$@"
         return
     fi
@@ -65,6 +85,9 @@ _launch_with_headroom() {
 _ensure_headroom_proxy() {
     command -v headroom > /dev/null 2>&1 || return 0
     headroom_is_wrapped || return 0
+    # The shared proxy (port 8787) also serves copilot: it must carry the GHE
+    # routing config whichever tool starts it.
+    _headroom_export_ghe_env
     _headroom_proxy_alive && return 0
 
     echo "Starting headroom proxy..."

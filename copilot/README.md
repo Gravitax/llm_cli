@@ -28,6 +28,21 @@ environment at launch, so the `copilot()` wrapper launches through
 
 Opt out for one session with `LLM_CLI_NO_HEADROOM=1 copilot`.
 
+### GitHub Enterprise (ghe.com / GHE Server)
+
+If your Copilot subscription lives on a GitHub Enterprise instance, the default
+OAuth login (github.com) will not see your license. Configure the domain once:
+
+1. `bash common/setup_atlassian.sh` and fill the optional
+   "GitHub Enterprise domain for Copilot" prompt (or add
+   `GITHUB_COPILOT_ENTERPRISE_DOMAIN=mycompany.ghe.com` to
+   `~/.config/llm_cli/atlassian.env`).
+2. `headroom copilot-auth login --domain mycompany.ghe.com` — every idle/help
+   message prints this exact command once the domain is configured.
+3. Relaunch `copilot`: the wrapper exports the domain so headroom routes the
+   subscription through `copilot-api.<domain>`. If a proxy was already running
+   without it, restart it once: `pkill -f "headroom proxy"`.
+
 ## Copilot specifics
 
 - The local instructions file is `AGENTS.md` (Copilot CLI's primary instructions
