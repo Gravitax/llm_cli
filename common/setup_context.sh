@@ -7,6 +7,7 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/tool_profile.sh" || exit 1
+source "$SCRIPT_DIR/lib_config.sh"
 
 mkdir -p "$(dirname "$TOOL_INSTRUCTIONS_GLOBAL")"
 
@@ -17,11 +18,13 @@ cat > "$TOOL_INSTRUCTIONS_GLOBAL" << 'EOF'
 - Functions: single responsibility, max ~20 lines, guard clauses, max 2 nesting levels, no magic numbers or strings.
 - Comments: English, explain why not what, no commented-out code, one-line doc per public function/class.
 - Modules: single responsibility, depend on abstractions, open for extension closed for modification.
+- Architecture: keep the tree clean and coherent — create new folders, files and classes whenever it
+  preserves structure and organization; never cram unrelated logic into an existing file.
 - Errors: never swallowed silently; always carry context (what failed, where, why).
 - No duplicate logic — extract immediately. Consistency with existing codebase patterns wins over preference.
 
-# Enterprise context (Exail)
-All code and data are confidential. Jira = tracking, Confluence = docs, Bitbucket = source (git.exail.com).
+# Engineering context
+All code and data are confidential. Jira = tracking, Confluence = docs, Bitbucket = source.
 Research before assuming: verify any API, interface or module in Bitbucket (`search_code`, `get_file_content`),
 Confluence (architecture docs) or Jira (acceptance criteria) — never guess what can be checked.
 Jira workflow: read the full ticket description AND all comments before working; comment status when done or blocked.
@@ -33,7 +36,7 @@ NEVER run git push without explicit user confirmation. Force push is strictly fo
 
 # Security
 Never log, print, commit or hardcode credentials, tokens, API keys or PII — env vars or secret managers only.
-Internal URLs (git.exail.com, jira.exail.com, ...) must not appear in external-facing documentation.
+Internal company URLs must not appear in external-facing documentation or public code.
 Delete temporary credential files immediately after use.
 
 # Destructive actions
@@ -44,6 +47,7 @@ Never delete files or overwrite uncommitted changes without explicit user confir
 Be concise. For code tasks: return code only, no explanation, unless the user asks for one.
 Read the project context index first (see the local {{INSTRUCTIONS_LOCAL}}) and open only the 2-3 relevant files
 instead of scanning the tree. Avoid re-reading files already in context.
+Scope tasks narrowly: one focused objective per session beats one sprawling session.
 
 # MCP tools — Atlassian & Bitbucket (global, user scope)
 MCP servers are registered globally (user scope), once, for this user — active in every session.
@@ -52,15 +56,16 @@ If Jira/Confluence/Bitbucket tools are needed but unavailable, (re)run:
 Three Data Center servers (io.github.b1ff/atlassian-dc-mcp-*): Jira (issues, search, comments),
 Confluence (pages, search), Bitbucket (repos, files, code search — REST API, no git operations).
 Prefer MCP browsing to read individual files; git clone only to run code or tests locally:
-  bash {{TOOL_HOME}}/scripts/git_clone_exail.sh <PROJECT>/<repo>
-URL pattern: https://git.exail.com/scm/<PROJECT_KEY>/<repo-slug>.git (key uppercase, slug lowercase).
+  bash {{TOOL_HOME}}/scripts/git_clone.sh <PROJECT>/<repo>
+URL pattern: {{BITBUCKET_URL}}/scm/<PROJECT_KEY>/<repo-slug>.git (key uppercase, slug lowercase).
 
 # Maintenance scripts ({{TOOL_HOME}}/scripts/)
 - setup_env.sh — full environment repair (scripts sync, instructions, hooks). Run when anything seems out of date.
 - setup_context_cache.sh [path] — regenerate the project symbol index after structural changes (-u to remove).
 - setup_mcp_global.sh — enable Atlassian+Bitbucket MCP globally, once (-u to remove).
-- check_optimizations.sh [path] — diagnose the optimization setup (cache, wrapper, hooks).
-- git_clone_exail.sh <PROJECT>/<repo> — clone from git.exail.com with stored credentials.
+- setup_headroom.sh — install/repair the Headroom compression proxy wrap (-u to unwrap).
+- check_optimizations.sh [path] — diagnose the optimization setup (cache, wrapper, hooks, headroom).
+- git_clone.sh <PROJECT>/<repo> — clone from the configured Bitbucket host with stored credentials.
 EOF
 
 # Tool-specific sections.
@@ -70,6 +75,10 @@ if [ "$TOOL_PROFILE" = "claude" ]; then
 # Subagents
 For large codebase exploration or parallel research, delegate to subagents to keep the main context clean.
 Reports must stay under 500 words — no raw file dumps. Not for small targeted reads (use Read/Grep directly).
+
+# Context hygiene
+Around 60% context usage, run /compact with a hint on what to keep (current task, key files, decisions).
+Use /context to audit what is consuming the window before starting a long task.
 
 @RTK.md
 EOF
@@ -83,11 +92,24 @@ Fall back to the plain command if rtk fails.
 EOF
 fi
 
-# Substitute tool-specific placeholders.
-sed -i \
-    -e "s|{{TOOL_HOME}}|$TOOL_HOME|g" \
-    -e "s|{{INSTRUCTIONS_LOCAL}}|$TOOL_INSTRUCTIONS_LOCAL|g" \
-    "$TOOL_INSTRUCTIONS_GLOBAL"
+# Substitutes tool-specific placeholders; the Bitbucket URL comes from the
+# llm_cli config and its line is dropped entirely when not configured yet.
+substitute_placeholders() {
+    load_llm_cli_config || true
+
+    sed -i \
+        -e "s|{{TOOL_HOME}}|$TOOL_HOME|g" \
+        -e "s|{{INSTRUCTIONS_LOCAL}}|$TOOL_INSTRUCTIONS_LOCAL|g" \
+        "$TOOL_INSTRUCTIONS_GLOBAL"
+
+    if [ -n "${BITBUCKET_URL:-}" ]; then
+        sed -i "s|{{BITBUCKET_URL}}|$BITBUCKET_URL|g" "$TOOL_INSTRUCTIONS_GLOBAL"
+    else
+        sed -i "/{{BITBUCKET_URL}}/d" "$TOOL_INSTRUCTIONS_GLOBAL"
+    fi
+}
+
+substitute_placeholders
 
 line_count=$(wc -l < "$TOOL_INSTRUCTIONS_GLOBAL")
 echo "    [OK] $TOOL_INSTRUCTIONS_GLOBAL rewritten ($line_count lines)."

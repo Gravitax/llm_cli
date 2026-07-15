@@ -18,14 +18,16 @@
 #   bash setup_mcp_global.sh      # enable MCP globally (idempotent)
 #   bash setup_mcp_global.sh -u   # remove the global MCP registration
 
-CREDS_FILE="$HOME/.config/llm_cli/atlassian.env"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/lib_config.sh"
+CREDS_FILE="$LLM_CLI_CONFIG"
 PYTHON_BIN="${PYTHON_BIN:-python3.11}"
 CLAUDE_CONFIG="$HOME/.claude.json"
 COPILOT_CONFIG="$HOME/.copilot/mcp-config.json"
 
-# Server names MUST be the exact IDs from the enterprise MCP registry
-# (mcp-registry.exail.com): Copilot's "Registry only" allowlist policy matches
-# on server name only. Claude Code has no such policy and accepts any name.
+# Server names MUST be the exact IDs from your enterprise MCP registry (if any):
+# Copilot's "Registry only" allowlist policy matches on server name only.
+# Claude Code has no such policy and accepts any name.
 SERVER_JIRA="io.github.b1ff/atlassian-dc-mcp-jira"
 SERVER_CONFLUENCE="io.github.b1ff/atlassian-dc-mcp-confluence"
 SERVER_BITBUCKET="io.github.b1ff/atlassian-dc-mcp-bitbucket"

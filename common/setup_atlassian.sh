@@ -3,9 +3,9 @@
 # One-time Atlassian credentials setup (Confluence + Jira + Bitbucket), shared
 # by Claude Code and Copilot CLI.
 #
-# Prompts and validates the tokens, then:
-#   - stores them in ~/.config/llm_cli/atlassian.env (chmod 600)
-#   - stores git credentials for git.exail.com
+# Prompts the enterprise URLs, prompts and validates the tokens, then:
+#   - stores everything in ~/.config/llm_cli/atlassian.env (chmod 600)
+#   - stores git credentials for the configured Bitbucket host
 #   - allows read-only git commands in Claude Code settings
 #   - registers the MCP servers globally (user scope), once, for both tools
 #
@@ -17,11 +17,9 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib_log.sh"
+source "$SCRIPT_DIR/lib_config.sh"
 
-CONFLUENCE_URL="https://confluence.exail.com/c"
-JIRA_URL="https://jira.exail.com/j"
-BITBUCKET_URL="https://git.exail.com"
-CREDS_FILE="$HOME/.config/llm_cli/atlassian.env"
+CREDS_FILE="$LLM_CLI_CONFIG"
 
 # Validates a Bearer token against a REST endpoint.
 # Sets VALIDATED_USER on success. Returns 1 on failure.
@@ -81,15 +79,39 @@ check_prerequisites() {
 # --- prompts ---
 
 prompt_value() {
-    local label="$1" instructions="$2" var_name="$3"
+    local label="$1" instructions="$2" var_name="$3" default="${4:-}"
     echo ""
     [ -n "$instructions" ] && echo -e "$instructions" && echo ""
-    read -rp "  $label: " input
+    local suffix=""
+    [ -n "$default" ] && suffix=" [$default]"
+    read -rp "  $label$suffix: " input
+    input="${input:-$default}"
     if [ -z "$input" ]; then
         print_err "No value provided for $label."
         exit 1
     fi
     eval "$var_name=\"\$input\""
+}
+
+# Prompts the enterprise base URLs, pre-filled from an existing config so a
+# token rotation never forces re-typing the URLs.
+prompt_all_urls() {
+    load_llm_cli_config || true
+
+    print_step "Enterprise service URLs"
+    prompt_value "Confluence URL" \
+        "    Base URL of your Confluence instance, including any context path.\n    e.g. https://confluence.mycompany.com/c" \
+        CONFLUENCE_URL "${CONFLUENCE_URL:-}"
+    prompt_value "Jira URL" \
+        "    e.g. https://jira.mycompany.com/j" \
+        JIRA_URL "${JIRA_URL:-}"
+    prompt_value "Bitbucket URL" \
+        "    e.g. https://git.mycompany.com" \
+        BITBUCKET_URL "${BITBUCKET_URL:-}"
+
+    echo ""
+    read -rp "  MCP registry URL (optional, Enter to skip) [${MCP_REGISTRY_URL:-}]: " input
+    MCP_REGISTRY_URL="${input:-${MCP_REGISTRY_URL:-}}"
 }
 
 prompt_all_credentials() {
@@ -153,6 +175,7 @@ CONFLUENCE_TOKEN=$CONFLUENCE_TOKEN
 JIRA_TOKEN=$JIRA_TOKEN
 BITBUCKET_TOKEN=$BITBUCKET_TOKEN
 EOF
+    [ -n "${MCP_REGISTRY_URL:-}" ] && echo "MCP_REGISTRY_URL=$MCP_REGISTRY_URL" >> "$CREDS_FILE"
     chmod 600 "$CREDS_FILE"
 }
 
@@ -204,9 +227,19 @@ fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');
 EOF
 }
 
+# Regenerates the installed instructions so they carry the (new) Bitbucket URL.
+refresh_installed_instructions() {
+    local tool
+    for tool in claude copilot; do
+        [ -f "$HOME/.$tool/scripts/setup_context.sh" ] || continue
+        bash "$HOME/.$tool/scripts/setup_context.sh"
+    done
+}
+
 # --- main ---
 
 check_prerequisites
+prompt_all_urls
 prompt_all_credentials
 
 if ! validate_all_tokens; then
@@ -217,6 +250,7 @@ fi
 print_step "Storing credentials"
 store_credentials
 print_ok "credentials stored in $CREDS_FILE (chmod 600)."
+refresh_installed_instructions
 
 print_step "Configuring git credentials for $BITBUCKET_URL"
 configure_git_credentials "$BITBUCKET_USERNAME" "$BITBUCKET_TOKEN"
