@@ -22,6 +22,11 @@ function global:{{TOOL}} {
     # Delegates stale detection and cache rebuild to lib_cache.ps1 (single source of truth).
     . "$env:USERPROFILE\.{{TOOL}}\scripts\lib_cache.ps1"
     Invoke-CheckAndBuildCache
+    # A headroom-wrapped tool cannot reach the API unless the local proxy is up.
+    if (Test-Path "$env:USERPROFILE\.{{TOOL}}\scripts\lib_headroom.ps1") {
+        . "$env:USERPROFILE\.{{TOOL}}\scripts\lib_headroom.ps1"
+        Invoke-EnsureHeadroomProxy
+    }
     Write-Host "Starting {{TOOL}}..."
     $exe = Get-Command {{TOOL}} -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($exe) { & $exe.Source @args }
@@ -39,10 +44,10 @@ if (Test-Path -LiteralPath $profilePath) {
 }
 
 if ($existing.Contains($markerBegin)) {
-    # Replace only if outdated: must delegate to lib_cache.ps1 (single source of truth).
+    # Replace only if outdated: must delegate to lib_cache.ps1 AND ensure the headroom proxy.
     $blockPattern = '(?s)' + [regex]::Escape($markerBegin) + '.*?' + [regex]::Escape($markerEnd)
     $currentBlock = [regex]::Match($existing, $blockPattern).Value
-    if ($currentBlock.Contains(".$TOOL_NAME\scripts\lib_cache.ps1")) {
+    if ($currentBlock.Contains(".$TOOL_NAME\scripts\lib_headroom.ps1")) {
         Write-Host "    [OK] $TOOL_NAME wrapper already present in $profilePath"
         exit 0
     }

@@ -39,4 +39,8 @@ if ($TOOL_HAS_AGENT_HOOKS -eq 1) {
     Ensure-CacheReadPermission
 }
 
+if ($TOOL_HAS_HEADROOM -eq 1) {
+    & (Join-Path $PSScriptRoot 'setup_headroom.ps1') -Ensure
+}
+
 Write-Host "    [OK] $TOOL_NAME environment ready."

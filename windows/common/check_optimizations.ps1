@@ -1,6 +1,6 @@
 # Verifies that the token optimizations are correctly configured for the active tool.
-# Checks: RTK (Claude only), PostToolUse hooks (Claude only), PowerShell wrapper,
-# context cache, instructions entries.
+# Checks: RTK (Claude only), PostToolUse hooks (Claude only), headroom wrap,
+# PowerShell wrapper, context cache, instructions entries.
 #
 # Usage: powershell -File check_optimizations.ps1 [claude|copilot] [project_path]
 # (the tool argument is optional when run from an installed $TOOL_HOME\scripts\ copy)
@@ -196,6 +196,45 @@ function Check-Instructions([string]$Project) {
     }
 }
 
+function Check-Headroom {
+    print_step "Headroom compression proxy (optional)"
+
+    . (Join-Path $PSScriptRoot 'lib_headroom.ps1')
+
+    $headroom = Get-Command headroom -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
+    if (-not $headroom) {
+        if (Test-HeadroomWrapped) {
+            check_fail "settings.json routes API calls through headroom but the binary is missing - $TOOL_NAME requests will fail"
+            check_warn "Fix: powershell -File $TOOL_HOME\scripts\setup_headroom.ps1 (reinstall) or remove the wrap from settings.json"
+        } else {
+            check_info "headroom not installed - optional, ~15-20% extra token savings"
+            check_info "Enable if wanted: powershell -File $TOOL_HOME\scripts\setup_headroom.ps1"
+        }
+        return
+    }
+
+    check_ok "headroom present at $($headroom.Source)"
+
+    if (Test-HeadroomWrapped) {
+        check_ok "$TOOL_NAME wrapped - proxy routing active in settings.json"
+    } else {
+        check_info "$TOOL_NAME not wrapped - enable with: powershell -File $TOOL_HOME\scripts\setup_headroom.ps1"
+        return
+    }
+
+    # doctor's exit code also covers unrelated tools (codex, shell env), so the
+    # load-bearing check is done directly: wrapped + proxy reachability.
+    if (Test-HeadroomProxyAlive) {
+        check_ok "headroom proxy reachable on port $HEADROOM_PROXY_PORT"
+    } else {
+        check_info "proxy not running - the shell wrapper starts it at $TOOL_NAME launch"
+        check_info "Details anytime: headroom doctor"
+    }
+
+    $perf = (& headroom perf 2>$null | Select-Object -First 5)
+    foreach ($line in @($perf)) { Write-Host "       $line" }
+}
+
 function Check-GlobalMcp {
     print_step "Global MCP (optional)"
 
@@ -227,6 +266,10 @@ if ($TOOL_HAS_RTK_HOOK -eq 1) {
 
 if ($TOOL_HAS_AGENT_HOOKS -eq 1) {
     Check-PostToolUseHooks
+}
+
+if ($TOOL_HAS_HEADROOM -eq 1) {
+    Check-Headroom
 }
 
 Check-ShellWrapper

@@ -28,6 +28,8 @@ switch ($TOOL_PROFILE) {
         # Claude Code supports settings.json hooks: RTK PreToolUse + cache PostToolUse.
         $TOOL_HAS_RTK_HOOK = 1
         $TOOL_HAS_AGENT_HOOKS = 1
+        # Headroom writes a durable proxy wrap into settings.json (ANTHROPIC_BASE_URL).
+        $TOOL_HAS_HEADROOM = 1
         $TOOL_PROFILE_OK = $true
     }
     'copilot' {

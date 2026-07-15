@@ -36,7 +36,21 @@ print_step "Activating Claude Code"
 print_step "Atlassian + Bitbucket credentials / global MCP"
 print_info "[SKIP] Not ported to Windows yet (setup_atlassian.sh / setup_mcp_global.sh - use Linux/WSL)."
 
-# --- 3. verification ---
+# --- 3. Headroom compression proxy (optional) ---
+
+print_step "Headroom compression proxy (optional, ~15-20% token savings)"
+$_headroomScript = Join-Path $env:USERPROFILE '.claude\scripts\setup_headroom.ps1'
+if (Test-Path -LiteralPath $_headroomScript) {
+    $_reply = Read-Host "  Install headroom and wrap claude now? [Y/n]"
+    if (-not $_reply -or $_reply -match '^[Yy]$') {
+        & $_headroomScript
+        if ($LASTEXITCODE -ne 0) { print_err "Headroom setup failed." }
+    } else {
+        print_info "Skipped - enable later with: powershell -File $_headroomScript"
+    }
+}
+
+# --- 4. verification ---
 
 print_step "Verifying setup"
 $_projectPath = & git rev-parse --show-toplevel 2>$null
