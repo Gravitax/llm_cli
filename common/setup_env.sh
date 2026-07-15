@@ -72,9 +72,10 @@ ensure_cache_read_permission() {
     echo "    [OK] Cache read permission ($rule) registered in $settings"
 }
 
-# Ensures the RTK PreToolUse hook is active (feature-gated: Claude only).
+# Ensures the RTK binary and its PreToolUse hook are active (feature-gated: Claude only).
 ensure_rtk_hook() {
-    if ! grep -q "rtk hook $TOOL_NAME" "$TOOL_HOME/settings.json" 2>/dev/null; then
+    if ! command -v rtk > /dev/null 2>&1 \
+        || ! grep -q "rtk hook $TOOL_NAME" "$TOOL_HOME/settings.json" 2>/dev/null; then
         bash "$TOOL_HOME/scripts/setup_rtk.sh"
     elif ! command -v jq > /dev/null 2>&1; then
         echo "    [WARN] jq not found — RTK hook registered but inactive."

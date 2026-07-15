@@ -12,6 +12,7 @@ COMMON_DIR="$(cd "$CLAUDE_DIR/.." && pwd)/common"
 
 export TOOL_PROFILE=claude
 source "$COMMON_DIR/tool_profile.sh"                || return 1
+source "$COMMON_DIR/lib_deps.sh"                    || return 1
 source "$CLAUDE_DIR/scripts/setup_prerequisites.sh" || return 1
 
 bash "$COMMON_DIR/setup_env.sh"
@@ -22,6 +23,11 @@ claude() {
     # another tool's env script was sourced last in this shell.
     source "$HOME/.claude/scripts/lib_cache.sh"
     _check_and_build_cache
+    # A headroom-wrapped tool cannot reach the API unless the local proxy is up.
+    if [ -f "$HOME/.claude/scripts/lib_headroom.sh" ]; then
+        source "$HOME/.claude/scripts/lib_headroom.sh"
+        _ensure_headroom_proxy
+    fi
     echo "Starting Claude..."
     command claude "$@"
 }

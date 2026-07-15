@@ -3,49 +3,20 @@
 # Installs RTK and configures the Claude Code PreToolUse hook.
 # RTK intercepts bash commands (git, ls, tests...) and compresses output
 # before it reaches the LLM context (~70-80% token savings on CLI output).
+# Install logic lives in lib_deps.sh (ensure_jq / ensure_rtk) — this script
+# only adds the Claude-specific hook configuration on top.
 #
 # Usage:
 #   bash setup_rtk.sh        # Install and configure
 #   bash setup_rtk.sh -u     # Remove hook and RTK artifacts
 
-PYTHON_BIN="${PYTHON_BIN:-python3.11}"
-
-RTK_LOCAL_BIN="$HOME/.local/bin"
-
-install_jq() {
-    if command -v jq > /dev/null 2>&1; then
-        return 0
-    fi
-    echo "    Installing jq (required by RTK hook)..."
-    if command -v apt-get > /dev/null 2>&1; then
-        sudo apt-get install -y jq
-    elif command -v brew > /dev/null 2>&1; then
-        brew install jq > /dev/null 2>&1
-    else
-        echo "    Error: cannot install jq automatically. Install it manually: https://jqlang.github.io/jq/"
-        return 1
-    fi
-    command -v jq > /dev/null 2>&1 || { echo "    Error: jq installation failed."; return 1; }
-    echo "    [OK] jq installed."
-}
-
-install_rtk() {
-    if command -v rtk > /dev/null 2>&1; then
-        echo "    [OK] RTK already installed: $(rtk --version)"
-        return 0
-    fi
-    echo "    Installing RTK..."
-    if ! curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh; then
-        echo "    Error: RTK installation failed."
-        return 1
-    fi
-    export PATH="$RTK_LOCAL_BIN:$PATH"
-    if ! command -v rtk > /dev/null 2>&1; then
-        echo "    Error: RTK binary not found after install. Add $RTK_LOCAL_BIN to PATH."
-        return 1
-    fi
-    echo "    [OK] RTK installed: $(rtk --version)"
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Installed copy: lib_deps.sh sits next to this script; repo copy: it is in common/.
+if [ -f "$SCRIPT_DIR/lib_deps.sh" ]; then
+    source "$SCRIPT_DIR/lib_deps.sh"
+else
+    source "$SCRIPT_DIR/../../common/lib_deps.sh"
+fi
 
 ensure_path_in_profile() {
     local profile_line='export PATH="$HOME/.local/bin:$PATH"'
@@ -66,7 +37,7 @@ ensure_path_in_profile() {
 
 if [ "$1" = "-u" ]; then
     echo "Removing RTK hook..."
-    export PATH="$RTK_LOCAL_BIN:$PATH"
+    export PATH="$LOCAL_BIN:$PATH"
     if command -v rtk > /dev/null 2>&1; then
         rtk init -g --uninstall 2>&1 | sed 's/^/    /'
     else
@@ -75,10 +46,10 @@ if [ "$1" = "-u" ]; then
     echo "RTK hook removed. Restart Claude Code to apply."
 else
     echo "Setting up RTK output compression..."
-    install_jq || exit 1
-    install_rtk || exit 1
+    ensure_jq || exit 1
+    ensure_rtk || exit 1
     ensure_path_in_profile
-    export PATH="$RTK_LOCAL_BIN:$PATH"
+    export PATH="$LOCAL_BIN:$PATH"
     rtk init -g --auto-patch 2>&1 | sed 's/^/    /'
     echo "RTK ready. Restart Claude Code to activate the hook."
     echo "Check savings after a session with: rtk gain"

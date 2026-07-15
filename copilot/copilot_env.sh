@@ -11,12 +11,9 @@ COPILOT_DIR="$(cd "$(dirname "$_SELF")" && pwd)"
 COMMON_DIR="$(cd "$COPILOT_DIR/.." && pwd)/common"
 
 export TOOL_PROFILE=copilot
-source "$COMMON_DIR/tool_profile.sh" || return 1
-
-if ! command -v copilot > /dev/null 2>&1; then
-    echo "Error: Copilot CLI not found. Install it with: npm install -g @github/copilot"
-    return 1
-fi
+source "$COMMON_DIR/tool_profile.sh"                 || return 1
+source "$COMMON_DIR/lib_deps.sh"                     || return 1
+source "$COPILOT_DIR/scripts/setup_prerequisites.sh" || return 1
 
 bash "$COMMON_DIR/setup_env.sh"
 bash "$COMMON_DIR/setup_shell_wrapper.sh"
@@ -29,8 +26,11 @@ copilot() {
     # another tool's env script was sourced last in this shell.
     source "$HOME/.copilot/scripts/lib_cache.sh"
     _check_and_build_cache
+    source "$HOME/.copilot/scripts/lib_headroom.sh"
     echo "Starting Copilot..."
-    command copilot "$@"
+    # Routes through headroom when a provider key or Copilot OAuth allows it,
+    # plain launch otherwise. Opt out per session with LLM_CLI_NO_HEADROOM=1.
+    _launch_with_headroom copilot "$@"
 }
 unalias copilot 2>/dev/null
 

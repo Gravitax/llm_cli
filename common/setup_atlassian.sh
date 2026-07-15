@@ -18,6 +18,7 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/lib_log.sh"
 source "$SCRIPT_DIR/lib_config.sh"
+source "$SCRIPT_DIR/lib_deps.sh"
 
 CREDS_FILE="$LLM_CLI_CONFIG"
 
@@ -56,23 +57,8 @@ validate_token() {
 
 check_prerequisites() {
     print_step "Checking prerequisites"
-
-    if ! command -v node > /dev/null 2>&1; then
-        print_err "Node.js not found."
-        exit 1
-    fi
-
-    if ! command -v uvx > /dev/null 2>&1; then
-        print_info "uv not found. Installing..."
-        curl -LsSf https://astral.sh/uv/install.sh | sh > /dev/null 2>&1
-        export PATH="$HOME/.local/bin:$PATH"
-        if ! command -v uvx > /dev/null 2>&1; then
-            print_err "uv installation failed. Install manually: https://docs.astral.sh/uv/"
-            exit 1
-        fi
-        print_ok "uv installed."
-    fi
-
+    ensure_node || exit 1
+    ensure_uv || exit 1
     print_ok "Prerequisites met."
 }
 

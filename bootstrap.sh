@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # Interactive wizard — guides a new machine/user through the full llm_cli setup:
-#   1. activates the optimization layer for Claude Code and/or Copilot CLI
+#   1. installs any missing dependency automatically (node, jq, uv, rtk,
+#      headroom, claude/copilot CLI — no prompts)
+#   2. activates the optimization layer for Claude Code and/or Copilot CLI
 #      (sources claude_env.sh / copilot_env.sh, so claude()/copilot() wrappers
 #      land in THIS shell — this script must be sourced, not executed)
-#   2. offers the one-time Atlassian + Bitbucket credentials setup
-#   3. offers to enable the per-project .mcp.json for the current directory
+#   3. offers the one-time Atlassian + Bitbucket credentials setup + global MCP
 #   4. runs the diagnostics so you leave with a verified, working setup
 #
 # Usage:
@@ -56,15 +57,25 @@ prompt_reply "  Choice [3]: "
 tool_choice="${REPLY:-3}"
 
 case "$tool_choice" in
-    1) source "$ROOT_DIR/claude/claude_env.sh" || return 1 ;;
-    2) source "$ROOT_DIR/copilot/copilot_env.sh" || return 1 ;;
-    3|*)
-        source "$ROOT_DIR/claude/claude_env.sh" || return 1
-        source "$ROOT_DIR/copilot/copilot_env.sh" || return 1
-        ;;
+    1) selected_tools="claude" ;;
+    2) selected_tools="copilot" ;;
+    3|*) selected_tools="claude copilot" ;;
 esac
 
-# --- 2. Atlassian + Bitbucket credentials (one-time, shared by both tools) ---
+# --- 2. dependencies (fully automatic: installs anything missing) ---
+
+bash "$COMMON_DIR/setup_dependencies.sh" $selected_tools \
+    || print_err "Some dependencies could not be installed — the related steps may fail below."
+# Installers drop binaries in ~/.local/bin; make them visible to this shell now.
+export PATH="$HOME/.local/bin:$PATH"
+
+# --- 3. tool activation ---
+
+for tool in $selected_tools; do
+    source "$ROOT_DIR/$tool/${tool}_env.sh" || return 1
+done
+
+# --- 4. Atlassian + Bitbucket credentials (one-time, shared by both tools) ---
 
 print_step "Atlassian + Bitbucket credentials"
 CREDS_FILE="$HOME/.config/llm_cli/atlassian.env"
@@ -80,7 +91,7 @@ else
     fi
 fi
 
-# --- 3. global MCP registration (user scope, one-time) ---
+# --- 5. global MCP registration (user scope, one-time) ---
 
 print_step "Global MCP registration (user scope)"
 if [ -f "$CREDS_FILE" ]; then
@@ -100,20 +111,9 @@ else
     print_info "No credentials yet — configure them first (step above) to enable MCP."
 fi
 
-# --- 4. Headroom compression proxy (optional, per activated tool) ---
-
-print_step "Headroom compression proxy (optional, ~15-20% token savings)"
-if ask_yes_no "  Install headroom and wrap the activated tool(s) now?" "y"; then
-    # setup_headroom.sh is idempotent and skips profiles without headroom support.
-    for tool in claude copilot; do
-        [ -d "$HOME/.$tool/scripts" ] || continue
-        TOOL_PROFILE="$tool" bash "$COMMON_DIR/setup_headroom.sh" || print_err "Headroom setup failed for $tool."
-    done
-else
-    print_info "Skipped — enable later with: bash $COMMON_DIR/setup_headroom.sh"
-fi
-
-# --- 5. verification ---
+# --- 6. verification ---
+# (Headroom was installed by the dependencies step and wrapped automatically
+# during tool activation — setup_env.sh --ensure; no dedicated step needed.)
 
 print_step "Verifying setup"
 PROJECT_PATH="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
