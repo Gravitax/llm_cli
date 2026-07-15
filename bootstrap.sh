@@ -100,7 +100,20 @@ else
     print_info "No credentials yet — configure them first (step above) to enable MCP."
 fi
 
-# --- 4. verification ---
+# --- 4. Headroom compression proxy (optional, per activated tool) ---
+
+print_step "Headroom compression proxy (optional, ~15-20% token savings)"
+if ask_yes_no "  Install headroom and wrap the activated tool(s) now?" "y"; then
+    # setup_headroom.sh is idempotent and skips profiles without headroom support.
+    for tool in claude copilot; do
+        [ -d "$HOME/.$tool/scripts" ] || continue
+        TOOL_PROFILE="$tool" bash "$COMMON_DIR/setup_headroom.sh" || print_err "Headroom setup failed for $tool."
+    done
+else
+    print_info "Skipped — enable later with: bash $COMMON_DIR/setup_headroom.sh"
+fi
+
+# --- 5. verification ---
 
 print_step "Verifying setup"
 PROJECT_PATH="$(git -C "$PWD" rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"

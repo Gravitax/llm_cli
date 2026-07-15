@@ -33,6 +33,11 @@ $TOOL_NAME() {
     # Delegates stale detection and cache rebuild to lib_cache.sh (single source of truth).
     source "\$HOME/.$TOOL_NAME/scripts/lib_cache.sh"
     _check_and_build_cache
+    # A headroom-wrapped tool cannot reach the API unless the local proxy is up.
+    if [ -f "\$HOME/.$TOOL_NAME/scripts/lib_headroom.sh" ]; then
+        source "\$HOME/.$TOOL_NAME/scripts/lib_headroom.sh"
+        _ensure_headroom_proxy
+    fi
     echo "Starting $TOOL_NAME..."
     command $TOOL_NAME "\$@"
 }
@@ -43,8 +48,8 @@ EOF
 for profile in "${PROFILE_FILES[@]}"; do
     [ -f "$profile" ] || continue
     if grep -qF "$MARKER" "$profile" 2>/dev/null; then
-        # Replace if outdated: must delegate to lib_cache.sh (single source of truth).
-        grep -A3 -F "$MARKER" "$profile" | grep -qF ".$TOOL_NAME/scripts/lib_cache.sh" && continue
+        # Replace if outdated: must delegate to lib_cache.sh AND ensure the headroom proxy.
+        grep -A12 -F "$MARKER" "$profile" | grep -qF ".$TOOL_NAME/scripts/lib_headroom.sh" && continue
         remove_outdated_wrapper "$profile"
         echo "    [OK] Outdated $TOOL_NAME wrapper replaced in $profile"
     fi

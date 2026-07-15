@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Verifies that the token optimizations are correctly configured for the active tool.
-# Checks: RTK (Claude only), PostToolUse hooks (Claude only), shell wrapper,
-# context cache, instructions entries.
+# Checks: RTK (Claude only), PostToolUse hooks (Claude only), headroom wrap,
+# shell wrapper, context cache, instructions entries.
 #
 # Usage: bash check_optimizations.sh [claude|copilot] [project_path]
 # (the tool argument is optional when run from an installed $TOOL_HOME/scripts/ copy)
@@ -171,6 +171,45 @@ check_instructions() {
     fi
 }
 
+check_headroom() {
+    print_step "Headroom compression proxy (optional)"
+
+    source "$SCRIPT_DIR/lib_headroom.sh"
+
+    if ! command -v headroom > /dev/null 2>&1; then
+        if headroom_is_wrapped; then
+            check_fail "settings.json routes API calls through headroom but the binary is missing — $TOOL_NAME requests will fail"
+            check_warn "Fix: bash $TOOL_HOME/scripts/setup_headroom.sh (reinstall) or remove the wrap from $TOOL_HOME/settings.json"
+        else
+            check_info "headroom not installed — optional, ~15-20% extra token savings"
+            check_info "Enable if wanted: bash $TOOL_HOME/scripts/setup_headroom.sh"
+        fi
+        return
+    fi
+
+    check_ok "headroom present at $(command -v headroom)"
+
+    if headroom_is_wrapped; then
+        check_ok "$TOOL_NAME wrapped — proxy routing active in settings.json"
+    else
+        check_info "$TOOL_NAME not wrapped — enable with: bash $TOOL_HOME/scripts/setup_headroom.sh"
+        return
+    fi
+
+    # doctor's exit code also covers unrelated tools (codex, shell env), so the
+    # load-bearing check is done directly: wrapped + proxy reachability.
+    if _headroom_proxy_alive; then
+        check_ok "headroom proxy reachable on port $HEADROOM_PROXY_PORT"
+    else
+        check_info "proxy not running — the shell wrapper starts it at $TOOL_NAME launch"
+        check_info "Details anytime: headroom doctor"
+    fi
+
+    local perf
+    perf=$(headroom perf 2>/dev/null | head -5)
+    [ -n "$perf" ] && echo "$perf" | sed 's/^/       /'
+}
+
 check_global_mcp() {
     print_step "Global MCP (optional)"
 
@@ -204,6 +243,10 @@ fi
 
 if [ "$TOOL_HAS_AGENT_HOOKS" = "1" ]; then
     check_post_tool_use_hooks
+fi
+
+if [ "$TOOL_HAS_HEADROOM" = "1" ]; then
+    check_headroom
 fi
 
 check_shell_wrapper

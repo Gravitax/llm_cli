@@ -23,6 +23,8 @@ case "$TOOL_PROFILE" in
         # Claude Code supports settings.json hooks: RTK PreToolUse + cache PostToolUse.
         TOOL_HAS_RTK_HOOK=1
         TOOL_HAS_AGENT_HOOKS=1
+        # Headroom writes a durable proxy wrap into settings.json (ANTHROPIC_BASE_URL).
+        TOOL_HAS_HEADROOM=1
         ;;
     copilot)
         TOOL_NAME="copilot"
@@ -33,6 +35,8 @@ case "$TOOL_PROFILE" in
         # Copilot CLI has no PreToolUse/PostToolUse hook system.
         TOOL_HAS_RTK_HOOK=0
         TOOL_HAS_AGENT_HOOKS=0
+        # Headroom's durable wrap mechanism for Copilot is unverified — keep off.
+        TOOL_HAS_HEADROOM=0
         ;;
     *)
         echo "Error: TOOL_PROFILE must be 'claude' or 'copilot' (got: '${TOOL_PROFILE:-unset}')." >&2
@@ -42,4 +46,4 @@ esac
 
 export TOOL_PROFILE TOOL_NAME TOOL_HOME
 export TOOL_INSTRUCTIONS_GLOBAL TOOL_INSTRUCTIONS_LOCAL TOOL_IGNORE_FILE
-export TOOL_HAS_RTK_HOOK TOOL_HAS_AGENT_HOOKS
+export TOOL_HAS_RTK_HOOK TOOL_HAS_AGENT_HOOKS TOOL_HAS_HEADROOM

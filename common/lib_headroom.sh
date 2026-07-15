@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Headroom proxy helpers — must be sourced.
+# Shared by setup_headroom.sh, check_optimizations.sh and the shell wrappers.
+# Tool paths come from tool_profile.sh (profile.env at install time, TOOL_PROFILE in repo).
+
+_LIB_HEADROOM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+source "$_LIB_HEADROOM_DIR/tool_profile.sh" || return 1
+
+# Default port of `headroom proxy`. Override with: export HEADROOM_PROXY_PORT=8787
+HEADROOM_PROXY_PORT="${HEADROOM_PROXY_PORT:-8787}"
+
+# True when the tool settings durably route API calls through the local proxy.
+headroom_is_wrapped() {
+    grep -Eq "headroom|ANTHROPIC_BASE_URL.*(localhost|127\.0\.0\.1)" \
+        "$TOOL_HOME/settings.json" 2>/dev/null
+}
+
+# True when the local proxy answers on its port (any HTTP response counts).
+_headroom_proxy_alive() {
+    curl -s -o /dev/null --max-time 1 "http://127.0.0.1:$HEADROOM_PROXY_PORT/"
+}
+
+# Starts the proxy if the tool is wrapped and the proxy is down.
+# Never blocks the tool launch: every failure degrades to a visible warning,
+# because a wrapped tool with a dead proxy cannot reach the API at all.
+_ensure_headroom_proxy() {
+    command -v headroom > /dev/null 2>&1 || return 0
+    headroom_is_wrapped || return 0
+    _headroom_proxy_alive && return 0
+
+    echo "Starting headroom proxy..."
+    nohup headroom proxy > /dev/null 2>&1 &
+    local _attempt
+    for _attempt in 1 2 3 4 5; do
+        sleep 1
+        _headroom_proxy_alive && return 0
+    done
+    echo "    [WARN] headroom proxy failed to start — $TOOL_NAME API calls may fail." >&2
+    echo "    Disable the wrap with: headroom unwrap $TOOL_NAME" >&2
+}

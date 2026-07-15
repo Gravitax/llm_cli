@@ -92,4 +92,8 @@ if [ "$TOOL_HAS_AGENT_HOOKS" = "1" ]; then
     ensure_cache_read_permission
 fi
 
+if [ "$TOOL_HAS_HEADROOM" = "1" ]; then
+    bash "$SCRIPT_DIR/setup_headroom.sh" --ensure
+fi
+
 echo "    [OK] $TOOL_NAME environment ready."
