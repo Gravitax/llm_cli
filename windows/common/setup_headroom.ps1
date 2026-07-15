@@ -88,7 +88,9 @@ function Test-HeadroomHealth {
     }
     # Doctor output is diagnostic: unrelated warnings (other tools, shell env)
     # must not fail the setup; the load-bearing checks above already did.
-    & headroom doctor 2>&1 | ForEach-Object { Write-Host "    $_" }
+    # The codex rows are filtered out - doctor probes every tool it can wrap,
+    # and the OpenAI Codex CLI is not part of this layer.
+    & headroom doctor 2>&1 | Where-Object { $_ -notmatch 'codex' } | ForEach-Object { Write-Host "    $_" }
     print_ok "headroom proxy reachable and $TOOL_NAME routed."
     return $true
 }

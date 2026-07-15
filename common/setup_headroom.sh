@@ -80,7 +80,9 @@ verify_wrap() {
     fi
     # Doctor output is diagnostic: unrelated warnings (other tools, shell env)
     # must not fail the setup; the load-bearing checks above already did.
-    headroom doctor 2>&1 | sed 's/^/    /'
+    # The codex rows are filtered out — doctor probes every tool it can wrap,
+    # and the OpenAI Codex CLI is not part of this layer.
+    headroom doctor 2>&1 | grep -vi codex | sed 's/^/    /'
     print_ok "headroom proxy reachable and $TOOL_NAME routed."
 }
 
