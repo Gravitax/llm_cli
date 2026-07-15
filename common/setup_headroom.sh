@@ -14,25 +14,8 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/tool_profile.sh" || exit 1
 source "$SCRIPT_DIR/lib_log.sh"
+source "$SCRIPT_DIR/lib_deps.sh"
 source "$SCRIPT_DIR/lib_headroom.sh"
-
-install_headroom() {
-    command -v headroom > /dev/null 2>&1 && return 0
-
-    print_step "Installing headroom-ai"
-    if command -v uv > /dev/null 2>&1; then
-        uv tool install "headroom-ai[all]" || { print_err "uv tool install headroom-ai failed."; return 1; }
-    elif command -v pip3 > /dev/null 2>&1; then
-        pip3 install --user "headroom-ai[all]" || { print_err "pip3 install headroom-ai failed."; return 1; }
-    else
-        print_err "Neither uv nor pip3 found — cannot install headroom."
-        return 1
-    fi
-
-    export PATH="$HOME/.local/bin:$PATH"
-    command -v headroom > /dev/null 2>&1 || { print_err "headroom missing from PATH after install."; return 1; }
-    print_ok "headroom installed ($(command -v headroom))."
-}
 
 # Writes or removes the durable proxy routing (env.ANTHROPIC_BASE_URL) in the
 # tool settings — `headroom wrap` only sets it transiently for its own session.
@@ -89,7 +72,9 @@ verify_wrap() {
 remove_wrap() {
     command -v headroom > /dev/null 2>&1 || { print_err "headroom not installed — nothing to unwrap."; return 1; }
     headroom unwrap "$TOOL_NAME" || { print_err "headroom unwrap $TOOL_NAME failed."; return 1; }
-    write_proxy_routing remove || return 1
+    if [ "$TOOL_HEADROOM_MODE" = "settings" ]; then
+        write_proxy_routing remove || return 1
+    fi
     print_ok "$TOOL_NAME unwrapped — API calls go directly to the provider again."
 }
 
@@ -113,6 +98,15 @@ case "${1:-}" in
         ;;
 esac
 
-install_headroom || exit 1
+ensure_headroom || exit 1
+
+# Launcher mode (copilot): no durable settings routing exists — the shell
+# wrapper written by setup_shell_wrapper.sh launches `headroom wrap $TOOL_NAME`.
+if [ "$TOOL_HEADROOM_MODE" = "launcher" ]; then
+    print_ok "$TOOL_NAME routes through headroom at launch (shell wrapper)."
+    print_info "Opt out per session with: LLM_CLI_NO_HEADROOM=1 $TOOL_NAME"
+    exit 0
+fi
+
 apply_wrap || exit 1
 verify_wrap

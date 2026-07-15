@@ -21,6 +21,44 @@ _headroom_proxy_alive() {
     curl -s -o /dev/null --max-time 1 "http://127.0.0.1:$HEADROOM_PROXY_PORT/"
 }
 
+# Resolves how headroom can route copilot: BYOK needs a provider key in the
+# environment; otherwise a saved Copilot OAuth token enables --subscription.
+# Prints "byok" or "subscription"; returns 1 when neither is available.
+_headroom_copilot_mode() {
+    if [ -n "${ANTHROPIC_API_KEY:-}" ] || [ -n "${COPILOT_PROVIDER_API_KEY:-}" ]; then
+        echo "byok"
+        return 0
+    fi
+    case "$(headroom copilot-auth status 2>/dev/null)" in
+        *"not logged in"*) return 1 ;;
+        *"logged in"*)     echo "subscription"; return 0 ;;
+        *)                 return 1 ;;
+    esac
+}
+
+# Launcher-mode launch (copilot): routes through headroom when possible,
+# falls back to a plain launch otherwise — never blocks the tool.
+_launch_with_headroom() {
+    local tool="$1"; shift
+    if [ -n "${LLM_CLI_NO_HEADROOM:-}" ] || ! command -v headroom > /dev/null 2>&1; then
+        command "$tool" "$@"
+        return
+    fi
+
+    local mode
+    if ! mode=$(_headroom_copilot_mode); then
+        echo "headroom idle: set ANTHROPIC_API_KEY or run 'headroom copilot-auth login' to enable compression."
+        command "$tool" "$@"
+        return
+    fi
+
+    if [ "$mode" = "subscription" ]; then
+        headroom wrap "$tool" --subscription -- "$@"
+    else
+        headroom wrap "$tool" -- "$@"
+    fi
+}
+
 # Starts the proxy if the tool is wrapped and the proxy is down.
 # Never blocks the tool launch: every failure degrades to a visible warning,
 # because a wrapped tool with a dead proxy cannot reach the API at all.

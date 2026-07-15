@@ -98,6 +98,26 @@ check_rtk_savings() {
     echo "$savings" | sed 's/^/       /'
 }
 
+# RTK without a hook system (copilot): the agent prefixes commands with rtk
+# because its instructions tell it to — check the binary and that block.
+check_rtk_instructions() {
+    print_step "RTK output compression (via instructions)"
+
+    if command -v rtk > /dev/null 2>&1; then
+        check_ok "rtk $(rtk --version) at $(command -v rtk)"
+    else
+        check_fail "rtk not found in PATH — the agent's rtk-prefixed commands will fail"
+        check_warn "Fix: bash $TOOL_HOME/scripts/setup_dependencies.sh"
+    fi
+
+    if grep -qF "# CLI output compression (RTK)" "$TOOL_INSTRUCTIONS_GLOBAL" 2>/dev/null; then
+        check_ok "RTK usage block present in $(basename "$TOOL_INSTRUCTIONS_GLOBAL")"
+    else
+        check_fail "RTK usage block missing from $TOOL_INSTRUCTIONS_GLOBAL"
+        check_warn "Fix: bash $TOOL_HOME/scripts/setup_context.sh"
+    fi
+}
+
 check_post_tool_use_hooks() {
     print_step "Cache refresh hooks (PostToolUse)"
 
@@ -189,6 +209,27 @@ check_headroom() {
 
     check_ok "headroom present at $(command -v headroom)"
 
+    # Launcher mode (copilot): routing happens at launch through the shell wrapper.
+    if [ "$TOOL_HEADROOM_MODE" = "launcher" ]; then
+        local wrapper_routed=0
+        for profile in "${PROFILE_FILES[@]}"; do
+            grep -qF "_launch_with_headroom" "$profile" 2>/dev/null && wrapper_routed=1
+        done
+        if [ "$wrapper_routed" = "1" ]; then
+            check_ok "$TOOL_NAME launches through headroom (shell wrapper)"
+        else
+            check_fail "shell wrapper does not launch $TOOL_NAME through headroom"
+            check_warn "Fix: bash $TOOL_HOME/scripts/setup_shell_wrapper.sh"
+        fi
+        if _headroom_copilot_mode > /dev/null; then
+            check_ok "routing credentials available (mode: $(_headroom_copilot_mode))"
+        else
+            check_info "no ANTHROPIC_API_KEY and no Copilot OAuth — launches stay plain (compression idle)"
+            check_info "Enable: export ANTHROPIC_API_KEY=... or headroom copilot-auth login"
+        fi
+        return
+    fi
+
     if headroom_is_wrapped; then
         check_ok "$TOOL_NAME wrapped — proxy routing active in settings.json"
     else
@@ -239,6 +280,8 @@ if [ "$TOOL_HAS_RTK_HOOK" = "1" ]; then
         check_rtk_hook
         check_rtk_savings
     fi
+else
+    check_rtk_instructions
 fi
 
 if [ "$TOOL_HAS_AGENT_HOOKS" = "1" ]; then

@@ -24,7 +24,9 @@ open(path, 'w').write(pattern.sub('', content))
 PYEOF
 }
 
-write_wrapper() {
+# Settings mode (claude): durable proxy routing lives in settings.json, the
+# wrapper only has to make sure the proxy is up before launching.
+write_settings_wrapper() {
     local profile="$1"
     cat >> "$profile" << EOF
 
@@ -42,14 +44,50 @@ $TOOL_NAME() {
     command $TOOL_NAME "\$@"
 }
 EOF
+}
+
+# Launcher mode (copilot): headroom has no durable routing for this tool — it
+# builds a transient BYOK env, so the launch itself must go through it.
+# The routing decision lives in lib_headroom.sh (_launch_with_headroom).
+write_launcher_wrapper() {
+    local profile="$1"
+    cat >> "$profile" << EOF
+
+$MARKER
+$TOOL_NAME() {
+    # Delegates stale detection and cache rebuild to lib_cache.sh (single source of truth).
+    source "\$HOME/.$TOOL_NAME/scripts/lib_cache.sh"
+    _check_and_build_cache
+    source "\$HOME/.$TOOL_NAME/scripts/lib_headroom.sh"
+    echo "Starting $TOOL_NAME..."
+    # Routes through headroom when a provider key or Copilot OAuth allows it,
+    # plain launch otherwise. Opt out per session with LLM_CLI_NO_HEADROOM=1.
+    _launch_with_headroom $TOOL_NAME "\$@"
+}
+EOF
+}
+
+write_wrapper() {
+    local profile="$1"
+    if [ "$TOOL_HEADROOM_MODE" = "launcher" ]; then
+        write_launcher_wrapper "$profile"
+    else
+        write_settings_wrapper "$profile"
+    fi
     echo "    [OK] $TOOL_NAME wrapper added to $profile (takes effect in new terminals)"
 }
 
 for profile in "${PROFILE_FILES[@]}"; do
     [ -f "$profile" ] || continue
     if grep -qF "$MARKER" "$profile" 2>/dev/null; then
-        # Replace if outdated: must delegate to lib_cache.sh AND ensure the headroom proxy.
-        grep -A12 -F "$MARKER" "$profile" | grep -qF ".$TOOL_NAME/scripts/lib_headroom.sh" && continue
+        # Replace if outdated: the up-to-date wrapper handles headroom for its mode
+        # (settings -> lib_headroom.sh proxy ensure, launcher -> headroom wrap launch).
+        if [ "$TOOL_HEADROOM_MODE" = "launcher" ]; then
+            current_marker="_launch_with_headroom"
+        else
+            current_marker=".$TOOL_NAME/scripts/lib_headroom.sh"
+        fi
+        grep -A14 -F "$MARKER" "$profile" | grep -qF "$current_marker" && continue
         remove_outdated_wrapper "$profile"
         echo "    [OK] Outdated $TOOL_NAME wrapper replaced in $profile"
     fi
