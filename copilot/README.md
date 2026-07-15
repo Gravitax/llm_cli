@@ -9,13 +9,24 @@ source copilot_env.sh
 ```
 
 Runs automatically on first activation:
-- checks the `copilot` binary (install: `npm install -g @github/copilot`)
+- installs Node >= 20 and the `copilot` binary if missing (`npm install -g @github/copilot`)
 - syncs `common/` scripts to `~/.copilot/scripts/`
 - writes the compact global instructions to `~/.copilot/copilot-instructions.md`
 - installs a persistent `copilot()` wrapper in `.zshrc` / `.bashrc`
 
 After that, run `copilot` from any project directory — the wrapper regenerates the
 project symbol index when stale, then launches Copilot CLI.
+
+## Headroom (launcher mode)
+
+Copilot has no durable settings routing: headroom builds a transient BYOK
+environment at launch, so the `copilot()` wrapper launches through
+`headroom wrap copilot` when routing credentials are available:
+- `ANTHROPIC_API_KEY` (or `COPILOT_PROVIDER_API_KEY`) in the environment → BYOK mode;
+- otherwise a saved Copilot OAuth token (`headroom copilot-auth login`) → `--subscription` mode;
+- neither → plain launch, compression idle (nothing breaks).
+
+Opt out for one session with `LLM_CLI_NO_HEADROOM=1 copilot`.
 
 ## Copilot specifics
 
@@ -35,7 +46,8 @@ project symbol index when stale, then launches Copilot CLI.
 
 | File | Description |
 |---|---|
-| `copilot_env.sh` | Orchestrator — profile export, binary check, common setup, wrapper |
+| `copilot_env.sh` | Orchestrator — profile export, prerequisites, common setup, wrapper |
+| `scripts/setup_prerequisites.sh` | Installs Node >= 20 and the Copilot CLI when missing |
 
 All the scripts (index generation, instructions, git hooks, MCP setup, diagnostics)
 are shared and live in `../common/` — see the root README.

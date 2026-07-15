@@ -10,7 +10,7 @@ consumption and gives both agents a precise, pre-built view of each project.
 | Project symbol index | `path \| LOC \| symbols` cache read at session start instead of scanning files | ✓ | ✓ |
 | Compact global instructions | Behavioral rules kept short — loaded every turn, every session | ✓ | ✓ |
 | CLI output compression (RTK) | PreToolUse hook rewrites bash commands, ~70-80% savings on output | hook | via instructions |
-| API-level compression (Headroom) | Durable proxy wrap, ~15-20% savings on coding agents (60-95% on JSON) | ✓ | not yet |
+| API-level compression (Headroom) | Proxy routing, ~15-20% savings on coding agents (60-95% on JSON) | settings wrap | launcher |
 | Auto cache refresh | Shell wrapper + git hooks (+ PostToolUse hooks for Claude) | ✓ | ✓ |
 | Atlassian & Bitbucket MCP | Global, user-scope registration — enabled once for every session | ✓ | ✓ |
 
@@ -30,8 +30,11 @@ Every shared script reads the profile instead of hardcoding a tool.
 ## Setup
 
 ```bash
-source bootstrap.sh             # interactive wizard: activation + Atlassian + MCP + Headroom + diagnostics
+source bootstrap.sh             # interactive wizard: dependencies + activation + Atlassian + MCP + diagnostics
 ```
+
+The wizard installs any missing dependency automatically — node >= 20, jq, uv,
+rtk, headroom and the selected agent CLIs. No manual prerequisite needed.
 
 or activate a single tool directly:
 
@@ -98,8 +101,14 @@ configured under any other name (e.g. `jira`, `mcp-atlassian`) is blocked.
 [Headroom](https://github.com/headroomlabs-ai/headroom) compresses the request
 payload between the agent and the provider API through a local proxy, on top of
 RTK (CLI output) and the symbol index (project context) — three independent
-layers. `headroom wrap` writes a durable proxy routing into the tool settings;
-the shell wrapper starts the proxy automatically before each launch.
+layers. Two routing modes, resolved by the tool profile:
+
+- **claude (settings)** — durable `ANTHROPIC_BASE_URL` routing in
+  `~/.claude/settings.json`; the shell wrapper starts the proxy before each launch.
+- **copilot (launcher)** — no durable routing exists, so the `copilot()` wrapper
+  launches through `headroom wrap copilot` when credentials allow it
+  (`ANTHROPIC_API_KEY` → BYOK, or `headroom copilot-auth login` → subscription);
+  plain launch otherwise. Opt out per session: `LLM_CLI_NO_HEADROOM=1`.
 
 ```bash
 bash common/setup_headroom.sh        # install + wrap + verify (per TOOL_PROFILE)
