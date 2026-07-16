@@ -33,10 +33,7 @@ def export_local_bin_path() -> None:
 
 def export_npm_bin_path() -> None:
     """Puts npm's global bin dir on PATH for the current process."""
-    result = subprocess.run(
-        ["npm", "config", "get", "prefix"], capture_output=True, text=True
-    )
-    prefix = result.stdout.strip()
+    prefix = _command_stdout(["npm", "config", "get", "prefix"])
     if not prefix:
         return
     # npm's global binaries live in <prefix>/bin on POSIX, <prefix> on Windows.
@@ -45,8 +42,7 @@ def export_npm_bin_path() -> None:
 
 
 def node_major_version() -> int:
-    result = subprocess.run(["node", "--version"], capture_output=True, text=True)
-    match = re.match(r"v(\d+)", result.stdout.strip())
+    match = re.match(r"v(\d+)", _command_stdout(["node", "--version"]))
     return int(match.group(1)) if match else 0
 
 
@@ -162,7 +158,7 @@ class PosixDepInstaller(DependencyInstaller):
         if shutil.which("uv"):
             installed = _run_ok(["uv", "tool", "install", "headroom-ai[all]"])
         elif shutil.which("pip3"):
-            installed = _run_ok(["pip3", "install", "--user", "headroom-ai[all]"])
+            installed = _run_ok(_pip_install_argv("pip3"))
         else:
             log.print_err("Neither uv nor pip3 found — cannot install headroom.")
             return False
@@ -209,10 +205,14 @@ class WindowsDepInstaller(DependencyInstaller):
         return False
 
     def ensure_headroom(self) -> bool:
+        # pip --user drops headroom.exe in the nt_user scripts dir, which the
+        # shell profile block only adds to NEW terminals — export it now so
+        # this process (and its child steps) can see the binary.
+        _prepend_path(str(platforms.current().entry_points_dir()))
         if shutil.which("headroom"):
             return True
         log.print_info("Installing headroom-ai (large: ML dependencies)...")
-        if not _run_ok(["pip", "install", "--user", "headroom-ai[all]"]):
+        if not _run_ok(_pip_install_argv("pip")):
             log.print_err("pip install headroom-ai failed.")
             return False
         if not shutil.which("headroom"):
@@ -231,6 +231,12 @@ class WindowsDepInstaller(DependencyInstaller):
         return str(default) if default.is_file() else None
 
 
+def _pip_install_argv(pip_binary: str) -> list[str]:
+    """headroom pulls litellm, whose newest sdists compile Rust extensions —
+    --prefer-binary keeps pip on wheel-only releases instead of a toolchain."""
+    return [pip_binary, "install", "--user", "--prefer-binary", "headroom-ai[all]"]
+
+
 def installer() -> DependencyInstaller:
     if platforms.current().is_windows:
         return WindowsDepInstaller()
@@ -243,9 +249,35 @@ def _prepend_path(entry: str) -> None:
         os.environ["PATH"] = entry + os.pathsep + current_path
 
 
-def _run_ok(argv: list[str]) -> bool:
+def _resolve_binary(argv: list[str]) -> list[str] | None:
+    """Resolves argv[0] through PATH, or None when absent. Windows CLIs like
+    npm are .cmd shims that CreateProcess cannot launch from a bare name —
+    subprocess needs the full resolved path, extension included."""
+    binary = shutil.which(argv[0])
+    if not binary:
+        return None
+    return [binary, *argv[1:]]
+
+
+def _command_stdout(argv: list[str]) -> str:
+    """Runs a command and returns its stripped stdout; '' when the binary is
+    missing or cannot be launched — probes must degrade, never crash setup."""
+    resolved = _resolve_binary(argv)
+    if not resolved:
+        return ""
     try:
-        return subprocess.run(argv).returncode == 0
+        result = subprocess.run(resolved, capture_output=True, text=True)
+    except OSError:
+        return ""
+    return result.stdout.strip()
+
+
+def _run_ok(argv: list[str]) -> bool:
+    resolved = _resolve_binary(argv)
+    if not resolved:
+        return False
+    try:
+        return subprocess.run(resolved).returncode == 0
     except OSError:
         return False
 
