@@ -52,12 +52,27 @@ def print_info(message: str) -> None:
 
 def red_banner(lines: list[str]) -> None:
     """Highly visible warning block (login hints, broken wrap...)."""
+    top, bottom = _banner_borders()
     print(_ansi(_RED_BOLD), end="")
-    print("  ╔══════════════════════════════════════════════════════════════════╗")
+    print(top)
     for line in lines:
         print(f"    {line}")
-    print("  ╚══════════════════════════════════════════════════════════════════╝")
+    print(bottom)
     print(_ansi(_RESET), end="")
+
+
+def _banner_borders() -> tuple[str, str]:
+    """Box-drawing borders, degraded to ASCII when the console encoding
+    (e.g. cp1252 on legacy Windows) cannot render them."""
+    top = "  ╔" + "═" * 68 + "╗"
+    bottom = "  ╚" + "═" * 68 + "╝"
+    encoding = getattr(sys.stdout, "encoding", None) or "ascii"
+    try:
+        top.encode(encoding)
+    except (UnicodeEncodeError, LookupError):
+        ascii_border = "  " + "=" * 70
+        return ascii_border, ascii_border
+    return top, bottom
 
 
 class Checker:

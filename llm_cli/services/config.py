@@ -4,7 +4,8 @@
 Single source of truth, written by `setup-atlassian` and read by every consumer:
     CONFLUENCE_URL, JIRA_URL, BITBUCKET_URL, BITBUCKET_USERNAME,
     CONFLUENCE_TOKEN, JIRA_TOKEN, BITBUCKET_TOKEN,
-    MCP_REGISTRY_URL (optional), GITHUB_COPILOT_ENTERPRISE_DOMAIN (optional).
+    MCP_REGISTRY_URL (optional), GITHUB_COPILOT_ENTERPRISE_DOMAIN (optional),
+    CLAUDE_PROVIDER (optional, "glm"|"anthropic" — the `claude -glm` toggle).
 """
 
 from __future__ import annotations

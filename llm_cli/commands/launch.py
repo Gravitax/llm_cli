@@ -17,7 +17,7 @@ from pathlib import Path
 
 from llm_cli import platforms, tool_profile
 from llm_cli.commands import prelaunch
-from llm_cli.services import deps, headroom, log
+from llm_cli.services import deps, glm, headroom, log
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 
 _CLAUDE_TELEMETRY_OPT_OUT = {
@@ -47,6 +47,7 @@ def configure(subparsers) -> None:
 def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
     forwarded = _strip_separator(args.arguments)
+    forwarded = _handle_glm_toggle(profile, forwarded)
 
     deps.export_local_bin_path()
     real_binary = _resolve_real_binary(profile.name)
@@ -64,11 +65,43 @@ def run(args: argparse.Namespace) -> int:
 
     prelaunch.run_steps(profile)
     _export_tool_env(profile)
+    if _uses_glm(profile):
+        if not glm.require_api_key():
+            return 1
+        forwarded = _apply_glm_routing(profile, forwarded)
     argv = _build_argv(profile, real_binary, forwarded)
     if _wraps_through_headroom(argv, real_binary):
         os.environ[_WRAPPED_SENTINEL] = "1"
     print(f"Starting {profile.name}...")
     return platforms.current().exec_or_run(argv)
+
+
+def _handle_glm_toggle(profile: ToolProfile, arguments: list[str]) -> list[str]:
+    """Strips the `-glm`/`--glm` flag (claude only) and flips the persisted
+    provider when present. The flag is ours, never forwarded to the tool."""
+    if profile.name != "claude":
+        return arguments
+    kept = [arg for arg in arguments if arg not in ("-glm", "--glm")]
+    if len(kept) != len(arguments):
+        glm.toggle()
+    return kept
+
+
+def _uses_glm(profile: ToolProfile) -> bool:
+    return profile.name == "claude" and glm.is_active()
+
+
+def _apply_glm_routing(profile: ToolProfile, forwarded: list[str]) -> list[str]:
+    """Routes this launch to the z.ai endpoint. The provider state is durable,
+    so every GLM launch announces itself to avoid billing surprises."""
+    if headroom.is_wrapped(profile):
+        log.print_warn(
+            "settings.json routes through the headroom proxy, which overrides "
+            "the GLM base URL — run `headroom unwrap claude` first."
+        )
+    glm.export_env()
+    print("Provider: GLM (z.ai)")
+    return glm.with_default_model(forwarded)
 
 
 def _wraps_through_headroom(argv: list[str], real_binary: str) -> bool:
@@ -114,7 +147,7 @@ def _export_tool_env(profile: ToolProfile) -> None:
 
 
 def _build_argv(profile: ToolProfile, binary: str, arguments: list[str]) -> list[str]:
-    if profile.has_headroom and profile.headroom_mode == "launcher":
+    if profile.headroom_mode == "launcher":
         return headroom.launch_argv(profile.name, binary, arguments)
     return [binary, *arguments]
 

@@ -22,6 +22,35 @@ After that, run `claude` from any project directory — `launch` regenerates the
 project symbol index when stale, starts the headroom proxy if wrapped, then
 launches Claude Code (telemetry opt-out exported).
 
+## GLM provider (z.ai) — `claude -glm`
+
+`claude -glm` toggles the provider between the Anthropic API (default) and the
+GLM Coding Plan via z.ai's Anthropic-compatible endpoint. The toggle is
+**persistent**: after switching, every plain `claude` launch stays on the last
+chosen provider (each GLM launch prints `Provider: GLM (z.ai)` as a reminder)
+until the next `claude -glm`.
+
+In GLM mode the launcher exports `ANTHROPIC_BASE_URL`
+(`https://api.z.ai/api/anthropic`), `ANTHROPIC_AUTH_TOKEN`, and remaps the
+Opus/Sonnet/Haiku model slots to `glm-5.2[1m]` / `glm-4.7`, so the GLM models
+appear in the in-session `/model` picker. Pass `--model <id>` to override.
+
+**API key — environment variable only (by design).** The z.ai key is read
+exclusively from `GLM_API_KEY`; llm_cli never writes it to any file, so the
+credential cannot leak through configs, backups, or commits. Set it yourself:
+
+```powershell
+$env:GLM_API_KEY = "<your z.ai key>"     # PowerShell ($PROFILE to persist)
+```
+```bash
+export GLM_API_KEY=<your z.ai key>       # bash/zsh (.bashrc to persist)
+```
+
+If GLM mode is active and the variable is missing, the launch fails with a
+banner instead of silently falling back to (and billing) the Anthropic API.
+Only the provider choice is persisted (`CLAUDE_PROVIDER` in
+`~/.config/llm_cli/atlassian.env`) — never the key.
+
 ## Claude-only optimizations
 
 ### RTK — CLI output compression (~70-80% savings on bash output)
