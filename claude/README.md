@@ -6,19 +6,21 @@ plus the Claude-only features: RTK output compression and PostToolUse cache hook
 ## Setup
 
 ```bash
-source claude_env.sh
+python install.py           # installs everything, then run `claude`
 ```
 
-Runs automatically on first activation:
+Runs automatically on activation:
 - checks Node.js >= 20 and installs Claude Code if missing
-- syncs `common/` + `claude/scripts/` to `~/.claude/scripts/`
+- installs the Python core to `~/.llm_cli/` (`sync`) + the `claude` entry point (pip)
 - writes the compact global instructions to `~/.claude/CLAUDE.md`
 - installs RTK and its PreToolUse bash-compression hook
 - registers PostToolUse hooks (cache refresh on git commands and new files)
-- installs a persistent `claude()` wrapper in `.zshrc` / `.bashrc`
+- writes the persistent PATH activation block in `.zshrc` / `.bashrc`
+  (`$PROFILE.CurrentUserAllHosts` on Windows)
 
-After that, run `claude` from any project directory — the wrapper regenerates the
-project symbol index when stale, then launches Claude Code.
+After that, run `claude` from any project directory — `launch` regenerates the
+project symbol index when stale, starts the headroom proxy if wrapped, then
+launches Claude Code (telemetry opt-out exported).
 
 ## Claude-only optimizations
 
@@ -29,27 +31,26 @@ the model only ever sees the compressed result (`git status/diff/log`, `ls`, `ca
 `grep`, test runners, Docker, kubectl).
 
 ```bash
-bash ~/.claude/scripts/setup_rtk.sh      # install / repair
-bash ~/.claude/scripts/setup_rtk.sh -u   # remove hook (keeps binary)
-rtk gain                                 # savings stats after a session
+python3 ~/.llm_cli/run.py setup-rtk       # install / repair
+python3 ~/.llm_cli/run.py setup-rtk -u    # remove hook (keeps binary)
+rtk gain                                  # savings stats after a session
 ```
 
 ### PostToolUse cache hooks
 
-Registered in `~/.claude/settings.json`:
-- `cache_refresh_on_git.sh` — refreshes the index after structural git commands
-- `cache_refresh_on_write.sh` — refreshes the index when Claude creates a file
+Registered in `~/.claude/settings.json`, both invoking the installed core:
+- `hook cache-refresh-git` — refreshes the index after structural git commands
+- `hook cache-refresh-write` — refreshes the index when Claude creates a file
 
 ## Files
 
 | File | Description |
 |---|---|
-| `claude_env.sh` | Orchestrator — profile export, prerequisites, common setup, wrapper |
-| `scripts/setup_prerequisites.sh` | Node.js check, npm PATH, Claude Code install, telemetry off |
-| `scripts/setup_rtk.sh` | RTK binary install + PreToolUse hook registration |
-| `scripts/tool_hooks.sh` | Pre-launch RTK repair, sourced by `common/lib_cache.sh` |
-| `scripts/cache_refresh_on_git.sh` | PostToolUse Bash hook |
-| `scripts/cache_refresh_on_write.sh` | PostToolUse Write hook |
+| `../install.py` | One-command installer (pip + wizard) |
+| `../llm_cli/entry.py` | `claude` console entry point (pip-installed wrapper) |
+| `../llm_cli/commands/activate.py` | Activation flow (prerequisites, env, wrapper) |
+| `../llm_cli/commands/setup_rtk.py` | RTK install + PreToolUse hook registration |
+| `../llm_cli/commands/hooks.py` | PostToolUse + git hook entry points |
 
-Shared scripts (index generation, instructions, git hooks, MCP setup, diagnostics)
-live in `../common/` — see the root README.
+All the logic (index generation, instructions, git hooks, MCP setup, diagnostics)
+is shared in `../llm_cli/` — see the root README.

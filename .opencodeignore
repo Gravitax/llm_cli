@@ -1,0 +1,92 @@
+# .opencodeignore — files excluded from the context index (gitignore-style)
+
+# Hidden files and directories
+.*
+!.opencodeignore
+!.gitignore
+!.env.example
+
+# Dependencies
+node_modules/
+vendor/
+.venv/
+venv/
+env/
+site-packages/
+
+# Build and dist
+dist/
+build/
+out/
+target/
+__pycache__/
+*.pyc
+*.class
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Generated and minified assets
+*.min.js
+*.min.css
+*.bundle.js
+*.map
+
+# Locks
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+Pipfile.lock
+Cargo.lock
+composer.lock
+Gemfile.lock
+
+# Logs and coverage
+*.log
+logs/
+*.out
+coverage/
+htmlcov/
+lcov.info
+
+# IDE and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Certificates and secrets
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*.jks
+
+# Archives, binaries and media
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.jar
+*.war
+*.bin
+*.dat
+*.db
+*.sqlite
+*.sqlite3
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+*.webp
+*.mp4
+*.mp3
+*.pdf

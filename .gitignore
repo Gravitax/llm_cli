@@ -20,3 +20,8 @@ RTK.md
 # Dependencies and caches
 node_modules/
 __pycache__/
+
+# Python packaging artifacts
+build/
+dist/
+*.egg-info/
