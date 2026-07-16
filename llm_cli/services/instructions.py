@@ -126,6 +126,8 @@ _GLOBAL_TEMPLATE = """\
 # Rules
 - Code, comments, commit messages and docs: English only.
 - Follow the existing codebase conventions; when in doubt, mirror the closest similar file.
+- Apply SOLID: single responsibility per function, class and module; keep functions short — split rather than grow.
+- Keep the tree clean: create new folders, files and classes freely instead of crowding existing ones.
 - Before a multi-file refactor: present a short plan and wait for confirmation.
 - Never delete files or overwrite uncommitted changes without explicit user confirmation.
 
