@@ -46,8 +46,7 @@ def run(args: argparse.Namespace) -> int:
 
     if profile.has_agent_hooks:
         _check_post_tool_use_hooks(checker, profile, repair)
-    if profile.has_headroom:
-        _check_headroom(checker, profile, repair)
+    _check_headroom(checker, profile, repair)
 
     _check_shell_wrapper(checker, repair)
     _check_context_cache(checker, profile, project, repair)
@@ -272,10 +271,7 @@ def _check_global_mcp(checker: Checker, profile: ToolProfile, repair: str) -> No
 def _mcp_config_path(profile: ToolProfile) -> Path:
     if profile.name == "claude":
         return paths.home() / ".claude.json"
-    if profile.name == "copilot":
-        return paths.home() / ".copilot" / "mcp-config.json"
-    # opencode keeps MCP under the `mcp` key of its own config.
-    return profile.config_dir / "opencode.json"
+    return paths.home() / ".copilot" / "mcp-config.json"
 
 
 def _find_pre_tool_use_command(settings_path: Path, needle: str) -> str:

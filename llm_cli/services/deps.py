@@ -67,7 +67,7 @@ class DependencyInstaller(abc.ABC):
 
     @abc.abstractmethod
     def ensure_rtk(self) -> bool:
-        """RTK (CLI output compression) — shared by claude, copilot and opencode."""
+        """RTK (CLI output compression) — shared by claude and copilot."""
 
     @abc.abstractmethod
     def ensure_headroom(self) -> bool:

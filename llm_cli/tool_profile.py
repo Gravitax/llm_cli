@@ -21,39 +21,24 @@ class ToolProfile:
     # Claude Code supports settings.json hooks: RTK PreToolUse + cache PostToolUse.
     has_rtk_hook: bool
     has_agent_hooks: bool
-    has_headroom: bool
     # "settings": durable proxy routing in settings.json (proxy must be up).
     # "launcher": no durable routing — the launch itself goes through `headroom wrap`.
-    # "none": headroom does not apply to this tool.
     headroom_mode: str
-    # Subpath under the home dir where the tool's CONFIG actually lives.
-    # Empty means "~/.<name>" (claude, copilot). opencode keeps its config in
-    # "~/.config/opencode" (not "~/.opencode"), so it sets this explicitly.
-    config_subpath: str = ""
 
     @property
     def home(self) -> Path:
-        """User directory for this tool — the cache/projects tree lives here."""
+        """User directory for this tool — config, cache and projects live here."""
         return paths.home() / f".{self.name}"
 
     @property
-    def config_dir(self) -> Path:
-        """Where the tool reads its own config and global instructions."""
-        if self.config_subpath:
-            return paths.home() / self.config_subpath
-        return self.home
-
-    @property
     def instructions_global(self) -> Path:
-        return self.config_dir / self.instructions_global_name
+        return self.home / self.instructions_global_name
 
     @property
     def settings_json(self) -> Path:
-        # The tool's main JSON config: opencode.json for opencode, settings.json
-        # otherwise. Both are plain JSON round-tripped by settings_editor; the
-        # hook/wrap fields are only touched under their feature flags.
-        filename = "opencode.json" if self.name == "opencode" else "settings.json"
-        return self.config_dir / filename
+        # Plain JSON round-tripped by settings_editor; the hook/wrap fields are
+        # only touched under their feature flags.
+        return self.home / "settings.json"
 
     @property
     def projects_dir(self) -> Path:
@@ -67,7 +52,6 @@ CLAUDE = ToolProfile(
     ignore_file=".claudeignore",
     has_rtk_hook=True,
     has_agent_hooks=True,
-    has_headroom=True,
     headroom_mode="settings",
 )
 
@@ -78,27 +62,10 @@ COPILOT = ToolProfile(
     ignore_file=".copilotignore",
     has_rtk_hook=False,
     has_agent_hooks=False,
-    has_headroom=True,
     headroom_mode="launcher",
 )
 
-# opencode routes to its own provider (e.g. GLM via zai-coding-plan), not the
-# Anthropic API that headroom proxifies, so it has no headroom. It also has no
-# PreToolUse/PostToolUse hook system, so RTK is driven through instructions and
-# cache refresh relies on the launch check + git hooks (like copilot).
-OPENCODE = ToolProfile(
-    name="opencode",
-    instructions_global_name="AGENTS.md",
-    instructions_local="AGENTS.md",
-    ignore_file=".opencodeignore",
-    has_rtk_hook=False,
-    has_agent_hooks=False,
-    has_headroom=False,
-    headroom_mode="none",
-    config_subpath=".config/opencode",
-)
-
-ALL_PROFILES = (CLAUDE, COPILOT, OPENCODE)
+ALL_PROFILES = (CLAUDE, COPILOT)
 
 # Single source of truth for argparse `choices=` — replaces the scattered
 # hardcoded ["claude", "copilot"] lists.

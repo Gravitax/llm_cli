@@ -70,5 +70,5 @@ def _refresh_cache(profile: ToolProfile) -> None:
 
 def _ensure_proxy(profile: ToolProfile) -> None:
     # Launcher mode routes at launch time (`headroom wrap`) — no proxy needed.
-    if profile.has_headroom and profile.headroom_mode == "settings":
+    if profile.headroom_mode == "settings":
         headroom.ensure_proxy(profile)

@@ -16,9 +16,6 @@ from llm_cli.tool_profile import TOOL_NAMES
 _TOOL_PACKAGES = {
     "claude": ("@anthropic-ai/claude-code", "claude"),
     "copilot": ("@github/copilot", "copilot"),
-    # opencode ships as the `opencode-ai` npm package (binary: `opencode`).
-    # When already installed system-wide (curl/brew), ensure_npm_cli is a no-op.
-    "opencode": ("opencode-ai", "opencode"),
 }
 
 

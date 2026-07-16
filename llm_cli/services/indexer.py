@@ -265,7 +265,7 @@ def should_skip(path: Path) -> bool:
 
 
 # Built once from the tool profiles so adding a tool extends the index scope
-# without editing the indexer (e.g. ".opencodeignore" comes for free).
+# without editing the indexer (its ignore file comes for free).
 IGNORE_FILE_NAMES = tuple(
     profile.ignore_file
     for profile in tool_profile.ALL_PROFILES

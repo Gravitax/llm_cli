@@ -64,9 +64,8 @@ def main() -> int:
         _run_core("bootstrap")
 
     print(
-        "\nDone. Open a NEW terminal (or restart your shell) so `claude`, "
-        "`copilot` and `opencode` are on PATH, then run them from any project "
-        "directory."
+        "\nDone. Open a NEW terminal (or restart your shell) so `claude` and "
+        "`copilot` are on PATH, then run them from any project directory."
     )
     return 0
 

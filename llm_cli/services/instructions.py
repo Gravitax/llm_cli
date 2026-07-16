@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from llm_cli import paths, platforms
-from llm_cli.services import config, fs, settings_editor, text_blocks
+from llm_cli.services import config, fs, text_blocks
 from llm_cli.tool_profile import ToolProfile
 
 INDEX_ENTRY_MARKER = "# Project context index"
@@ -205,20 +205,10 @@ before it reaches context: `rtk git status`, `rtk git diff`, `rtk grep`, `rtk ls
 Fall back to the plain command if rtk fails.
 """
 
-_OPENCODE_EXTRA = """\
-
-# CLI output compression (RTK)
-OpenCode has no PreToolUse hook system, so compression is opt-in: when the `rtk`
-binary is available, prefix shell commands with it to compress their output
-before it reaches context (`rtk git status`, `rtk git diff`, `rtk grep`, `rtk ls`,
-`rtk read <file>`). Fall back to the plain command if rtk fails.
-"""
-
 # Per-tool tail appended to the shared behavioral core.
 _TOOL_EXTRA = {
     "claude": _CLAUDE_EXTRA,
     "copilot": _COPILOT_EXTRA,
-    "opencode": _OPENCODE_EXTRA,
 }
 
 
@@ -276,25 +266,10 @@ def write_global_instructions(profile: ToolProfile) -> Path:
         .replace("{{TOOL_NAME}}", profile.name)
     )
     body = _substitute_bitbucket_url(body)
-    # opencode's config dir (~/.config/opencode) may not exist yet on first run.
+    # The tool's home dir (~/.claude, ~/.copilot) may not exist yet on first run.
     profile.instructions_global.parent.mkdir(parents=True, exist_ok=True)
     fs.write_text_atomic(profile.instructions_global, body)
-    if profile.name == "opencode":
-        _register_global_in_opencode_config(profile)
     return profile.instructions_global
-
-
-def _register_global_in_opencode_config(profile: ToolProfile) -> None:
-    """opencode only loads a global instructions file when it is listed in the
-    `instructions` array of its config — register ours there (idempotent),
-    preserving every other field of opencode.json (provider, model, ...)."""
-    config_file = profile.settings_json  # ~/.config/opencode/opencode.json
-    config = settings_editor.load_json(config_file)
-    instructions_list = config.setdefault("instructions", [])
-    global_path = str(profile.instructions_global)
-    if global_path not in instructions_list:
-        instructions_list.append(global_path)
-    settings_editor.save_json(config_file, config)
 
 
 def _refresh_triggers(profile: ToolProfile) -> str:

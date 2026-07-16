@@ -34,9 +34,6 @@ def configure(subparsers) -> None:
 
 def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
-    if not profile.has_headroom:
-        log.print_info(f"[SKIP] headroom wrap not supported for the {profile.name} profile yet.")
-        return 0
     if args.remove:
         return _remove_wrap(profile)
     if args.ensure and not headroom.is_installed():

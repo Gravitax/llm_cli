@@ -1,4 +1,4 @@
-"""Console entry points for the `claude`, `copilot` and `opencode` wrapper commands.
+"""Console entry points for the `claude` and `copilot` wrapper commands.
 
 Installed by pip as executables on the PATH (a real binary on Windows, an
 executable script on Unix — no shell shim needed). Each forwards to the tested
@@ -19,7 +19,3 @@ def claude_main() -> int:
 
 def copilot_main() -> int:
     return main(["launch", "copilot", "--", *sys.argv[1:]])
-
-
-def opencode_main() -> int:
-    return main(["launch", "opencode", "--", *sys.argv[1:]])

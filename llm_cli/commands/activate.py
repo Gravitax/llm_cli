@@ -17,9 +17,6 @@ from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 _TOOL_PACKAGES = {
     "claude": "@anthropic-ai/claude-code",
     "copilot": "@github/copilot",
-    # Already present system-wide → ensure_npm_cli short-circuits; otherwise it
-    # installs the npm distribution (opencode-ai), same binary name.
-    "opencode": "opencode-ai",
 }
 
 

@@ -47,14 +47,10 @@ def run(args: argparse.Namespace) -> int:
 
 
 def _tool_configs(installed_only: bool = True) -> list[tuple[Path, str]]:
-    """(config_file, tool_name) pairs; filtered to installed tools when asked.
-
-    Claude and Copilot keep MCP in a dedicated config; opencode stores it under
-    the `mcp` key of its own opencode.json (a different shape — see below)."""
+    """(config_file, tool_name) pairs; filtered to installed tools when asked."""
     entries = [
         (paths.home() / ".claude.json", "claude"),
         (paths.home() / ".copilot" / "mcp-config.json", "copilot"),
-        (paths.home() / ".config" / "opencode" / "opencode.json", "opencode"),
     ]
     if not installed_only:
         return entries
@@ -72,10 +68,7 @@ def _enable_global_mcp() -> int:
         log.print_err(str(error))
         return 1
     for config_file, tool in _tool_configs():
-        if tool == "opencode":
-            _write_servers_opencode(config_file, credentials)
-        else:
-            _write_servers(config_file, credentials)
+        _write_servers(config_file, credentials)
         log.print_ok(
             f"Atlassian + Bitbucket MCP registered globally for {tool} "
             f"(user scope: {config_file})."
@@ -116,20 +109,6 @@ def _server_definitions(credentials: dict[str, str]) -> dict[str, dict]:
     }
 
 
-def _opencode_server_definitions(credentials: dict[str, str]) -> dict[str, dict]:
-    """opencode's MCP shape: `mcp.<name> = {type, command[], env, enabled}`,
-    where `command` is a flat argv array (no separate command/args split)."""
-    flat = {}
-    for name, definition in _server_definitions(credentials).items():
-        flat[name] = {
-            "type": "local",
-            "command": [definition["command"], *definition["args"]],
-            "enabled": True,
-            "env": definition["env"],
-        }
-    return flat
-
-
 def _write_servers(config_file: Path, credentials: dict[str, str]) -> None:
     """Upserts our servers, preserving unrelated entries and dropping legacy names."""
     existing = settings_editor.load_json(config_file)
@@ -141,31 +120,17 @@ def _write_servers(config_file: Path, credentials: dict[str, str]) -> None:
     platforms.current().make_private(config_file)
 
 
-def _write_servers_opencode(config_file: Path, credentials: dict[str, str]) -> None:
-    """opencode variant: servers live under the `mcp` key with a different shape
-    (type/command[]/env). Unrelated config (provider, model, ...) is preserved."""
-    existing = settings_editor.load_json(config_file)
-    servers = existing.setdefault("mcp", {})
-    for legacy in _LEGACY_SERVER_NAMES:
-        servers.pop(legacy, None)
-    servers.update(_opencode_server_definitions(credentials))
-    settings_editor.save_json(config_file, existing, backup=False)
-    platforms.current().make_private(config_file)
-
-
 def _remove_servers(config_file: Path) -> None:
     if not config_file.is_file():
         log.print_ok(f"No config found at {config_file}.")
         return
     existing = settings_editor.load_json(config_file)
     removed = False
-    # Claude/Copilot use "mcpServers"; opencode uses "mcp" — clear both shapes.
-    for key in ("mcpServers", "mcp"):
-        servers = existing.get(key, {})
-        for name in (SERVER_JIRA, SERVER_CONFLUENCE, SERVER_BITBUCKET, *_LEGACY_SERVER_NAMES):
-            if name in servers:
-                servers.pop(name, None)
-                removed = True
+    servers = existing.get("mcpServers", {})
+    for name in (SERVER_JIRA, SERVER_CONFLUENCE, SERVER_BITBUCKET, *_LEGACY_SERVER_NAMES):
+        if name in servers:
+            servers.pop(name, None)
+            removed = True
     settings_editor.save_json(config_file, existing, backup=False)
     if removed:
         log.print_ok(f"Atlassian servers removed from {config_file}, other entries kept.")

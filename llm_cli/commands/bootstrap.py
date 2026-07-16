@@ -2,12 +2,12 @@
 llm_cli setup:
 
   1. installs any missing dependency automatically (no prompts)
-  2. activates the optimization layer for Claude Code, Copilot CLI and/or OpenCode
+  2. activates the optimization layer for Claude Code and/or Copilot CLI
   3. offers the one-time Atlassian + Bitbucket credentials setup + global MCP
   4. runs the diagnostics so you leave with a verified, working setup
 
-Invoked by install.py after the package (and the `claude`/`copilot`/`opencode`
-console entry points) are installed by pip.
+Invoked by install.py after the package (and the `claude`/`copilot` console
+entry points) are installed by pip.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ def run(args: argparse.Namespace) -> int:
             check.run(argparse.Namespace(tool=profile.name, project=None))
 
     log.print_step("Done")
-    log.print_ok("Run 'claude', 'copilot' and/or 'opencode' from any project directory.")
+    log.print_ok("Run 'claude' and/or 'copilot' from any project directory.")
     return 0
 
 
@@ -56,14 +56,12 @@ def _prompt_tool_selection() -> list[str]:
     log.print_step("Which agent(s) do you want to activate?")
     print("    1) Claude Code")
     print("    2) GitHub Copilot CLI")
-    print("    3) OpenCode")
-    print("    4) All three")
-    choice = input("  Choice [4]: ").strip() or "4"
+    print("    3) Both")
+    choice = input("  Choice [3]: ").strip() or "3"
     return {
         "1": ["claude"],
         "2": ["copilot"],
-        "3": ["opencode"],
-    }.get(choice, ["claude", "copilot", "opencode"])
+    }.get(choice, ["claude", "copilot"])
 
 
 def _ask_yes_no(prompt: str, default: str = "n") -> bool:
@@ -111,6 +109,4 @@ def _mcp_already_registered() -> bool:
         paths.home() / ".claude.json", SERVER_JIRA
     ) or settings_editor.contains(
         paths.home() / ".copilot" / "mcp-config.json", SERVER_JIRA
-    ) or settings_editor.contains(
-        paths.home() / ".config" / "opencode" / "opencode.json", SERVER_JIRA
     )

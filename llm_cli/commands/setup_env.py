@@ -42,10 +42,9 @@ def run(args: argparse.Namespace) -> int:
         _migrate_legacy_hooks(profile)
         _register_cache_hooks(profile)
         _ensure_cache_read_permission(profile)
-    if profile.has_headroom:
-        setup_headroom.run(
-            argparse.Namespace(tool=profile.name, ensure=True, remove=False)
-        )
+    setup_headroom.run(
+        argparse.Namespace(tool=profile.name, ensure=True, remove=False)
+    )
 
     log.print_ok(f"{profile.name} environment ready.")
     return 0
