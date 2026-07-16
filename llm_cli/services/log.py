@@ -50,6 +50,17 @@ def print_info(message: str) -> None:
     print(f"    {message}")
 
 
+def console_safe(text: str) -> str:
+    """Makes captured subprocess output printable on the current console:
+    characters its encoding cannot render (e.g. box-drawing on cp1252
+    Windows) are replaced instead of raising UnicodeEncodeError."""
+    encoding = getattr(sys.stdout, "encoding", None) or "ascii"
+    try:
+        return text.encode(encoding, errors="replace").decode(encoding)
+    except LookupError:
+        return text.encode("ascii", errors="replace").decode("ascii")
+
+
 def red_banner(lines: list[str]) -> None:
     """Highly visible warning block (login hints, broken wrap...)."""
     top, bottom = _banner_borders()

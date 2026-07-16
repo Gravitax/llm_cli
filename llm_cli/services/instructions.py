@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from llm_cli import paths, platforms
-from llm_cli.services import config, fs, text_blocks
+from llm_cli.services import fs, text_blocks
 from llm_cli.tool_profile import ToolProfile
 
 INDEX_ENTRY_MARKER = "# Project context index"
@@ -112,102 +112,59 @@ Thumbs.db
 
 _INDEX_ENTRY_TEMPLATE = """\
 # Project context index
-A compact symbol index of {{PROJECT_PATH}} is pre-generated at:
-  `{{CACHE_FILE}}`
-Read it at session start, identify the 2-3 relevant files, then open only those.
-Format: path | LOC | symbols. A missing file is either in {{IGNORE_FILE}} or not yet created.
-
-Auto-refresh (re-read the index after these events):
-{{REFRESH_TRIGGERS}}
-
-Regenerate manually after large structural changes:
-  {{RUN}} setup-context-cache {{PROJECT_PATH}} --tool {{TOOL_NAME}}
-
-Global standards, MCP tools reference and git clone helper: see {{INSTRUCTIONS_GLOBAL}}
+`{{CACHE_FILE}}` is a pre-generated symbol index of {{PROJECT_PATH}} (one line per file: path | LOC | symbols).
+Read it before exploring the tree, then open only the relevant files.
+It refreshes automatically (hooks + launch); files absent from it are excluded by {{IGNORE_FILE}} or don't exist yet.
+Manual rebuild after large structural changes: {{RUN}} setup-context-cache {{PROJECT_PATH}} --tool {{TOOL_NAME}}
+Global rules: see {{INSTRUCTIONS_GLOBAL}}
 """
 
-# Shared behavioral core — deliberately compact: it is loaded into context on
-# every turn of every session, so every line here has a permanent token cost.
+# Shared behavioral core — loaded into context on every turn of every session,
+# so it carries only imperative, non-derivable rules: anything the model does
+# natively (naming, structure, tool discovery) is deliberately absent.
 _GLOBAL_TEMPLATE = """\
-# Code quality (SOLID)
-- Naming: snake_case variables, CamelCase classes, UPPER_SNAKE_CASE constants. Descriptive names, no cryptic abbreviations.
-- Functions: single responsibility, max ~20 lines, guard clauses, max 2 nesting levels, no magic numbers or strings.
-- Comments: English, explain why not what, no commented-out code, one-line doc per public function/class.
-- Modules: single responsibility, depend on abstractions, open for extension closed for modification.
-- Architecture: keep the tree clean and coherent — create new folders, files and classes whenever it
-  preserves structure and organization; never cram unrelated logic into an existing file.
-- Errors: never swallowed silently; always carry context (what failed, where, why).
-- No duplicate logic — extract immediately. Consistency with existing codebase patterns wins over preference.
-
-# Engineering context
-All code and data are confidential. Jira = tracking, Confluence = docs, Bitbucket = source.
-Research before assuming: verify any API, interface or module in Bitbucket (`search_code`, `get_file_content`),
-Confluence (architecture docs) or Jira (acceptance criteria) — never guess what can be checked.
-Jira workflow: read the full ticket description AND all comments before working; comment status when done or blocked.
+# Rules
+- Code, comments, commit messages and docs: English only.
+- Follow the existing codebase conventions; when in doubt, mirror the closest similar file.
+- Before a multi-file refactor: present a short plan and wait for confirmation.
+- Never delete files or overwrite uncommitted changes without explicit user confirmation.
 
 # Commits & PRs
-Commit format: [JIRA-KEY] short imperative description. Branch: feature/JIRA-KEY-short-description.
-Reference the Jira ticket in commits and PR descriptions.
-NEVER run git push without explicit user confirmation. Force push is strictly forbidden.
+- Commit: `[JIRA-KEY] short imperative description`. Branch: `feature/JIRA-KEY-short-description`.
+- Reference the Jira ticket in commits and PR descriptions.
+- NEVER `git push` without explicit user confirmation. Force push is forbidden.
+
+# Jira workflow
+Read the full ticket description AND all comments before starting work.
+Comment on the ticket when done or blocked.
 
 # Security
-Never log, print, commit or hardcode credentials, tokens, API keys or PII — env vars or secret managers only.
-Internal company URLs must not appear in external-facing documentation or public code.
-Delete temporary credential files immediately after use.
+All code and data are confidential.
+Credentials, tokens, API keys, PII: env vars or secret managers only — never in code, logs, commits or docs.
+Internal company URLs must not appear in public code or external-facing documentation.
 
-# Destructive actions
-Before a multi-file refactor: summarize the plan and wait for confirmation.
-Never delete files or overwrite uncommitted changes without explicit user confirmation.
-
-# Token economy
-Be concise. For code tasks: return code only, no explanation, unless the user asks for one.
-Read the project context index first (see the local {{INSTRUCTIONS_LOCAL}}) and open only the 2-3 relevant files
-instead of scanning the tree. Avoid re-reading files already in context.
-Scope tasks narrowly: one focused objective per session beats one sprawling session.
-
-# MCP tools — Atlassian & Bitbucket (global, user scope)
-MCP servers are registered globally (user scope), once, for this user — active in every session.
-If Jira/Confluence/Bitbucket tools are needed but unavailable, (re)run:
-  {{RUN}} setup-mcp
-Three Data Center servers (io.github.b1ff/atlassian-dc-mcp-*): Jira (issues, search, comments),
-Confluence (pages, search), Bitbucket (repos, files, code search — REST API, no git operations).
-Prefer MCP browsing to read individual files; git clone only to run code or tests locally:
-  {{RUN}} git-clone <PROJECT>/<repo>
-URL pattern: {{BITBUCKET_URL}}/scm/<PROJECT_KEY>/<repo-slug>.git (key uppercase, slug lowercase).
-
-# Maintenance commands ({{RUN}} ...)
-- setup-env --tool {{TOOL_NAME}} — full environment repair (sync, instructions, hooks). Run when anything seems out of date.
-- setup-context-cache [path] — regenerate the project symbol index after structural changes (-u to remove).
-- setup-mcp — enable Atlassian+Bitbucket MCP globally, once (-u to remove).
-- setup-headroom --tool {{TOOL_NAME}} — install/repair the Headroom compression proxy wrap (-u to unwrap).
-- check {{TOOL_NAME}} [path] — diagnose the optimization setup (cache, wrapper, hooks, headroom).
-- git-clone <PROJECT>/<repo> — clone from the configured Bitbucket host with stored credentials.
+# Maintenance ({{RUN}} ...)
+Repair commands when the environment looks broken or out of date:
+- setup-env --tool {{TOOL_NAME}} — full repair (sync, instructions, hooks)
+- setup-context-cache [path] — rebuild the project symbol index (-u to remove)
+- setup-mcp — register the Atlassian/Bitbucket MCP servers (-u to remove)
+- check {{TOOL_NAME}} [path] — diagnose the setup
+- git-clone <PROJECT>/<repo> — clone from the configured Bitbucket host with stored credentials
 """
 
-_CLAUDE_EXTRA = """\
-
-# Subagents
-For large codebase exploration or parallel research, delegate to subagents to keep the main context clean.
-Reports must stay under 500 words — no raw file dumps. Not for small targeted reads (use Read/Grep directly).
-
-# Context hygiene
-Around 60% context usage, run /compact with a hint on what to keep (current task, key files, decisions).
-Use /context to audit what is consuming the window before starting a long task.
-
-@RTK.md
-"""
-
+# Copilot has no hook system, so RTK usage must be instruction-driven (claude
+# gets it transparently through the PreToolUse hook — no instructions needed).
 _COPILOT_EXTRA = """\
 
 # CLI output compression (RTK)
-If the `rtk` binary is available, prefix shell commands with it to compress their output
-before it reaches context: `rtk git status`, `rtk git diff`, `rtk grep`, `rtk ls`, `rtk read <file>`.
+Prefix shell commands with `rtk` when available — `rtk git status`, `rtk git diff`, `rtk grep`,
+`rtk ls`, `rtk read <file>` — it compresses output before it reaches context.
 Fall back to the plain command if rtk fails.
 """
 
 # Per-tool tail appended to the shared behavioral core.
 _TOOL_EXTRA = {
-    "claude": _CLAUDE_EXTRA,
+    "claude": "",
     "copilot": _COPILOT_EXTRA,
 }
 
@@ -241,7 +198,6 @@ def inject_index_entry(
         .replace("{{PROJECT_PATH}}", str(project_path))
         .replace("{{CACHE_FILE}}", str(cache_file))
         .replace("{{IGNORE_FILE}}", profile.ignore_file)
-        .replace("{{REFRESH_TRIGGERS}}", _refresh_triggers(profile))
         .replace("{{RUN}}", run_command_prefix())
         .replace("{{TOOL_NAME}}", profile.name)
         .replace("{{INSTRUCTIONS_GLOBAL}}", str(profile.instructions_global))
@@ -261,37 +217,10 @@ def write_global_instructions(profile: ToolProfile) -> Path:
     extra = _TOOL_EXTRA.get(profile.name, _COPILOT_EXTRA)
     body = (
         (_GLOBAL_TEMPLATE + extra)
-        .replace("{{INSTRUCTIONS_LOCAL}}", profile.instructions_local)
         .replace("{{RUN}}", run_command_prefix())
         .replace("{{TOOL_NAME}}", profile.name)
     )
-    body = _substitute_bitbucket_url(body)
     # The tool's home dir (~/.claude, ~/.copilot) may not exist yet on first run.
     profile.instructions_global.parent.mkdir(parents=True, exist_ok=True)
     fs.write_text_atomic(profile.instructions_global, body)
     return profile.instructions_global
-
-
-def _refresh_triggers(profile: ToolProfile) -> str:
-    if profile.has_agent_hooks:
-        return (
-            "- Any Write tool call (new file created)\n"
-            "- git checkout, switch, merge, pull, rebase, clone\n"
-            f"- Every `{profile.name}` launch (stale detection via shell wrapper)"
-        )
-    return (
-        f"- Every `{profile.name}` launch (stale detection via shell wrapper)\n"
-        "- git checkout, switch, merge, pull, rebase (via git hooks)"
-    )
-
-
-def _substitute_bitbucket_url(body: str) -> str:
-    """The Bitbucket URL comes from the llm_cli config; its line is dropped
-    entirely when not configured yet."""
-    bitbucket_url = config.load().get("BITBUCKET_URL", "")
-    if bitbucket_url:
-        return body.replace("{{BITBUCKET_URL}}", bitbucket_url)
-    return "".join(
-        line for line in body.splitlines(keepends=True)
-        if "{{BITBUCKET_URL}}" not in line
-    )

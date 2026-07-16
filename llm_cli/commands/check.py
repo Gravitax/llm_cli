@@ -71,25 +71,14 @@ def _check_rtk_binary(checker: Checker, repair: str) -> None:
 
 def _check_rtk_hook(checker: Checker, profile: ToolProfile, repair: str) -> None:
     log.print_step("RTK hook installation")
+    # The hook rewrites bash commands transparently — the agent needs no RTK
+    # instructions, so the hook registration is the only load-bearing check.
     hook_cmd = _find_pre_tool_use_command(profile.settings_json, "rtk")
     if hook_cmd:
         checker.ok(f"PreToolUse hook registered in settings.json: {hook_cmd}")
     else:
         checker.fail(f"RTK PreToolUse hook not found in {profile.settings_json}")
         checker.warn(f"Fix: {repair} setup-rtk")
-
-    rtk_md = profile.home / "RTK.md"
-    if rtk_md.is_file():
-        checker.ok(f"RTK.md present: {rtk_md}")
-    else:
-        checker.fail("RTK.md not found — the agent won't have RTK usage instructions")
-        checker.warn(f"Fix: {repair} setup-rtk")
-
-    if settings_editor.contains(profile.instructions_global, "@RTK.md"):
-        checker.ok(f"@RTK.md referenced in {profile.instructions_global.name}")
-    else:
-        checker.fail(f"@RTK.md missing from {profile.instructions_global}")
-        checker.warn(f"Fix: {repair} setup-context --tool {profile.name}")
 
 
 def _check_rtk_savings(checker: Checker) -> None:
@@ -288,11 +277,15 @@ def _find_pre_tool_use_command(settings_path: Path, needle: str) -> str:
 
 
 def _command_output(argv: list[str]) -> str:
+    # Tool output is UTF-8 even when the Windows console codepage is cp1252;
+    # decoding must not depend on the locale or stdout comes back None.
     try:
-        result = subprocess.run(argv, capture_output=True, text=True)
+        result = subprocess.run(
+            argv, capture_output=True, text=True, encoding="utf-8", errors="replace"
+        )
     except OSError:
         return ""
-    return result.stdout.strip()
+    return log.console_safe(result.stdout).strip()
 
 
 def _first_match(pattern: str, text: str) -> str:
