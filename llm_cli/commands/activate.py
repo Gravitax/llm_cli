@@ -25,15 +25,22 @@ def configure(subparsers) -> None:
         "activate", help="install + activate a tool's optimization layer"
     )
     parser.add_argument("tool", choices=list(TOOL_NAMES))
+    parser.add_argument(
+        "--skip-global", action="store_true",
+        help="skip the machine-global steps (sync, PATH block) already run "
+        "earlier in the same wizard",
+    )
     parser.set_defaults(func=run)
 
 
 def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
+    skip_global = getattr(args, "skip_global", False)
     if not _ensure_prerequisites(profile):
         return 1
-    setup_env.run(args)
-    setup_shell_wrapper.run(args)
+    setup_env.run(argparse.Namespace(tool=args.tool, skip_global=skip_global))
+    if not skip_global:
+        setup_shell_wrapper.run(args)
     _warn_when_compression_idle(profile)
     log.print_ok(f"Ready. Run: {profile.name}")
     return 0

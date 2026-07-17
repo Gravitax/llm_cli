@@ -2,8 +2,9 @@
 (port of setup_dependencies.sh / setup_dependencies.ps1).
 
 Fully automatic (no prompts) — called by bootstrap before tool activation.
-Failures are counted, reported and reflected in the exit code, but never
-abort the run: independent dependencies still get their chance to install.
+Every dependency still gets its chance to install; anything left missing is
+then reported in one blocking banner with the exact install command per
+dependency, and the non-zero exit aborts the wizard.
 """
 
 from __future__ import annotations
@@ -16,6 +17,34 @@ from llm_cli.tool_profile import TOOL_NAMES
 _TOOL_PACKAGES = {
     "claude": ("@anthropic-ai/claude-code", "claude"),
     "copilot": ("@github/copilot", "copilot"),
+}
+
+_WINDOWS_INSTALL_HINTS = {
+    "curl": "winget install cURL.cURL",
+    "git": "winget install Git.Git",
+    "node": "winget install OpenJS.NodeJS.LTS",
+    "uv": "winget install astral-sh.uv",
+    "rtk": (
+        "download rtk.exe from https://github.com/rtk-ai/rtk/releases "
+        "into %USERPROFILE%\\.local\\bin"
+    ),
+    "headroom": 'pip install --user --prefer-binary "headroom-ai[all]"',
+    "claude": "npm install -g @anthropic-ai/claude-code",
+    "copilot": "npm install -g @github/copilot",
+}
+
+_POSIX_INSTALL_HINTS = {
+    "curl": "sudo apt-get install -y curl  (or: brew install curl)",
+    "git": "sudo apt-get install -y git  (or: brew install git)",
+    "node": f"install Node.js >= {deps.MIN_NODE_MAJOR} from https://nodejs.org",
+    "uv": "curl -LsSf https://astral.sh/uv/install.sh | sh",
+    "rtk": (
+        "curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/"
+        "refs/heads/master/install.sh | sh"
+    ),
+    "headroom": 'uv tool install "headroom-ai[all]"',
+    "claude": "npm install -g @anthropic-ai/claude-code",
+    "copilot": "npm install -g @github/copilot",
 }
 
 
@@ -35,23 +64,35 @@ def run(args: argparse.Namespace) -> int:
     installer = deps.installer()
 
     steps = [
-        lambda: installer.ensure_system_tool("curl", "curl"),
-        lambda: installer.ensure_system_tool("git", "Git.Git" if _is_windows() else "git"),
-        installer.ensure_node,
-        installer.ensure_uv,
-        installer.ensure_rtk,
-        installer.ensure_headroom,
+        ("curl", lambda: installer.ensure_system_tool("curl", "curl")),
+        ("git", lambda: installer.ensure_system_tool(
+            "git", "Git.Git" if _is_windows() else "git"
+        )),
+        ("node", installer.ensure_node),
+        ("uv", installer.ensure_uv),
+        ("rtk", installer.ensure_rtk),
+        ("headroom", installer.ensure_headroom),
     ]
     for tool in args.tools:
         package, binary = _TOOL_PACKAGES[tool]
-        steps.append(lambda pkg=package, exe=binary: installer.ensure_npm_cli(pkg, exe))
+        steps.append(
+            (binary, lambda pkg=package, exe=binary: installer.ensure_npm_cli(pkg, exe))
+        )
 
-    failures = sum(1 for step in steps if not step())
-    if failures:
-        log.print_err(f"{failures} dependency step(s) failed — see messages above.")
+    missing = [name for name, step in steps if not step()]
+    if missing:
+        _print_missing_banner(missing)
         return 1
     log.print_ok("All dependencies present.")
     return 0
+
+
+def _print_missing_banner(missing: list[str]) -> None:
+    hints = _WINDOWS_INSTALL_HINTS if _is_windows() else _POSIX_INSTALL_HINTS
+    lines = ["MISSING DEPENDENCIES — setup cannot continue.", ""]
+    lines += [f"  {name}: {hints[name]}" for name in missing]
+    lines += ["", "Install them, open a NEW terminal, then re-run: python install.py"]
+    log.red_banner(lines)
 
 
 def _is_windows() -> bool:

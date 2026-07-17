@@ -18,6 +18,10 @@ from llm_cli.services import fs, log
 from llm_cli.tool_profile import ALL_PROFILES, ToolProfile
 
 _LEGACY_SCRIPT_GLOBS = ("*.sh", "*.ps1", "gen_context_cache.py", "profile.env")
+# Our own migration tombstones (written below) also match *.sh — they must
+# survive the cleanup or every run deletes and rewrites them, reporting
+# "2 legacy scripts removed" forever.
+_TOMBSTONE_NAMES = ("lib_cache.sh", "lib_headroom.sh")
 
 # Old profile wrappers still loaded in open terminals source these files by
 # name; the tombstones keep those wrappers working (delegating to run.py)
@@ -98,6 +102,8 @@ def _cleanup_legacy_scripts() -> None:
         removed = 0
         for pattern in _LEGACY_SCRIPT_GLOBS:
             for legacy in scripts_dir.glob(pattern):
+                if legacy.name in _TOMBSTONE_NAMES:
+                    continue
                 legacy.unlink()
                 removed += 1
         _write_tombstones(profile, scripts_dir)

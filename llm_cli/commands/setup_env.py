@@ -27,13 +27,18 @@ def configure(subparsers) -> None:
         "setup-env", help="full environment repair (sync, instructions, hooks)"
     )
     parser.add_argument("--tool", required=True, choices=list(TOOL_NAMES))
+    parser.add_argument(
+        "--skip-global", action="store_true",
+        help="skip the machine-global sync already run earlier in the same wizard",
+    )
     parser.set_defaults(func=run)
 
 
 def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
 
-    sync.run(args)
+    if not getattr(args, "skip_global", False):
+        sync.run(args)
     setup_context.run(args)
 
     if profile.has_rtk_hook:

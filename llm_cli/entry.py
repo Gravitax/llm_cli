@@ -11,11 +11,12 @@ from __future__ import annotations
 import sys
 
 from llm_cli.cli import main
+from llm_cli.services.crash_guard import guarded_main
 
 
 def claude_main() -> int:
-    return main(["launch", "claude", "--", *sys.argv[1:]])
+    return guarded_main(lambda: main(["launch", "claude", "--", *sys.argv[1:]]))
 
 
 def copilot_main() -> int:
-    return main(["launch", "copilot", "--", *sys.argv[1:]])
+    return guarded_main(lambda: main(["launch", "copilot", "--", *sys.argv[1:]]))

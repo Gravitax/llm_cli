@@ -1,7 +1,8 @@
 """bootstrap — interactive wizard guiding a new machine/user through the full
 llm_cli setup:
 
-  1. installs any missing dependency automatically (no prompts)
+  1. installs any missing dependency automatically; aborts with per-dependency
+     install commands when something stays missing (winget guidance on Windows)
   2. activates the optimization layer for Claude Code and/or Copilot CLI
   3. offers the one-time Atlassian + Bitbucket credentials setup + global MCP
   4. runs the diagnostics so you leave with a verified, working setup
@@ -14,7 +15,7 @@ from __future__ import annotations
 
 import argparse
 
-from llm_cli import paths, tool_profile
+from llm_cli import paths
 from llm_cli.commands import activate, check, setup_atlassian, setup_deps, setup_mcp
 from llm_cli.services import deps, log, settings_editor
 from llm_cli.commands.setup_mcp import SERVER_JIRA
@@ -31,21 +32,19 @@ def run(args: argparse.Namespace) -> int:
 
     selected = _prompt_tool_selection()
     if setup_deps.run(argparse.Namespace(tools=selected)) != 0:
-        log.print_err(
-            "Some dependencies could not be installed — the related steps may fail below."
-        )
+        return 1  # The blocking banner (install commands) was already printed.
     deps.export_local_bin_path()
 
-    for tool in selected:
-        activate.run(argparse.Namespace(tool=tool))
+    # sync + PATH block are machine-global: only the first activation runs them.
+    for index, tool in enumerate(selected):
+        activate.run(argparse.Namespace(tool=tool, skip_global=index > 0))
 
     _offer_atlassian_setup()
     _offer_global_mcp()
 
     log.print_step("Verifying setup")
-    for profile in tool_profile.ALL_PROFILES:
-        if profile.home.is_dir():
-            check.run(argparse.Namespace(tool=profile.name, project=None))
+    for tool in selected:
+        check.run(argparse.Namespace(tool=tool, project=None))
 
     log.print_step("Done")
     log.print_ok("Run 'claude' and/or 'copilot' from any project directory.")

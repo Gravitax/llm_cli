@@ -9,7 +9,12 @@ import sysconfig
 from pathlib import Path
 
 from llm_cli import paths
-from llm_cli.platforms.base import PlatformOps, ProfileTarget, WriteSpec
+from llm_cli.platforms.base import (
+    PlatformOps,
+    ProfileTarget,
+    WriteSpec,
+    spawn_output_target,
+)
 
 
 class WindowsOps(PlatformOps):
@@ -32,17 +37,31 @@ class WindowsOps(PlatformOps):
         # "shell": "powershell" mirrors the hook entries rtk writes on Windows.
         return {"type": "command", "command": command, "shell": "powershell"}
 
-    def spawn_detached(self, argv: list[str]) -> None:
+    def spawn_detached(
+        self,
+        argv: list[str],
+        log_path: Path | None = None,
+        env: dict[str, str] | None = None,
+    ) -> None:
+        # CREATE_NO_WINDOW (not DETACHED_PROCESS): the child gets an invisible
+        # console its own children inherit — a .cmd shim or console subchild
+        # can never pop a visible terminal window.
         flags = (
-            subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+            subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
         )
-        subprocess.Popen(
-            argv,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdin=subprocess.DEVNULL,
-            creationflags=flags,
-        )
+        output = spawn_output_target(log_path)
+        try:
+            subprocess.Popen(
+                argv,
+                stdout=output,
+                stderr=output,
+                stdin=subprocess.DEVNULL,
+                env=env,
+                creationflags=flags,
+            )
+        finally:
+            if output is not subprocess.DEVNULL:
+                output.close()
 
     def exec_or_run(self, argv: list[str]) -> int:
         # os.exec* on Windows detaches the console; run as a child instead and

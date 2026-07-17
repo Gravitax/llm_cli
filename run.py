@@ -11,5 +11,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from llm_cli.cli import main  # noqa: E402 — needs the sys.path insert above.
+from llm_cli.services.crash_guard import guarded_main  # noqa: E402
 
-sys.exit(main())
+sys.exit(guarded_main(main))

@@ -153,8 +153,8 @@ def _check_headroom(checker: Checker, profile: ToolProfile, repair: str) -> None
 
     # doctor's exit code also covers unrelated tools (codex, shell env), so the
     # load-bearing check is done directly: wrapped + proxy reachability.
-    if headroom.proxy_alive():
-        checker.ok(f"headroom proxy reachable on port {headroom.proxy_port()}")
+    if headroom.proxy_alive(profile.name):
+        checker.ok(f"headroom proxy reachable on port {headroom.proxy_port(profile.name)}")
     else:
         checker.info(f"proxy not running — the shell wrapper starts it at {profile.name} launch")
         checker.info("Details anytime: headroom doctor")
@@ -179,6 +179,16 @@ def _check_headroom_launcher(checker: Checker, profile: ToolProfile) -> None:
     else:
         checker.fail(
             f"{profile.name} entry point not found on PATH — run `python install.py`"
+        )
+
+    if headroom.proxy_alive(profile.name):
+        checker.ok(
+            f"{profile.name} headroom proxy reachable on port {headroom.proxy_port(profile.name)}"
+        )
+    else:
+        checker.info(
+            f"proxy not running — `headroom wrap` starts it on port "
+            f"{headroom.proxy_port(profile.name)} at {profile.name} launch"
         )
 
     headroom.export_ghe_env()

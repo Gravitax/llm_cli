@@ -8,7 +8,12 @@ import sys
 from pathlib import Path
 
 from llm_cli import paths
-from llm_cli.platforms.base import PlatformOps, ProfileTarget, WriteSpec
+from llm_cli.platforms.base import (
+    PlatformOps,
+    ProfileTarget,
+    WriteSpec,
+    spawn_output_target,
+)
 
 
 class PosixOps(PlatformOps):
@@ -27,15 +32,26 @@ class PosixOps(PlatformOps):
         )
         return {"type": "command", "command": command}
 
-    def spawn_detached(self, argv: list[str]) -> None:
+    def spawn_detached(
+        self,
+        argv: list[str],
+        log_path: Path | None = None,
+        env: dict[str, str] | None = None,
+    ) -> None:
         # start_new_session detaches from this process group (replaces nohup &).
-        subprocess.Popen(
-            argv,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdin=subprocess.DEVNULL,
-            start_new_session=True,
-        )
+        output = spawn_output_target(log_path)
+        try:
+            subprocess.Popen(
+                argv,
+                stdout=output,
+                stderr=output,
+                stdin=subprocess.DEVNULL,
+                env=env,
+                start_new_session=True,
+            )
+        finally:
+            if output is not subprocess.DEVNULL:
+                output.close()
 
     def exec_or_run(self, argv: list[str]) -> int:
         # The shim's foreground process becomes the tool: signals, TTY and exit

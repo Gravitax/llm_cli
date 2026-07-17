@@ -18,6 +18,11 @@ def run_py() -> Path:
     return install_root() / "run.py"
 
 
+def logs_dir() -> Path:
+    """Persistent log files (headroom proxy output, crash reports)."""
+    return install_root() / "logs"
+
+
 def config_dir() -> Path:
     """User configuration (Atlassian credentials, GHE domain...)."""
     return home() / ".config" / "llm_cli"

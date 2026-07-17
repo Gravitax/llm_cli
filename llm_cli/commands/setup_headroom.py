@@ -64,6 +64,9 @@ def _report_launcher_mode(profile: ToolProfile) -> int:
 
 def _apply_wrap(profile: ToolProfile) -> int:
     if headroom.is_wrapped(profile):
+        # Refresh the env keys anyway (idempotent): older installs miss the
+        # first-party flag and still carry the legacy traffic flag below.
+        _write_proxy_routing(profile, add=True)
         log.print_ok(f"{profile.name} already wrapped.")
         return 0
 
@@ -93,7 +96,7 @@ def _apply_wrap(profile: ToolProfile) -> int:
 def _verify_wrap(profile: ToolProfile) -> int:
     log.print_step("Verifying headroom health")
     headroom.ensure_proxy(profile)
-    if not headroom.proxy_alive():
+    if not headroom.proxy_alive(profile.name):
         repair = instructions.run_command_prefix()
         log.print_err(
             f"headroom proxy is not reachable — {profile.name} cannot call the API while wrapped."
@@ -105,7 +108,7 @@ def _verify_wrap(profile: ToolProfile) -> int:
     # Codex rows are filtered out — doctor probes every tool it can wrap, and
     # the OpenAI Codex CLI is not part of this layer.
     doctor = subprocess.run(["headroom", "doctor"], capture_output=True, text=True)
-    for line in (doctor.stdout + doctor.stderr).splitlines():
+    for line in headroom.strip_litellm_noise(doctor.stdout + doctor.stderr):
         if "codex" not in line.lower():
             print(f"    {line}")
     log.print_ok(f"headroom proxy reachable and {profile.name} routed.")
@@ -125,13 +128,28 @@ def _remove_wrap(profile: ToolProfile) -> int:
     return 0
 
 
+# Claude's /model picker holds Anthropic-gated models (claude-fable-5) behind
+# two locks that a proxy setup trips by accident:
+#   - a custom ANTHROPIC_BASE_URL fails its first-party check unless this flag
+#     vouches for the endpoint — truthful here, the headroom proxy forwards
+#     /v1/messages to api.anthropic.com with the client's own credentials;
+#   - CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC (legacy llm_cli flag) skips the
+#     bootstrap fetch that populates the model list. It saves no tokens
+#     (metadata traffic only), so it is actively removed.
+_FIRST_PARTY_FLAG = "_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL"
+_LEGACY_TRAFFIC_FLAG = "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC"
+
+
 def _write_proxy_routing(profile: ToolProfile, *, add: bool) -> None:
     """Writes or removes the durable proxy routing (env.ANTHROPIC_BASE_URL) in
     the tool settings — `headroom wrap` only sets it transiently."""
     settings = settings_editor.load_json(profile.settings_json)
     if add:
         env = settings.setdefault("env", {})
-        env["ANTHROPIC_BASE_URL"] = f"http://127.0.0.1:{headroom.proxy_port()}"
+        env["ANTHROPIC_BASE_URL"] = f"http://127.0.0.1:{headroom.proxy_port(profile.name)}"
+        env[_FIRST_PARTY_FLAG] = "1"
+        env.pop(_LEGACY_TRAFFIC_FLAG, None)
     elif "env" in settings:
         settings["env"].pop("ANTHROPIC_BASE_URL", None)
+        settings["env"].pop(_FIRST_PARTY_FLAG, None)
     settings_editor.save_json(profile.settings_json, settings)

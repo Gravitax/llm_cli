@@ -7,6 +7,7 @@ stays in services/ and commands/ which call these primitives blindly.
 from __future__ import annotations
 
 import abc
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -25,6 +26,16 @@ class WriteSpec:
 
     newline: str
     bom: bool
+
+
+def spawn_output_target(log_path: Path | None):
+    """stdout/stderr target for spawn_detached: an append handle on the log
+    file when given (creating its directory), DEVNULL otherwise. Callers close
+    the handle after Popen — the child keeps its inherited copy."""
+    if log_path is None:
+        return subprocess.DEVNULL
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    return open(log_path, "ab")
 
 
 class PlatformOps(abc.ABC):
@@ -46,8 +57,14 @@ class PlatformOps(abc.ABC):
         absolute interpreter path (immune to PATH and Store-alias issues)."""
 
     @abc.abstractmethod
-    def spawn_detached(self, argv: list[str]) -> None:
-        """Starts a long-lived background process detached from this one."""
+    def spawn_detached(
+        self,
+        argv: list[str],
+        log_path: Path | None = None,
+        env: dict[str, str] | None = None,
+    ) -> None:
+        """Starts a long-lived background process detached from this one.
+        Its output is appended to log_path when given, discarded otherwise."""
 
     @abc.abstractmethod
     def exec_or_run(self, argv: list[str]) -> int:
