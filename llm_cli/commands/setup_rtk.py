@@ -116,6 +116,8 @@ def _ensure_local_bin_in_profile() -> None:
 
 
 def _run_indented(argv: list[str]) -> None:
-    result = subprocess.run(argv, capture_output=True, text=True)
+    result = subprocess.run(
+        argv, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     for line in (result.stdout + result.stderr).splitlines():
-        print(f"    {line}")
+        print(f"    {log.console_safe(line)}")

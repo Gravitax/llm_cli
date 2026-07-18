@@ -205,10 +205,13 @@ def launch_argv(tool: str, binary: str, arguments: list[str]) -> list[str]:
 
 def perf_summary(max_lines: int = 5) -> str:
     """First lines of `headroom perf` for diagnostics ('' when unavailable)."""
-    result = subprocess.run(["headroom", "perf"], capture_output=True, text=True)
+    result = subprocess.run(
+        ["headroom", "perf"],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
     if result.returncode != 0:
         return ""
-    return "\n".join(strip_litellm_noise(result.stdout)[:max_lines])
+    return log.console_safe("\n".join(strip_litellm_noise(result.stdout)[:max_lines]))
 
 
 def strip_litellm_noise(text: str) -> list[str]:
@@ -228,7 +231,8 @@ def strip_litellm_noise(text: str) -> list[str]:
 def _auth_status() -> str:
     try:
         result = subprocess.run(
-            ["headroom", "copilot-auth", "status"], capture_output=True, text=True
+            ["headroom", "copilot-auth", "status"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace",
         )
     except OSError:
         return ""
