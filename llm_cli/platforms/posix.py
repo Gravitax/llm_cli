@@ -73,3 +73,6 @@ class PosixOps(PlatformOps):
     def entry_points_dir(self) -> Path:
         # `pip install --user` uses the posix_user scheme → ~/.local/bin.
         return paths.home() / ".local" / "bin"
+
+    def configured_path_entries(self) -> list[str]:
+        return []  # Login shells rebuild PATH; the inherited value is current.

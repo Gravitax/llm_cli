@@ -61,6 +61,9 @@ def configure(subparsers) -> None:
 
 def run(args: argparse.Namespace) -> int:
     log.print_step("Checking & installing dependencies")
+    # Binaries installed since this terminal opened (winget writes PATH to the
+    # registry only) would otherwise be invisible to every probe below.
+    deps.export_configured_path()
     installer = deps.installer()
 
     steps = [

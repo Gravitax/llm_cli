@@ -91,3 +91,8 @@ class PlatformOps(abc.ABC):
     def entry_points_dir(self) -> Path:
         """Directory where `pip install --user` drops the claude/copilot
         console executables — must be on PATH for the wrappers to resolve."""
+
+    @abc.abstractmethod
+    def configured_path_entries(self) -> list[str]:
+        """PATH entries a brand-new terminal would see (machine + user registry
+        PATH on Windows); [] where the inherited PATH is already authoritative."""

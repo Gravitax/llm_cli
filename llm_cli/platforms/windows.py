@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import os
 import signal
 import subprocess
 import sys
 import sysconfig
+import winreg
 from pathlib import Path
 
 from llm_cli import paths
@@ -95,6 +97,14 @@ class WindowsOps(PlatformOps):
         scripts = sysconfig.get_path("scripts", "nt_user")
         return Path(scripts) if scripts else Path(sysconfig.get_path("scripts"))
 
+    def configured_path_entries(self) -> list[str]:
+        # Fresh-terminal PATH = HKLM system PATH + HKCU user PATH; re-reading
+        # the registry sees entries winget added after this process started.
+        return _registry_path_entries(
+            winreg.HKEY_LOCAL_MACHINE,
+            r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment",
+        ) + _registry_path_entries(winreg.HKEY_CURRENT_USER, "Environment")
+
     @staticmethod
     def _current_user_all_hosts_profile() -> Path | None:
         # $PROFILE is a PowerShell concept: only PowerShell itself can say where
@@ -108,3 +118,15 @@ class WindowsOps(PlatformOps):
         if query.returncode != 0 or not location:
             return None
         return Path(location)
+
+
+def _registry_path_entries(root: int, subkey: str) -> list[str]:
+    try:
+        with winreg.OpenKey(root, subkey) as key:
+            value, _kind = winreg.QueryValueEx(key, "Path")
+    except OSError:
+        return []  # Key/value absent or unreadable — degrade, never crash.
+    # The system PATH is REG_EXPAND_SZ (%SystemRoot%...); expanding a plain
+    # string is a harmless identity, so expand unconditionally before splitting.
+    expanded = winreg.ExpandEnvironmentStrings(value)
+    return [entry for entry in expanded.split(os.pathsep) if entry]

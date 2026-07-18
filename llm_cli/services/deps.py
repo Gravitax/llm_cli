@@ -31,6 +31,26 @@ def export_local_bin_path() -> None:
     _prepend_path(local_bin())
 
 
+def export_configured_path() -> None:
+    """Merges freshly configured PATH entries (Windows registry) into the live
+    PATH so binaries installed mid-session are found without a new terminal."""
+    current = os.environ.get("PATH", "")
+    known = {_canonical(entry) for entry in current.split(os.pathsep) if entry}
+    fresh: list[str] = []
+    for entry in platforms.current().configured_path_entries():
+        if _canonical(entry) not in known:
+            known.add(_canonical(entry))
+            fresh.append(entry)
+    if fresh:
+        # Appended, not prepended: deliberate in-process prepends (~/.local/bin,
+        # npm prefix) and system32 must keep precedence over registry entries.
+        os.environ["PATH"] = os.pathsep.join([current, *fresh] if current else fresh)
+
+
+def _canonical(entry: str) -> str:
+    return os.path.normcase(entry.rstrip("\\/"))
+
+
 def export_npm_bin_path() -> None:
     """Puts npm's global bin dir on PATH for the current process."""
     prefix = _command_stdout(["npm", "config", "get", "prefix"])
@@ -124,12 +144,12 @@ class PosixDepInstaller(DependencyInstaller):
         return True
 
     def ensure_uv(self) -> bool:
-        if shutil.which("uvx"):
+        if shutil.which("uv"):
             return True
         log.print_info("Installing uv...")
         _run_shell("curl -LsSf https://astral.sh/uv/install.sh | sh > /dev/null 2>&1")
         export_local_bin_path()
-        if not shutil.which("uvx"):
+        if not shutil.which("uv"):
             log.print_err("uv installation failed. Install manually: https://docs.astral.sh/uv/")
             return False
         log.print_ok("uv installed.")
@@ -189,7 +209,7 @@ class WindowsDepInstaller(DependencyInstaller):
         return False
 
     def ensure_uv(self) -> bool:
-        if shutil.which("uvx"):
+        if shutil.which("uv"):
             return True
         log.print_err("uv not found — install it with: winget install astral-sh.uv")
         return False
