@@ -8,6 +8,7 @@ PostToolUse commands are dropped and re-registered against run.py.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 
 from llm_cli import platforms, tool_profile
@@ -67,11 +68,17 @@ def _ensure_rtk_hook(profile: ToolProfile) -> None:
 
 def _register_cache_hooks(profile: ToolProfile) -> None:
     for matcher, hook_name in _CACHE_HOOKS:
-        needle = f"hook {hook_name}"
-        if settings_editor.contains(profile.settings_json, needle):
+        entry = platforms.current().hook_command("hook", hook_name)
+        # json.dumps matches the command as it is escaped inside settings.json.
+        if settings_editor.contains(profile.settings_json, json.dumps(entry["command"])):
             log.print_ok(f"PostToolUse {matcher} hook ({hook_name}) already registered.")
             continue
-        entry = platforms.current().hook_command("hook", hook_name)
+        # A same-name entry with a different command is stale (old command
+        # format or moved interpreter) — replace it, never stack a second one.
+        if settings_editor.remove_hooks(
+            profile.settings_json, "PostToolUse", f"hook {hook_name}"
+        ):
+            log.print_ok(f"Stale PostToolUse {matcher} hook ({hook_name}) removed.")
         settings_editor.register_hook(profile.settings_json, "PostToolUse", matcher, entry)
         log.print_ok(
             f"PostToolUse {matcher} hook ({hook_name}) registered in {profile.settings_json}"

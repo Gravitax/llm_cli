@@ -33,8 +33,10 @@ class WindowsOps(PlatformOps):
         return WriteSpec(newline="\r\n", bom=True)
 
     def hook_command(self, *cli_args: str) -> dict:
+        # The & call operator is mandatory: PowerShell cannot invoke a quoted
+        # path as a bare statement ("Unexpected token" parse error).
         command = " ".join(
-            [f'"{sys.executable}"', f'"{paths.run_py()}"', *cli_args]
+            ["&", f'"{sys.executable}"', f'"{paths.run_py()}"', *cli_args]
         )
         # "shell": "powershell" mirrors the hook entries rtk writes on Windows.
         return {"type": "command", "command": command, "shell": "powershell"}
