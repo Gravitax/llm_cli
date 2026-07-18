@@ -50,7 +50,9 @@ def run(args: argparse.Namespace) -> int:
     if profile.name == "copilot" and "--models" in forwarded:
         # Wrapper-only flag: print the catalog instead of launching the tool.
         return copilot_models.run(args)
-    forwarded = _handle_glm_toggle(profile, forwarded)
+    forwarded, toggled = _handle_glm_toggle(profile, forwarded)
+    if toggled:
+        return 0
 
     deps.export_local_bin_path()
     real_binary = _resolve_real_binary(profile.name)
@@ -80,15 +82,20 @@ def run(args: argparse.Namespace) -> int:
     return platforms.current().exec_or_run(argv)
 
 
-def _handle_glm_toggle(profile: ToolProfile, arguments: list[str]) -> list[str]:
+def _handle_glm_toggle(
+    profile: ToolProfile, arguments: list[str]
+) -> tuple[list[str], bool]:
     """Strips the `-glm`/`--glm` flag (claude only) and flips the persisted
-    provider when present. The flag is ours, never forwarded to the tool."""
+    provider when present. The flag is ours, never forwarded to the tool —
+    the caller must stop after toggling rather than launch, since `-glm` is a
+    standalone mode switch, not a launch option."""
     if profile.name != "claude":
-        return arguments
+        return arguments, False
     kept = [arg for arg in arguments if arg not in ("-glm", "--glm")]
-    if len(kept) != len(arguments):
+    toggled = len(kept) != len(arguments)
+    if toggled:
         glm.toggle()
-    return kept
+    return kept, toggled
 
 
 def _uses_glm(profile: ToolProfile) -> bool:
