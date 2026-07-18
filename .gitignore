@@ -20,6 +20,7 @@ RTK.md
 # Dependencies and caches
 node_modules/
 __pycache__/
+.tokensave/
 
 # Python packaging artifacts
 build/
