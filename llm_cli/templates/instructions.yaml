@@ -111,6 +111,7 @@ ignore_file: |
 index_entry: |
   # Project context index
   `{{CACHE_FILE}}` is a pre-generated symbol index of {{PROJECT_PATH}} (one line per file: path | LOC | symbols).
+  Files are ordered by importance (PageRank over cross-file references) and symbols most-referenced first.
   Read it before exploring the tree, then open only the relevant files.
   It refreshes automatically (hooks + launch); files absent from it are excluded by {{IGNORE_FILE}} or don't exist yet.
   Manual rebuild after large structural changes: {{RUN}} setup-context-cache {{PROJECT_PATH}} --tool {{TOOL_NAME}}

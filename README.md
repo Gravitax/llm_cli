@@ -12,7 +12,7 @@ exact same install works everywhere with zero `.sh`/`.ps1` files.
 
 | Optimization | Mechanism | Claude | Copilot |
 |---|---|---|---|
-| Project symbol index | `path \| LOC \| symbols` cache read at session start instead of scanning files | ✓ | ✓ |
+| Project symbol index | tree-sitter `path \| LOC \| symbols` cache, PageRank-ordered, read at session start instead of scanning files | ✓ | ✓ |
 | Compact global instructions | Behavioral rules kept short — loaded every turn, every session | ✓ | ✓ |
 | CLI output compression (RTK) | PreToolUse hook rewrites bash commands, ~70-80% savings on output | hook | via instructions |
 | API-level compression (Headroom) | Proxy routing, ~15-20% savings on coding agents (60-95% on JSON) | settings wrap | launcher |
@@ -81,8 +81,8 @@ check claude [path]            # diagnostics (cache, wrapper, hooks, headroom, M
 git-clone PROJECT/repo         # clone from the configured Bitbucket host
 ```
 
-See `claude/README.md` and `copilot/README.md` for tool-specific details,
-including the `claude -glm` provider toggle (GLM Coding Plan via z.ai).
+The `claude -glm` provider toggle switches Claude Code between the Anthropic API
+and the GLM Coding Plan (z.ai).
 
 ## Windows notes
 
@@ -138,7 +138,7 @@ layers. Two routing modes, resolved by the tool profile:
   BYOK, or `headroom copilot-auth login` → subscription); plain launch
   otherwise. Opt out per session: `LLM_CLI_NO_HEADROOM=1`.
   GitHub Enterprise Copilot is supported: set the domain once via
-  `setup-atlassian` (`GITHUB_COPILOT_ENTERPRISE_DOMAIN`) — see `copilot/README.md`.
+  `setup-atlassian` (`GITHUB_COPILOT_ENTERPRISE_DOMAIN`).
 
 ```bash
 python3 ~/.llm_cli/run.py setup-headroom --tool claude      # install + wrap + verify
@@ -154,5 +154,3 @@ python3 ~/.llm_cli/run.py check copilot [project_path]
 rtk gain         # RTK token savings after a session
 headroom perf    # Headroom savings (if wrapped)
 ```
-
-See `claude/README.md` and `copilot/README.md` for tool-specific details.

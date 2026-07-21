@@ -6,9 +6,9 @@ build-backend = "setuptools.build_meta"
 name = "llm_cli"
 version = "2.0.0"
 description = "Cross-platform token-optimization layer for Claude Code and Copilot CLI."
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 readme = "README.md"
-dependencies = ["pyyaml"]
+dependencies = ["pyyaml", "grep-ast", "networkx"]
 
 [project.scripts]
 llm_cli = "llm_cli.cli:main"
@@ -19,4 +19,4 @@ copilot = "llm_cli.entry:copilot_main"
 packages = ["llm_cli", "llm_cli.commands", "llm_cli.services", "llm_cli.platforms"]
 
 [tool.setuptools.package-data]
-llm_cli = ["templates/*.yaml"]
+llm_cli = ["templates/*.yaml", "queries/*.scm"]

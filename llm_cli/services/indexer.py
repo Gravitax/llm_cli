@@ -2,11 +2,16 @@
 """Compact project context index generation (formerly gen_context_cache.py).
 
 Instead of having the LLM read every file linearly (high token cost),
-this module builds a symbol index (functions, classes) grouped by directory.
+this module builds a symbol index (functions, classes) ranked by importance.
 The LLM reads this index first and then targets only the files it needs.
 
+Symbols come from tree-sitter tag queries (see services.repomap); files are
+ordered by a PageRank over their cross-file references, so the most
+depended-upon code leads. Languages without a tree-sitter grammar fall back to
+the regex extractors below.
+
 Output format (one line per file):
-    rel/path/file.py | 120 LOC | ClassName.method1, ClassName.method2, top_level_func
+    rel/path/file.py | 120 LOC | func_a, ClassB, method_c
 
 Exclusions:
     Reads the tool ignore files at project root (gitignore-style patterns,
@@ -408,7 +413,23 @@ def _render_progress(current: int, total: int) -> None:
 
 
 def generate_index(project_root: Path, files: list[tuple[str, Path]]) -> str:
-    """Builds the markdown index from a pre-collected file list."""
+    """Builds the markdown index from a pre-collected file list.
+
+    Symbols come from tree-sitter (repomap); files are reordered by their
+    PageRank so the most depended-upon code leads. Files without a tree-sitter
+    grammar fall back to the regex extractors.
+    """
+    from llm_cli.services import repomap  # Deferred: pulls tree-sitter/networkx.
+
+    symbols_by_path, file_rank = repomap.extract_symbols(files)
+
+    # Lead with the highest-ranked files; break ties source-first then shallowest.
+    files = sorted(files, key=lambda item: (
+        -file_rank.get(item[0], 0.0),
+        0 if item[1].suffix.lower() in EXTRACTORS else 1,
+        len(Path(item[0]).parts),
+    ))
+
     total = len(files)
     show_progress = sys.stderr.isatty() and total > 0
 
@@ -425,8 +446,12 @@ def generate_index(project_root: Path, files: list[tuple[str, Path]]) -> str:
         loc = count_lines(abs_path)
         total_loc += loc
 
-        extractor = EXTRACTORS.get(ext)
-        symbols = extractor(abs_path) if extractor else []
+        # Tree-sitter symbols when the language is supported (present even when
+        # empty); otherwise fall back to the regex extractors.
+        symbols = symbols_by_path.get(rel_path)
+        if symbols is None:
+            extractor = EXTRACTORS.get(ext)
+            symbols = extractor(abs_path) if extractor else []
         sym_str = format_symbols(symbols)
 
         row = f"{rel_path} | {loc} LOC"
@@ -454,7 +479,8 @@ def generate_index(project_root: Path, files: list[tuple[str, Path]]) -> str:
         f"Extensions: {ext_summary}",
         "",
         "> Read this index first. Target specific files instead of scanning broadly.",
-        "> Format: path | LOC | symbols (Class.method for class members)",
+        "> Files are ordered by importance (PageRank over cross-file references).",
+        "> Format: path | LOC | symbols (most-referenced first)",
         "",
     ]
     lines.extend(file_rows)
