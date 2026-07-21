@@ -18,6 +18,7 @@ import getpass
 import json
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -41,6 +42,11 @@ _MAIN_CONFIG_DIR = ".claude"
 _GLM_CONFIG_DIR = ".claude-glm"
 # Read by claude from the config dir itself; kept pointing at the main one.
 _SHARED_ITEMS = ("CLAUDE.md", "agents", "commands", "skills")
+# Conversation history (<config>/projects/<encoded-path>/<session>.jsonl).
+# Shared as a live link so `claude --continue` resumes the same sessions in
+# either mode — unlike _SHARED_ITEMS, never a copy: a copied tree would drift
+# and risk clobbering sessions.
+_PROJECTS = "projects"
 
 
 def is_active() -> bool:
@@ -152,14 +158,16 @@ def export_env() -> None:
 def ensure_config_dir() -> Path:
     """Prepares the isolated Claude config home for GLM sessions: onboarding
     state pre-seeded, the main settings minus their env block (proxy routing
-    and the first-party flag must not leak into a z.ai session), and the
-    shared instruction files linked in."""
+    and the first-party flag must not leak into a z.ai session), the shared
+    instruction files linked in, and the conversation history (projects/)
+    linked so `claude --continue` resumes the same sessions in either mode."""
     main = Path.home() / _MAIN_CONFIG_DIR
     glm_dir = Path.home() / _GLM_CONFIG_DIR
     glm_dir.mkdir(exist_ok=True)
     _seed_state(glm_dir)
     _copy_settings(main, glm_dir)
     _link_shared_items(main, glm_dir)
+    _link_projects_dir(main, glm_dir)
     return glm_dir
 
 
@@ -194,6 +202,105 @@ def _copy_item(source: Path, target: Path) -> None:
         shutil.copytree(source, target, dirs_exist_ok=True)
     else:
         shutil.copy2(source, target)
+
+
+def _link_projects_dir(main: Path, glm_dir: Path) -> None:
+    """Shares the conversation history (projects/) from the main config dir
+    into the GLM one as a live link, so `claude --continue` resumes the same
+    sessions regardless of the active provider. A projects tree must stay a
+    real link — never a copy — so there is no copy fallback here; on failure
+    it warns and leaves the histories separate for this session rather than
+    blocking the launch."""
+    source = main / _PROJECTS
+    target = glm_dir / _PROJECTS
+    try:
+        source.mkdir(parents=True, exist_ok=True)
+        if _points_at(target, source):
+            return
+        _merge_projects(target, source)
+        _link_directory(source, target)
+    except OSError as exc:
+        log.red_banner([
+            "Could not share conversation history with the GLM config dir.",
+            f"  {exc}",
+            "Claude and GLM histories stay separate this session.",
+        ])
+
+
+def _points_at(target: Path, source: Path) -> bool:
+    """True when `target` already links to `source`. `Path.is_symlink()` is
+    False for Windows directory junctions, so compare resolved paths."""
+    try:
+        return target.is_dir() and target.resolve() == source.resolve()
+    except OSError:
+        return False
+
+
+def _merge_projects(target: Path, source: Path) -> None:
+    """Moves session content from an existing GLM projects tree into `source`
+    before we replace it with a link, so nothing is lost. A session id present
+    in both trees is the SAME logical session (UUIDs are unique); the newer
+    mtime wins, since transcripts only grow by appending. Never aborts on a
+    collision — that would leave the histories permanently separate."""
+    if not target.exists() or _points_at(target, source):
+        return
+    for project_dir in [p for p in target.iterdir() if p.is_dir()]:
+        dest_project = source / project_dir.name
+        dest_project.mkdir(parents=True, exist_ok=True)
+        for child in list(project_dir.iterdir()):
+            _move_session_child(child, dest_project / child.name)
+    shutil.rmtree(target, ignore_errors=True)
+
+
+def _move_session_child(child: Path, dest: Path) -> None:
+    """Moves one session file/dir from the GLM tree into the shared store. On a
+    same-name collision keeps the newer mtime copy; every branch removes
+    `child` so the target tree empties out before being replaced by the link."""
+    if not dest.exists():
+        shutil.move(str(child), str(dest))
+        return
+    child_newer = child.stat().st_mtime > dest.stat().st_mtime
+    if child.is_dir() and dest.is_dir():
+        # Same session's subagent transcripts — fold in, then drop the copy.
+        shutil.copytree(child, dest, dirs_exist_ok=True)
+        shutil.rmtree(child)
+    elif child.is_file() and dest.is_file():
+        if child_newer:
+            shutil.move(str(child), str(dest))  # overwrites dest
+        else:
+            child.unlink()
+    else:
+        # Type mismatch for one id (shouldn't happen): keep dest, drop child.
+        shutil.rmtree(child) if child.is_dir() else child.unlink()
+
+
+def _link_directory(source: Path, target: Path) -> None:
+    """Creates a directory link at `target` -> `source`: a symlink where the OS
+    and privilege allow, otherwise a Windows directory junction (needs no
+    elevation). Raises on total failure."""
+    try:
+        target.symlink_to(source, target_is_directory=True)
+        return
+    except OSError:
+        pass
+    if platforms.current().is_windows:
+        _create_windows_junction(source, target)
+        return
+    raise OSError(f"Cannot create directory link {target} -> {source}")
+
+
+def _create_windows_junction(source: Path, target: Path) -> None:
+    """`mklink /J` makes an unprivileged directory junction — the Windows
+    stand-in for a symlink when SeCreateSymbolicLinkPrivilege is unavailable,
+    and transparent to claude's own file access."""
+    result = subprocess.run(
+        ["cmd", "/c", "mklink", "/J", str(target), str(source)],
+        capture_output=True, text=True,
+    )
+    if result.returncode != 0:
+        raise OSError(
+            f"mklink /J {target} -> {source} failed: {result.stderr.strip()}"
+        )
 
 
 def with_default_model(arguments: list[str]) -> list[str]:
