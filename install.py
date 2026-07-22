@@ -36,11 +36,18 @@ _REPO_ROOT = Path(__file__).resolve().parent
 _ERROR_LOG = Path.home() / ".llm_cli" / "logs" / "llm_cli-error.log"
 
 
+def _in_virtualenv() -> bool:
+    """True when running inside a venv/virtualenv, where pip refuses --user."""
+    return sys.prefix != sys.base_prefix
+
+
 def _pip_install() -> int:
-    print("[1/2] Installing the llm_cli package and entry points (pip --user)...")
-    result = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "--user", "--upgrade", str(_REPO_ROOT)]
-    )
+    scope = "venv" if _in_virtualenv() else "--user"
+    print(f"[1/2] Installing the llm_cli package and entry points (pip {scope})...")
+    cmd = [sys.executable, "-m", "pip", "install", "--upgrade", str(_REPO_ROOT)]
+    if not _in_virtualenv():
+        cmd.insert(4, "--user")
+    result = subprocess.run(cmd)
     return result.returncode
 
 
