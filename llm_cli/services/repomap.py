@@ -15,7 +15,6 @@ from __future__ import annotations
 from collections import Counter, defaultdict, namedtuple
 from pathlib import Path
 
-import networkx as nx
 import tree_sitter as ts
 from grep_ast.parsers import filename_to_lang
 from grep_ast.tsl import get_language, get_parser
@@ -25,10 +24,11 @@ QUERIES_DIR = Path(__file__).resolve().parent.parent / "queries"
 # kind is "def" (a definition) or "ref" (a reference/call site).
 Tag = namedtuple("Tag", "path name kind line")
 
-# PageRank damping factor and iteration bounds (networkx defaults, named to
+# PageRank damping factor and convergence bounds (the reference values, named to
 # avoid magic numbers per the project conventions).
 _PAGERANK_ALPHA = 0.85
 _PAGERANK_MAX_ITER = 100
+_PAGERANK_TOLERANCE = 1.0e-6
 
 _query_cache: dict[str, ts.Query | None] = {}
 
@@ -82,6 +82,50 @@ def get_tags(abs_path: Path, rel_path: str, lang: str) -> list[Tag]:
     return tags
 
 
+def _outgoing_shares(graph: dict[str, Counter[str]]) -> dict[str, dict[str, float]]:
+    """Out-edge weights scaled to sum to 1 per source file, so each file hands
+    out exactly its own score. Sources with no weight are dropped — they are the
+    dangling nodes, handled separately by _pagerank()."""
+    shares: dict[str, dict[str, float]] = {}
+    for source, targets in graph.items():
+        total = sum(targets.values())
+        if total:
+            shares[source] = {
+                target: weight / total for target, weight in targets.items()
+            }
+    return shares
+
+
+def _pagerank(graph: dict[str, Counter[str]]) -> dict[str, float]:
+    """Weighted PageRank by power iteration, on plain dicts.
+
+    Same formulation as the classic implementation (uniform teleportation,
+    dangling scores redistributed uniformly) without pulling in numpy/scipy for
+    graphs this small. Returns the last iterate when convergence is not reached.
+    """
+    shares = _outgoing_shares(graph)
+    nodes = {node for source, targets in graph.items() for node in (source, *targets)}
+    count = len(nodes)
+    if not count:
+        return {}
+
+    rank = {node: 1.0 / count for node in nodes}
+    teleport = (1.0 - _PAGERANK_ALPHA) / count
+    for _ in range(_PAGERANK_MAX_ITER):
+        dangling = sum(score for node, score in rank.items() if node not in shares)
+        base = teleport + _PAGERANK_ALPHA * dangling / count
+        updated = {node: base for node in nodes}
+        for source, targets in shares.items():
+            incoming = _PAGERANK_ALPHA * rank[source]
+            for target, share in targets.items():
+                updated[target] += incoming * share
+        error = sum(abs(updated[node] - rank[node]) for node in nodes)
+        rank = updated
+        if error < count * _PAGERANK_TOLERANCE:
+            break
+    return rank
+
+
 def _rank(all_tags: list[Tag]) -> tuple[dict[str, float], dict[tuple[str, str], int]]:
     """Ranks files and definitions from the full tag set.
 
@@ -103,26 +147,15 @@ def _rank(all_tags: list[Tag]) -> tuple[dict[str, float], dict[tuple[str, str], 
     # Edge referencer -> definer means "this file depends on that file"; PageRank
     # then flows toward the most depended-upon (core) files. Only cross-file
     # references matter, so identifiers defined nowhere in the tree are ignored.
-    graph = nx.DiGraph()
+    graph: dict[str, Counter[str]] = defaultdict(Counter)
     for ident, definer_files in defines.items():
         for referencer in referencers.get(ident, ()):
             for definer in definer_files:
                 if referencer == definer:
                     continue
-                weight = ref_counts[(referencer, ident)]
-                if graph.has_edge(referencer, definer):
-                    graph[referencer][definer]["weight"] += weight
-                else:
-                    graph.add_edge(referencer, definer, weight=weight)
+                graph[referencer][definer] += ref_counts[(referencer, ident)]
 
-    file_rank: dict[str, float] = {}
-    if graph.number_of_edges():
-        try:
-            file_rank = nx.pagerank(
-                graph, alpha=_PAGERANK_ALPHA, max_iter=_PAGERANK_MAX_ITER, weight="weight"
-            )
-        except nx.PowerIterationFailedConvergence:
-            file_rank = {}
+    file_rank = _pagerank(graph)
 
     symbol_refs: dict[tuple[str, str], int] = {}
     for ident, definer_files in defines.items():

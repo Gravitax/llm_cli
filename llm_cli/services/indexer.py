@@ -419,7 +419,7 @@ def generate_index(project_root: Path, files: list[tuple[str, Path]]) -> str:
     PageRank so the most depended-upon code leads. Files without a tree-sitter
     grammar fall back to the regex extractors.
     """
-    from llm_cli.services import repomap  # Deferred: pulls tree-sitter/networkx.
+    from llm_cli.services import repomap  # Deferred: pulls tree-sitter.
 
     symbols_by_path, file_rank = repomap.extract_symbols(files)
 

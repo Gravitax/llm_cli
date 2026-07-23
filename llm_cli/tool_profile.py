@@ -21,6 +21,8 @@ class ToolProfile:
     # Claude Code supports settings.json hooks: RTK PreToolUse + cache PostToolUse.
     has_rtk_hook: bool
     has_agent_hooks: bool
+    # Claude Code reads user slash commands from <home>/commands/*.md.
+    has_slash_commands: bool
     # "settings": durable proxy routing in settings.json (proxy must be up).
     # "launcher": no durable routing — the launch itself goes through `headroom wrap`.
     headroom_mode: str
@@ -52,6 +54,7 @@ CLAUDE = ToolProfile(
     ignore_file=".claudeignore",
     has_rtk_hook=True,
     has_agent_hooks=True,
+    has_slash_commands=True,
     headroom_mode="settings",
 )
 
@@ -62,6 +65,7 @@ COPILOT = ToolProfile(
     ignore_file=".copilotignore",
     has_rtk_hook=False,
     has_agent_hooks=False,
+    has_slash_commands=False,
     headroom_mode="launcher",
 )
 

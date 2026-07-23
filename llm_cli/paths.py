@@ -13,6 +13,11 @@ def install_root() -> Path:
     return home() / ".llm_cli"
 
 
+def venv_dir() -> Path:
+    """Managed virtualenv hosting the package and its console entry points."""
+    return install_root() / ".venv"
+
+
 def run_py() -> Path:
     """Installed launcher script — the stable path registered in hooks and profiles."""
     return install_root() / "run.py"

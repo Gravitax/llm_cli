@@ -8,7 +8,7 @@ version = "2.0.0"
 description = "Cross-platform token-optimization layer for Claude Code and Copilot CLI."
 requires-python = ">=3.9"
 readme = "README.md"
-dependencies = ["pyyaml", "grep-ast", "networkx"]
+dependencies = ["pyyaml", "grep-ast"]
 
 [project.scripts]
 llm_cli = "llm_cli.cli:main"

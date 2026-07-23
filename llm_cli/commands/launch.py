@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 from llm_cli import platforms, tool_profile
-from llm_cli.commands import copilot_models, prelaunch
+from llm_cli.commands import copilot_models, prelaunch, provider_models
 from llm_cli.services import (
     claude_provider,
     copilot_proxy,
@@ -38,6 +38,9 @@ _CLAUDE_TELEMETRY_OPT_OUT = {
 # that re-entrant call exec the real binary directly and break the recursion.
 _WRAPPED_SENTINEL = "LLM_CLI_WRAPPED"
 
+# Wrapper-only flag, consumed here and never forwarded to the tool.
+_MODELS_FLAG = "--models"
+
 
 def configure(subparsers) -> None:
     parser = subparsers.add_parser(
@@ -54,9 +57,9 @@ def configure(subparsers) -> None:
 def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
     forwarded = _strip_separator(args.arguments)
-    if profile.name == "copilot" and "--models" in forwarded:
+    if _MODELS_FLAG in forwarded:
         # Wrapper-only flag: print the catalog instead of launching the tool.
-        return copilot_models.run(args)
+        return _list_models(profile, args)
     forwarded, toggle_result = _handle_provider_toggle(profile, forwarded)
     if toggle_result is not None:
         return toggle_result
@@ -82,18 +85,28 @@ def run(args: argparse.Namespace) -> int:
             return 1
         forwarded = _apply_glm_routing(profile, forwarded)
     elif _uses_provider(profile, claude_provider.COPILOT):
-        prepared = copilot_proxy.prepare()
-        if prepared is None:
+        slots = copilot_proxy.prepare()
+        if slots is None:
             return 1
-        main_model, _small_model = prepared
-        print(f"Provider: GitHub Copilot · Model: {main_model}")
-        forwarded = copilot_proxy.with_default_model(forwarded, main_model)
+        print(
+            f"Provider: GitHub Copilot · Model: {slots.main} "
+            f"(/model also offers {slots.opus} and {slots.small})"
+        )
+        forwarded = copilot_proxy.with_default_model(forwarded, slots.main)
     argv = _build_argv(profile, real_binary, forwarded)
     if _wraps_through_headroom(argv, real_binary):
         os.environ[_WRAPPED_SENTINEL] = "1"
         _print_copilot_model_hint(profile, forwarded)
     print(f"Starting {profile.name}...")
     return platforms.current().exec_or_run(argv)
+
+
+def _list_models(profile: ToolProfile, args: argparse.Namespace) -> int:
+    """`--models` catalog: the copilot CLI has a single provider, `claude`
+    follows whichever one its toggle currently points at."""
+    if profile.name == "copilot":
+        return copilot_models.run(args)
+    return provider_models.run(args)
 
 
 def _handle_provider_toggle(

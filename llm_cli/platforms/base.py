@@ -42,6 +42,12 @@ class PlatformOps(abc.ABC):
     """Narrow OS primitives; selected once via platforms.current()."""
 
     is_windows: bool
+    python_exe_name: str  # File name of the interpreter inside the managed venv.
+
+    def venv_python(self) -> Path:
+        """Managed venv interpreter — the one docs and generated templates must
+        use, since the package and its dependencies live only in that venv."""
+        return self.entry_points_dir() / self.python_exe_name
 
     @abc.abstractmethod
     def shell_profile_targets(self) -> list[ProfileTarget]:
@@ -84,13 +90,9 @@ class PlatformOps(abc.ABC):
         """Clears download quarantine metadata (Zone.Identifier on Windows)."""
 
     @abc.abstractmethod
-    def default_python_hint(self) -> str:
-        """Interpreter name to show in docs and generated templates."""
-
-    @abc.abstractmethod
     def entry_points_dir(self) -> Path:
-        """Directory where `pip install --user` drops the claude/copilot
-        console executables — must be on PATH for the wrappers to resolve."""
+        """Directory where the managed venv drops the claude/copilot console
+        executables — must be on PATH for the wrappers to resolve."""
 
     @abc.abstractmethod
     def configured_path_entries(self) -> list[str]:

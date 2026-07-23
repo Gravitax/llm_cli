@@ -13,7 +13,7 @@ import shutil
 
 from llm_cli import platforms, tool_profile
 from llm_cli.commands import setup_context, setup_headroom, setup_rtk, sync
-from llm_cli.services import log, settings_editor
+from llm_cli.services import log, settings_editor, slash_commands
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 
 _CACHE_HOOKS = (("Bash", "cache-refresh-git"), ("Write", "cache-refresh-write"))
@@ -48,12 +48,22 @@ def run(args: argparse.Namespace) -> int:
         _migrate_legacy_hooks(profile)
         _register_cache_hooks(profile)
         _ensure_cache_read_permission(profile)
+    if profile.has_slash_commands:
+        _install_slash_commands(profile)
     setup_headroom.run(
         argparse.Namespace(tool=profile.name, ensure=True, remove=False)
     )
 
     log.print_ok(f"{profile.name} environment ready.")
     return 0
+
+
+def _install_slash_commands(profile: ToolProfile) -> None:
+    """The commands directory is symlinked into every provider config home, so
+    installing once here covers `claude`, `claude -glm` and `claude -copilot`."""
+    written = slash_commands.install(profile.home)
+    names = ", ".join(f"/{path.stem}" for path in written)
+    log.print_ok(f"Slash commands ({names}) written to {profile.home / 'commands'}")
 
 
 def _ensure_rtk_hook(profile: ToolProfile) -> None:

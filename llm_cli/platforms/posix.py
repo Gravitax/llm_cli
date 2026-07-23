@@ -18,6 +18,7 @@ from llm_cli.platforms.base import (
 
 class PosixOps(PlatformOps):
     is_windows = False
+    python_exe_name = "python"
 
     def shell_profile_targets(self) -> list[ProfileTarget]:
         candidates = (paths.home() / ".zshrc", paths.home() / ".bashrc")
@@ -67,12 +68,10 @@ class PosixOps(PlatformOps):
     def unblock(self, path: Path) -> None:
         pass  # No download quarantine on POSIX.
 
-    def default_python_hint(self) -> str:
-        return "python3"
-
     def entry_points_dir(self) -> Path:
-        # `pip install --user` uses the posix_user scheme → ~/.local/bin.
-        return paths.home() / ".local" / "bin"
+        # install.py installs the package into the managed venv, which drops the
+        # console executables in its bin/ directory.
+        return paths.venv_dir() / "bin"
 
     def configured_path_entries(self) -> list[str]:
         return []  # Login shells rebuild PATH; the inherited value is current.

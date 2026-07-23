@@ -1,0 +1,32 @@
+# Slash commands installed into the Claude config home. They are plain
+# markdown files under ~/.claude/commands/, which claude_config.py symlinks
+# into every provider config home — one file, same command under -glm and
+# -copilot. Names avoid the built-ins (/model, /usage) because a built-in wins
+# over a user command of the same name.
+models: |
+  ---
+  description: List every model the active Claude provider serves
+  allowed-tools: Bash({{RUN}} provider-models)
+  ---
+
+  Run `{{RUN}} provider-models` and show its output verbatim.
+
+  Context the user needs, alongside the list:
+  - `/model` only lists Claude Code's own slots plus the models gateway
+    discovery could add, never the whole catalog.
+  - Any id from the list is reachable with `claude --model <id>` at launch.
+  - Pin a default in {{CONFIG_FILE}} with CLAUDE_COPILOT_MODEL,
+    CLAUDE_COPILOT_OPUS_MODEL, CLAUDE_COPILOT_SMALL_MODEL (Copilot) or
+    CLAUDE_GLM_EXTRA_MODEL (GLM).
+
+quota: |
+  ---
+  description: Show the remaining quota of the active Claude provider
+  allowed-tools: Bash({{RUN}} provider-usage)
+  ---
+
+  Run `{{RUN}} provider-usage` and show its output verbatim.
+
+  Note for the user: the built-in `/usage` reports the Anthropic subscription
+  and this session's tokens; it cannot see a GitHub Copilot or z.ai plan. This
+  command asks the provider's own account API instead.

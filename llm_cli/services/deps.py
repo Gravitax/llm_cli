@@ -14,6 +14,7 @@ import abc
 import os
 import shutil
 import subprocess
+import sysconfig
 import re
 
 from llm_cli import paths, platforms
@@ -225,10 +226,10 @@ class WindowsDepInstaller(DependencyInstaller):
         return False
 
     def ensure_headroom(self) -> bool:
-        # pip --user drops headroom.exe in the nt_user scripts dir, which the
-        # shell profile block only adds to NEW terminals — export it now so
-        # this process (and its child steps) can see the binary.
-        _prepend_path(str(platforms.current().entry_points_dir()))
+        # pip --user drops headroom.exe in the nt_user scripts dir, which no
+        # profile block adds to this process — export it now so this process
+        # (and its child steps) can see the binary.
+        _prepend_path(_nt_user_scripts_dir())
         if shutil.which("headroom"):
             return True
         log.print_info("Installing headroom-ai (large: ML dependencies)...")
@@ -249,6 +250,11 @@ class WindowsDepInstaller(DependencyInstaller):
             return on_path
         default = paths.home() / ".local" / "bin" / "rtk.exe"
         return str(default) if default.is_file() else None
+
+
+def _nt_user_scripts_dir() -> str:
+    """Where `pip install --user` drops console executables on Windows."""
+    return sysconfig.get_path("scripts", "nt_user") or sysconfig.get_path("scripts")
 
 
 def _pip_install_argv(pip_binary: str) -> list[str]:

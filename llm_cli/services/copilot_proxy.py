@@ -10,6 +10,8 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from pathlib import Path
+from typing import NamedTuple
 
 from llm_cli import paths, platforms
 from llm_cli.services import (
@@ -17,26 +19,44 @@ from llm_cli.services import (
     claude_provider,
     config,
     deps,
+    headroom,
     log,
+    model_picker,
 )
 
 _PACKAGE = "copilot-api"
 _BINARY = "copilot-api"
+# GitHub Enterprise tenants need a copilot-api build that derives its three
+# hosts from the tenant root; the registry build is github.com-only. That build
+# is the local checkout under the install root, installed from there instead.
+_ENTERPRISE_FLAG = "--enterprise-url"
+_ENTERPRISE_SOURCE_NAME = "copilot-api"
 _DEFAULT_PORT = 4141
+_EXTRA_MODEL_KEY = "CLAUDE_COPILOT_EXTRA_MODEL"
+_DISCOVERY_KEY = "CLAUDE_COPILOT_MODEL_DISCOVERY"
+_DISABLED_VALUES = {"0", "false", "no", "off"}
 _PROXY_LOG_NAME = "copilot-api.log"
 _PROXY_START_ATTEMPTS = 20
 _ACCOUNT_TYPES = {"individual", "business", "enterprise"}
 _MAIN_MODEL_PREFERENCES = (
+    "gpt-5.6-terra",
+    "gpt-5.5",
     "claude-sonnet-5",
-    "claude-opus-4.1",
-    "gpt-5",
-    "claude-sonnet-4",
+    "claude-sonnet-4.6",
     "gpt-4.1",
 )
+# Claude Code's /model picker only offers its three built-in slots, so the Opus
+# one gets its own model: mapping it to the main model too would show the same
+# entry twice and leave the Copilot catalog unreachable from the picker.
+_OPUS_MODEL_PREFERENCES = (
+    "claude-opus-4.8",
+    "claude-opus-4.6",
+    "claude-opus-4.1",
+)
 _SMALL_MODEL_PREFERENCES = (
+    "gpt-5.6-luna",
     "gpt-5-mini",
     "claude-haiku-4.5",
-    "claude-3.5-haiku",
     "gpt-4.1",
 )
 _PROVIDER_OVERRIDE_VARS = (
@@ -52,6 +72,14 @@ _PROVIDER_OVERRIDE_VARS = (
 )
 
 
+class ModelSlots(NamedTuple):
+    """The Copilot models bound to Claude Code's three built-in model slots."""
+
+    main: str
+    opus: str
+    small: str
+
+
 def is_active() -> bool:
     return claude_provider.is_active(claude_provider.COPILOT)
 
@@ -60,9 +88,15 @@ def toggle() -> bool:
     return claude_provider.toggle(claude_provider.COPILOT)
 
 
-def prepare() -> tuple[str, str] | None:
-    """Ensures the proxy is usable and returns its main and small model IDs."""
-    if not _ensure_installed() or not _ensure_authenticated():
+def prepare() -> ModelSlots | None:
+    """Ensures the proxy is usable and returns the models to route to."""
+    if not _ensure_installed():
+        return None
+    binary = shutil.which(_BINARY)
+    if binary is None:
+        log.print_err("copilot-api is not available on PATH after installation.")
+        return None
+    if not _check_enterprise_support(binary) or not _ensure_authenticated(binary):
         return None
     try:
         port = proxy_port()
@@ -70,15 +104,14 @@ def prepare() -> tuple[str, str] | None:
     except ValueError as error:
         log.print_err(str(error))
         return None
-    models = _ensure_proxy(port, account)
+    models = _ensure_proxy(binary, port, account)
     if not models:
         return None
-    selected = _select_models(models)
-    if selected is None:
+    slots = _select_models(models)
+    if slots is None:
         return None
-    main_model, small_model = selected
-    export_env(port, main_model, small_model)
-    return selected
+    export_env(port, slots)
+    return slots
 
 
 def proxy_port() -> int:
@@ -104,22 +137,54 @@ def account_type() -> str:
     return value
 
 
-def export_env(port: int, main_model: str, small_model: str) -> None:
+def export_env(port: int, slots: ModelSlots) -> None:
+    """Routes Claude Code to the proxy and fills its model slots, which is what
+    the in-session /model picker lists."""
+    values = config.load()
     os.environ.update({
         "ANTHROPIC_BASE_URL": f"http://127.0.0.1:{port}",
         "ANTHROPIC_AUTH_TOKEN": "dummy",
-        "ANTHROPIC_MODEL": main_model,
-        "ANTHROPIC_DEFAULT_OPUS_MODEL": main_model,
-        "ANTHROPIC_DEFAULT_SONNET_MODEL": main_model,
-        "ANTHROPIC_SMALL_FAST_MODEL": small_model,
-        "ANTHROPIC_DEFAULT_HAIKU_MODEL": small_model,
+        "ANTHROPIC_MODEL": slots.main,
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": slots.opus,
+        "ANTHROPIC_DEFAULT_SONNET_MODEL": slots.main,
+        "ANTHROPIC_SMALL_FAST_MODEL": slots.small,
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": slots.small,
         "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
-        "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+        # The proxy answers /v1/models, so the picker can list the Claude models
+        # of the subscription instead of the three slots alone.
+        **model_picker.discovery_env(_discovery_enabled(values)),
+        **model_picker.custom_option_env(
+            values.get(_EXTRA_MODEL_KEY, ""), "Copilot"
+        ),
         "CLAUDE_CONFIG_DIR": str(
             claude_config.ensure(claude_provider.COPILOT, "Copilot")
         ),
     })
     os.environ.pop("ANTHROPIC_API_KEY", None)
+
+
+def _discovery_enabled(values: dict[str, str]) -> bool:
+    """Discovery costs one extra request per launch and is the only way to get
+    more than three entries in the picker; opt out with the config key."""
+    return values.get(_DISCOVERY_KEY, "").strip().lower() not in _DISABLED_VALUES
+
+
+def catalog() -> list[str]:
+    """Model IDs the running proxy exposes; empty when it is not up."""
+    return _list_models(proxy_port())
+
+
+def show_usage() -> int:
+    """Prints the Copilot quota; returns the copilot-api exit code.
+
+    Delegated rather than reimplemented: copilot-api already holds the GitHub
+    token and knows the tenant endpoint, so llm_cli never has to read it.
+    """
+    binary = shutil.which(_BINARY)
+    if binary is None:
+        log.print_err("copilot-api is not installed — run `claude -copilot` first.")
+        return 1
+    return subprocess.call([binary, "check-usage", *_enterprise_args()])
 
 
 def with_default_model(arguments: list[str], model: str) -> list[str]:
@@ -128,29 +193,91 @@ def with_default_model(arguments: list[str], model: str) -> list[str]:
     return ["--model", model, *arguments]
 
 
+def _enterprise_domain() -> str:
+    """Configured GitHub Enterprise tenant root, scheme and trailing slash
+    stripped. Empty when Copilot is served by github.com."""
+    configured = config.load().get("GITHUB_COPILOT_ENTERPRISE_DOMAIN", "")
+    return configured.split("://")[-1].strip("/")
+
+
+def _enterprise_args() -> list[str]:
+    """The copilot-api tenant flag, or nothing on github.com."""
+    domain = _enterprise_domain()
+    return [_ENTERPRISE_FLAG, domain] if domain else []
+
+
+def _check_enterprise_support(binary: str) -> bool:
+    """Refuses the launch when the tenant flag is configured but unsupported.
+
+    A data-residency tenant serves Copilot from its own hosts (DOMAIN,
+    api.DOMAIN, copilot-api.DOMAIN) and its tokens are valid nowhere else. The
+    registry build of copilot-api hardcodes the github.com equivalents, so it
+    would open a github.com device flow and link a personal account instead of
+    the enterprise one — a silent wrong answer, hence the hard stop.
+    """
+    domain = _enterprise_domain()
+    if not domain or _supports_enterprise(binary):
+        return True
+    log.red_banner([
+        f"GitHub Enterprise Copilot is configured ({domain}), but the",
+        "installed copilot-api only supports github.com: its device flow",
+        "would link a personal account, not the enterprise one.",
+        "",
+        "Install the enterprise-capable build:",
+        f"  npm install -g {_enterprise_source_dir()}",
+        "Other enterprise-capable routes:",
+        f"  copilot login --host {domain}      # official CLI, then: copilot",
+        f"  {headroom.login_hint()}",
+    ])
+    return False
+
+
+def _supports_enterprise(binary: str) -> bool:
+    """True when the installed copilot-api understands the tenant flag."""
+    try:
+        result = subprocess.run(
+            [binary, "start", "--help"], capture_output=True, text=True
+        )
+    except OSError:
+        return False
+    return _ENTERPRISE_FLAG in result.stdout
+
+
+def _enterprise_source_dir() -> Path:
+    """Local checkout carrying the enterprise patch."""
+    return paths.install_root() / _ENTERPRISE_SOURCE_NAME
+
+
 def _ensure_installed() -> bool:
     installer = deps.installer()
     if not installer.ensure_node():
         return False
-    return installer.ensure_npm_cli(_PACKAGE, _BINARY)
+    return installer.ensure_npm_cli(_install_source(), _BINARY)
 
 
-def _ensure_authenticated() -> bool:
-    binary = shutil.which(_BINARY)
-    if binary is None:
-        log.print_err("copilot-api is not available on PATH after installation.")
-        return False
+def _install_source() -> str:
+    """What to hand to `npm install -g`: the patched local checkout when a
+    tenant is configured and it is present, the registry package otherwise."""
+    source = _enterprise_source_dir()
+    if _enterprise_domain() and source.is_dir():
+        return str(source)
+    return _PACKAGE
+
+
+def _ensure_authenticated(binary: str) -> bool:
     if _token_exists(binary):
         return True
+    auth_command = " ".join([_BINARY, "auth", *_enterprise_args()])
     if not sys.stdin.isatty():
         log.red_banner([
             "GitHub Copilot authentication is required.",
             "Run this command in an interactive terminal:",
-            "  copilot-api auth",
+            f"  {auth_command}",
         ])
         return False
-    print("Authenticating copilot-api with GitHub...")
-    result = subprocess.call([binary, "auth"])
+    target = _enterprise_domain() or "GitHub"
+    print(f"Authenticating copilot-api with {target}...")
+    result = subprocess.call([binary, "auth", *_enterprise_args()])
     if result != 0 or not _token_exists(binary):
         log.print_err("GitHub authentication failed.")
         return False
@@ -160,7 +287,7 @@ def _ensure_authenticated() -> bool:
 def _token_exists(binary: str) -> bool:
     try:
         result = subprocess.run(
-            [binary, "debug", "--json"],
+            [binary, "debug", "--json", *_enterprise_args()],
             capture_output=True,
             text=True,
         )
@@ -174,7 +301,7 @@ def _token_exists(binary: str) -> bool:
         return False
 
 
-def _ensure_proxy(port: int, account: str) -> list[str]:
+def _ensure_proxy(binary: str, port: int, account: str) -> list[str]:
     models = _list_models(port)
     if models:
         return models
@@ -186,10 +313,6 @@ def _ensure_proxy(port: int, account: str) -> list[str]:
         log.print_err("Set COPILOT_API_PORT in the llm_cli config to another port.")
         return []
 
-    binary = shutil.which(_BINARY)
-    if binary is None:
-        log.print_err("copilot-api is not available on PATH.")
-        return []
     log_file = paths.logs_dir() / _PROXY_LOG_NAME
     print(f"Starting copilot-api proxy (logs: {log_file})...")
     platforms.current().spawn_detached(
@@ -201,6 +324,7 @@ def _ensure_proxy(port: int, account: str) -> list[str]:
             "--account-type",
             account,
             "--proxy-env",
+            *_enterprise_args(),
         ],
         log_path=log_file,
         env=_proxy_env(),
@@ -212,7 +336,9 @@ def _ensure_proxy(port: int, account: str) -> list[str]:
             return models
     log.print_err("copilot-api failed to start or expose the Copilot model catalog.")
     log.print_err(f"Details in {log_file}")
-    log.print_err("Re-authenticate with: copilot-api auth")
+    log.print_err(
+        "Re-authenticate with: " + " ".join([_BINARY, "auth", *_enterprise_args()])
+    )
     return []
 
 
@@ -255,7 +381,7 @@ def _list_models(port: int) -> list[str]:
     ]
 
 
-def _select_models(models: list[str]) -> tuple[str, str] | None:
+def _select_models(models: list[str]) -> ModelSlots | None:
     values = config.load()
     main = _select_model(
         "CLAUDE_COPILOT_MODEL",
@@ -266,6 +392,13 @@ def _select_models(models: list[str]) -> tuple[str, str] | None:
     )
     if main is None:
         return None
+    opus = _select_model(
+        "CLAUDE_COPILOT_OPUS_MODEL",
+        values.get("CLAUDE_COPILOT_OPUS_MODEL", ""),
+        models,
+        _OPUS_MODEL_PREFERENCES,
+        main,
+    )
     small = _select_model(
         "CLAUDE_COPILOT_SMALL_MODEL",
         values.get("CLAUDE_COPILOT_SMALL_MODEL", ""),
@@ -273,7 +406,9 @@ def _select_models(models: list[str]) -> tuple[str, str] | None:
         _SMALL_MODEL_PREFERENCES,
         main,
     )
-    return (main, small) if small is not None else None
+    if opus is None or small is None:
+        return None
+    return ModelSlots(main=main, opus=opus, small=small)
 
 
 def _select_model(

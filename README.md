@@ -32,16 +32,18 @@ llm_cli/             the Python core (invoked as `python3 run.py <command>`)
   services/          reusable logic: indexer, cache, settings.json editor,
                      instructions templates, headroom, deps, atlassian API...
   commands/          one module per subcommand (orchestration only)
-install.py           one-command cross-platform installer (pip + wizard)
+install.py           one-command cross-platform installer (venv + pip + wizard)
 pyproject.toml       packaging + the claude/copilot/llm_cli entry points
 run.py               launcher — installed to ~/.llm_cli/run.py for hooks
 claude/, copilot/    tool-specific docs
 ```
 
-`pip install` places the `claude`/`copilot`/`llm_cli` executables on
-PATH; the package and `run.py` are also copied to `~/.llm_cli/` (via `sync`) so
-the settings.json hooks can reference a fixed path. Requires Python >= 3.8
-(`python3` on POSIX, `python` or `py -3` on Windows; override with `PYTHON_BIN`).
+The package lives in the managed virtualenv `~/.llm_cli/.venv`, whose
+`bin`/`Scripts` directory holds the `claude`/`copilot`/`llm_cli` executables and
+is the directory added to PATH; the package and `run.py` are also copied to
+`~/.llm_cli/` (via `sync`) so the settings.json hooks can reference a fixed path.
+Requires a Python >= 3.9 interpreter to build that venv — `install.py` itself
+runs on any Python and picks a suitable one from PATH.
 
 ## Setup
 
@@ -53,15 +55,16 @@ python install.py                # Linux/macOS/WSL/Windows — install + wizard
 python install.py --no-wizard    # install the package + entry points only
 ```
 
-`install.py` runs `pip install --user .` (installing the `claude`/`copilot`
-console executables), writes the PATH activation block into your shell profiles,
+`install.py` creates `~/.llm_cli/.venv` when missing then runs `pip install .`
+inside it (installing the `claude`/`copilot` console executables), writes the
+PATH activation block pointing at that venv into your shell profiles,
 then runs the interactive wizard. The wizard installs missing dependencies
 (node >= 20, uv, rtk, headroom and the selected agent CLIs — winget guidance
 only on Windows), activates the layer, offers the Atlassian credentials + global
 MCP setup, then runs the diagnostics. Or activate a single tool directly:
 
 ```bash
-python3 ~/.llm_cli/run.py activate claude     # or: ... activate copilot
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py activate claude     # or: ... activate copilot
 ```
 
 > Open a **new terminal** after installing so `claude`/`copilot` are on PATH —
@@ -71,7 +74,7 @@ After the first activation, just run `claude` or `copilot` from any project.
 Every other operation is a subcommand of the core:
 
 ```bash
-python3 ~/.llm_cli/run.py <command>
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py <command>
 
 setup-env --tool claude        # full environment repair (sync, instructions, hooks)
 setup-context-cache [path]     # regenerate the project symbol index (-u to remove)
@@ -98,19 +101,60 @@ claude            # authenticate on first use, then launch through Copilot
 claude -copilot   # switch back to Anthropic
 ```
 
-The main and small models are selected from the live Copilot catalog. Override
-them in `~/.config/llm_cli/atlassian.env` when needed:
+Models are picked from the live Copilot catalog and can be pinned in
+`~/.config/llm_cli/atlassian.env`:
 
 ```text
-CLAUDE_COPILOT_MODEL=claude-sonnet-5
-CLAUDE_COPILOT_SMALL_MODEL=gpt-5-mini
+CLAUDE_COPILOT_MODEL=gpt-5.6-terra
+CLAUDE_COPILOT_OPUS_MODEL=claude-opus-4.8
+CLAUDE_COPILOT_SMALL_MODEL=gpt-5.6-luna
+CLAUDE_COPILOT_EXTRA_MODEL=gpt-5.6-sol
 COPILOT_API_ACCOUNT_TYPE=individual
 COPILOT_API_PORT=4141
 ```
 
 `COPILOT_API_ACCOUNT_TYPE` accepts `individual`, `business` or `enterprise`.
-Passing Claude's normal `--model <copilot-model-id>` option overrides the main
-model for one launch.
+
+## What `/model` can show
+
+Claude Code's picker is not the provider's catalog. It lists its own model
+slots, each remapped by an `ANTHROPIC_DEFAULT_*_MODEL` variable, plus what two
+documented mechanisms add:
+
+| Source | Copilot | GLM |
+| --- | --- | --- |
+| Slots (`sonnet`, `opus`, `haiku`) | `CLAUDE_COPILOT_MODEL`, `..._OPUS_MODEL`, `..._SMALL_MODEL` | `glm-5-turbo`, `glm-5.2[1m]`, `glm-4.6` |
+| Gateway discovery of `/v1/models` | yes — but only ids starting with `claude` | no — every id starts with `glm-` |
+| One free-form entry | `CLAUDE_COPILOT_EXTRA_MODEL` | `CLAUDE_GLM_EXTRA_MODEL` |
+
+Discovery is on by default for Copilot and costs one request per launch; set
+`CLAUDE_COPILOT_MODEL_DISCOVERY=0` to turn it off. It is mutually exclusive
+with `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, which llm_cli therefore stops
+exporting while discovery is on.
+
+Everything else in the catalog is reachable at launch with
+`claude --model <id>`. `claude --models` lists it: the flag is consumed by the
+wrapper and follows the active provider, so it prints the Copilot catalog under
+`-copilot`, the z.ai one under `-glm`, and the Anthropic aliases otherwise.
+
+Two slash commands, installed by `setup-env` into `~/.claude/commands/` and
+shared by all three providers, cover the rest:
+
+| Command | What it does |
+| --- | --- |
+| `/models` | the full catalog of the active provider |
+| `/quota` | the remaining quota of the active provider |
+
+`/quota` exists because the built-in `/usage` only knows the Anthropic
+subscription: it reports this session's tokens and cannot see a Copilot or
+z.ai plan. It reads the GitHub Copilot quota through `copilot-api check-usage`
+and the z.ai Coding Plan quota from `api.z.ai/api/monitor/usage/quota/limit`.
+Both are also available outside a session:
+
+```bash
+llm_cli provider-models
+llm_cli provider-usage
+```
 
 > `copilot-api` is a reverse-engineered, third-party proxy that is not supported
 > by GitHub and may break when Copilot changes. Excessive automated use may
@@ -140,9 +184,9 @@ This trades the ~150 tool definitions being loaded in every session (token
 cost) for a simpler, one-time init:
 
 ```bash
-python3 ~/.llm_cli/run.py setup-atlassian   # one-time: prompt + validate + store tokens, then registers MCP globally
-python3 ~/.llm_cli/run.py setup-mcp         # (re)apply the global registration on its own
-python3 ~/.llm_cli/run.py setup-mcp -u      # remove the global registration
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-atlassian   # one-time: prompt + validate + store tokens, then registers MCP globally
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-mcp         # (re)apply the global registration on its own
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-mcp -u      # remove the global registration
 ```
 
 `setup-mcp` writes the servers directly into each tool's user-scope config
@@ -174,16 +218,16 @@ layers. Two routing modes, resolved by the tool profile:
   `setup-atlassian` (`GITHUB_COPILOT_ENTERPRISE_DOMAIN`).
 
 ```bash
-python3 ~/.llm_cli/run.py setup-headroom --tool claude      # install + wrap + verify
-python3 ~/.llm_cli/run.py setup-headroom --tool claude -u   # unwrap — restore direct API access
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-headroom --tool claude      # install + wrap + verify
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-headroom --tool claude -u   # unwrap — restore direct API access
 headroom perf                                               # token savings after a session
 ```
 
 ## Diagnostics
 
 ```bash
-python3 ~/.llm_cli/run.py check claude  [project_path]
-python3 ~/.llm_cli/run.py check copilot [project_path]
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py check claude  [project_path]
+~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py check copilot [project_path]
 rtk gain         # RTK token savings after a session
 headroom perf    # Headroom savings (if wrapped)
 ```

@@ -21,8 +21,7 @@ INDEX_ENTRY_MARKER = "# Project context index"
 
 def run_command_prefix() -> str:
     """How generated docs tell the agent to invoke llm_cli."""
-    python = platforms.current().default_python_hint()
-    return f"{python} {paths.run_py()}"
+    return f"{platforms.current().venv_python()} {paths.run_py()}"
 
 
 def write_ignore_file(profile: ToolProfile, directory: Path) -> bool:

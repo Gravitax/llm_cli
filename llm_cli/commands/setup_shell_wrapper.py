@@ -46,7 +46,8 @@ def run(args: argparse.Namespace) -> int:
 
 
 def _posix_body() -> str:
-    return 'export PATH="$HOME/.local/bin:$PATH"'
+    bin_dir = str(platforms.current().entry_points_dir())
+    return f'export PATH="{bin_dir}:$PATH"'
 
 
 def _powershell_body() -> str:

@@ -36,6 +36,7 @@ _HOOK_BODY = """\
 {guard_open}dir=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 run="$HOME/.llm_cli/run.py"
 py="${{PYTHON_BIN:-}}"
+[ -n "$py" ] || {{ [ -x "{venv_python}" ] && py="{venv_python}"; }}
 [ -n "$py" ] || {{ command -v python3 >/dev/null 2>&1 && py=python3 || py=python; }}
 if command -v cygpath >/dev/null 2>&1; then dir=$(cygpath -w "$dir"); run=$(cygpath -w "$run"); fi
 [ -f "$run" ] && "$py" "$run" hook git-refresh "$dir" || true
@@ -71,6 +72,8 @@ def hook_body(hook_name: str) -> str:
     return _HOOK_BODY.format(
         guard_open='if [ "$3" = "1" ]; then\n' if branch_only else "",
         guard_close="fi\n" if branch_only else "",
+        # Forward slashes: the same literal works in sh and in Git Bash on Windows.
+        venv_python=platforms.current().venv_python().as_posix(),
     )
 
 

@@ -21,15 +21,26 @@ from pathlib import Path
 
 from llm_cli import platforms
 from llm_cli.platforms.base import ProfileTarget
-from llm_cli.services import claude_config, claude_provider, log, text_blocks
+from llm_cli.services import (
+    claude_config,
+    claude_provider,
+    config,
+    log,
+    model_picker,
+    text_blocks,
+)
 
 GLM_BASE_URL = "https://api.z.ai/api/anthropic"
-# The [1m] suffix is required — without it z.ai silently serves a reduced
-# context window instead of the model's full 1M tokens.
-GLM_DEFAULT_MODEL = "glm-5.2[1m]"
-GLM_HAIKU_MODEL = "glm-4.7"
+# One model per Claude Code slot, so /model offers three real choices instead
+# of the same id twice. The [1m] suffix is documented for glm-5.2 only —
+# without it z.ai silently serves a reduced context window instead of the
+# model's full 1M tokens — so the other slots stay on the plain ids.
+GLM_DEFAULT_MODEL = "glm-5-turbo"
+GLM_OPUS_MODEL = "glm-5.2[1m]"
+GLM_SMALL_MODEL = "glm-4.6"
 
-_API_KEY_ENV = "GLM_API_KEY"
+API_KEY_ENV = "GLM_API_KEY"
+_EXTRA_MODEL_KEY = "CLAUDE_GLM_EXTRA_MODEL"
 _API_TIMEOUT_MS = "3000000"  # Long agentic turns need it (value from z.ai docs).
 _KEY_BLOCK_BEGIN = "# >>> llm_cli glm >>>"
 _KEY_BLOCK_END = "# <<< llm_cli glm <<<"
@@ -50,13 +61,13 @@ def require_api_key() -> bool:
     persist it to the shell profile) on interactive terminals. Never falls
     back to the Anthropic API silently — that would bill the wrong
     subscription."""
-    if os.environ.get(_API_KEY_ENV):
+    if os.environ.get(API_KEY_ENV):
         return True
     log.red_banner([
-        f"GLM provider is ACTIVE but {_API_KEY_ENV} is not set.",
+        f"GLM provider is ACTIVE but {API_KEY_ENV} is not set.",
         "Set it in the current shell:",
-        f'  PowerShell: $env:{_API_KEY_ENV} = "<your z.ai key>"',
-        f"  bash/zsh:   export {_API_KEY_ENV}=<your z.ai key>",
+        f'  PowerShell: $env:{API_KEY_ENV} = "<your z.ai key>"',
+        f"  bash/zsh:   export {API_KEY_ENV}=<your z.ai key>",
         "or switch back to Anthropic with: claude -glm",
     ])
     if not sys.stdin.isatty():
@@ -64,7 +75,7 @@ def require_api_key() -> bool:
     key = _prompt_for_key()
     if not key:
         return False
-    os.environ[_API_KEY_ENV] = key
+    os.environ[API_KEY_ENV] = key
     _offer_persist(key)
     return True
 
@@ -82,7 +93,7 @@ def _offer_persist(key: str) -> None:
     target = _current_shell_profile()
     if target is None:
         return
-    reply = input(f"  Save {_API_KEY_ENV} to {target.path}? [Y/n] ").strip() or "y"
+    reply = input(f"  Save {API_KEY_ENV} to {target.path}? [Y/n] ").strip() or "y"
     if not reply.lower().startswith("y"):
         print("  Not saved — you will be asked again next GLM session.")
         return
@@ -107,9 +118,9 @@ def _current_shell_profile() -> ProfileTarget | None:
 def _write_key_block(target: ProfileTarget, key: str) -> None:
     encoding = platforms.current().profile_encoding()
     if target.kind == "powershell":
-        body = f'$env:{_API_KEY_ENV} = "{key}"'
+        body = f'$env:{API_KEY_ENV} = "{key}"'
     else:
-        body = f'export {_API_KEY_ENV}="{key}"'
+        body = f'export {API_KEY_ENV}="{key}"'
     text_blocks.upsert_block(
         target.path, _KEY_BLOCK_BEGIN, _KEY_BLOCK_END, body,
         newline=encoding.newline, bom=encoding.bom,
@@ -122,14 +133,22 @@ def export_env() -> None:
     the in-session /model picker shows the GLM models. CLAUDE_CONFIG_DIR
     points at a config home without the claude.ai OAuth login — with the login
     visible, claude sends the OAuth bearer instead of ANTHROPIC_AUTH_TOKEN and
-    z.ai rejects it with 401."""
+    z.ai rejects it with 401.
+
+    z.ai does serve /v1/models, but every id starts with `glm-` and Claude
+    Code's gateway discovery drops ids that do not start with `claude` or
+    `anthropic` — so the picker is the three slots plus the one custom entry,
+    and `claude --model <id>` is the way to any other GLM model."""
     os.environ.update({
         "ANTHROPIC_BASE_URL": GLM_BASE_URL,
-        "ANTHROPIC_AUTH_TOKEN": os.environ[_API_KEY_ENV],
-        "ANTHROPIC_DEFAULT_OPUS_MODEL": GLM_DEFAULT_MODEL,
+        "ANTHROPIC_AUTH_TOKEN": os.environ[API_KEY_ENV],
+        "ANTHROPIC_DEFAULT_OPUS_MODEL": GLM_OPUS_MODEL,
         "ANTHROPIC_DEFAULT_SONNET_MODEL": GLM_DEFAULT_MODEL,
-        "ANTHROPIC_DEFAULT_HAIKU_MODEL": GLM_HAIKU_MODEL,
+        "ANTHROPIC_DEFAULT_HAIKU_MODEL": GLM_SMALL_MODEL,
         "API_TIMEOUT_MS": _API_TIMEOUT_MS,
+        **model_picker.custom_option_env(
+            config.load().get(_EXTRA_MODEL_KEY, ""), "GLM"
+        ),
         "CLAUDE_CONFIG_DIR": str(ensure_config_dir()),
     })
     # A leftover Anthropic key would take precedence over AUTH_TOKEN.

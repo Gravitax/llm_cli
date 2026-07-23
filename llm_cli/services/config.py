@@ -7,7 +7,9 @@ Single source of truth, written by `setup-atlassian` and read by every consumer:
     MCP_REGISTRY_URL (optional), GITHUB_COPILOT_ENTERPRISE_DOMAIN (optional),
     CLAUDE_PROVIDER (optional, "anthropic"|"glm"|"copilot"),
     COPILOT_API_PORT, COPILOT_API_ACCOUNT_TYPE,
-    CLAUDE_COPILOT_MODEL, CLAUDE_COPILOT_SMALL_MODEL (optional).
+    CLAUDE_COPILOT_MODEL, CLAUDE_COPILOT_OPUS_MODEL,
+    CLAUDE_COPILOT_SMALL_MODEL, CLAUDE_COPILOT_EXTRA_MODEL,
+    CLAUDE_COPILOT_MODEL_DISCOVERY, CLAUDE_GLM_EXTRA_MODEL (optional).
 """
 
 from __future__ import annotations

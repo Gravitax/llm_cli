@@ -6,7 +6,6 @@ import os
 import signal
 import subprocess
 import sys
-import sysconfig
 import winreg
 from pathlib import Path
 
@@ -21,6 +20,7 @@ from llm_cli.platforms.base import (
 
 class WindowsOps(PlatformOps):
     is_windows = True
+    python_exe_name = "python.exe"
 
     def shell_profile_targets(self) -> list[ProfileTarget]:
         profile = self._current_user_all_hosts_profile()
@@ -91,13 +91,10 @@ class WindowsOps(PlatformOps):
         except OSError:
             pass  # No stream present — nothing to unblock.
 
-    def default_python_hint(self) -> str:
-        return "python"
-
     def entry_points_dir(self) -> Path:
-        # `pip install --user` uses the nt_user scheme for console scripts.
-        scripts = sysconfig.get_path("scripts", "nt_user")
-        return Path(scripts) if scripts else Path(sysconfig.get_path("scripts"))
+        # install.py installs the package into the managed venv, which drops the
+        # console executables in its Scripts/ directory.
+        return paths.venv_dir() / "Scripts"
 
     def configured_path_entries(self) -> list[str]:
         # Fresh-terminal PATH = HKLM system PATH + HKCU user PATH; re-reading
