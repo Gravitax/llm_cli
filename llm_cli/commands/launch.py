@@ -17,7 +17,14 @@ from pathlib import Path
 
 from llm_cli import platforms, tool_profile
 from llm_cli.commands import copilot_models, prelaunch
-from llm_cli.services import deps, glm, headroom, log
+from llm_cli.services import (
+    claude_provider,
+    copilot_proxy,
+    deps,
+    glm,
+    headroom,
+    log,
+)
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 
 _CLAUDE_TELEMETRY_OPT_OUT = {
@@ -50,9 +57,9 @@ def run(args: argparse.Namespace) -> int:
     if profile.name == "copilot" and "--models" in forwarded:
         # Wrapper-only flag: print the catalog instead of launching the tool.
         return copilot_models.run(args)
-    forwarded, toggled = _handle_glm_toggle(profile, forwarded)
-    if toggled:
-        return 0
+    forwarded, toggle_result = _handle_provider_toggle(profile, forwarded)
+    if toggle_result is not None:
+        return toggle_result
 
     deps.export_local_bin_path()
     real_binary = _resolve_real_binary(profile.name)
@@ -70,10 +77,17 @@ def run(args: argparse.Namespace) -> int:
 
     prelaunch.run_steps(profile)
     _export_tool_env(profile)
-    if _uses_glm(profile):
+    if _uses_provider(profile, claude_provider.GLM):
         if not glm.require_api_key():
             return 1
         forwarded = _apply_glm_routing(profile, forwarded)
+    elif _uses_provider(profile, claude_provider.COPILOT):
+        prepared = copilot_proxy.prepare()
+        if prepared is None:
+            return 1
+        main_model, _small_model = prepared
+        print(f"Provider: GitHub Copilot · Model: {main_model}")
+        forwarded = copilot_proxy.with_default_model(forwarded, main_model)
     argv = _build_argv(profile, real_binary, forwarded)
     if _wraps_through_headroom(argv, real_binary):
         os.environ[_WRAPPED_SENTINEL] = "1"
@@ -82,24 +96,35 @@ def run(args: argparse.Namespace) -> int:
     return platforms.current().exec_or_run(argv)
 
 
-def _handle_glm_toggle(
+def _handle_provider_toggle(
     profile: ToolProfile, arguments: list[str]
-) -> tuple[list[str], bool]:
-    """Strips the `-glm`/`--glm` flag (claude only) and flips the persisted
-    provider when present. The flag is ours, never forwarded to the tool —
-    the caller must stop after toggling rather than launch, since `-glm` is a
-    standalone mode switch, not a launch option."""
+) -> tuple[list[str], int | None]:
+    """Handles the wrapper-only standalone Claude provider switches."""
     if profile.name != "claude":
-        return arguments, False
-    kept = [arg for arg in arguments if arg not in ("-glm", "--glm")]
-    toggled = len(kept) != len(arguments)
-    if toggled:
+        return arguments, None
+    flags = {
+        "-glm": claude_provider.GLM,
+        "--glm": claude_provider.GLM,
+        "-copilot": claude_provider.COPILOT,
+        "--copilot": claude_provider.COPILOT,
+    }
+    selected = {flags[arg] for arg in arguments if arg in flags}
+    kept = [arg for arg in arguments if arg not in flags]
+    if not selected:
+        return arguments, None
+    if len(selected) > 1:
+        log.print_err("Use only one provider switch: -glm or -copilot.")
+        return kept, 2
+    provider = selected.pop()
+    if provider == claude_provider.GLM:
         glm.toggle()
-    return kept, toggled
+    else:
+        copilot_proxy.toggle()
+    return kept, 0
 
 
-def _uses_glm(profile: ToolProfile) -> bool:
-    return profile.name == "claude" and glm.is_active()
+def _uses_provider(profile: ToolProfile, provider: str) -> bool:
+    return profile.name == "claude" and claude_provider.is_active(provider)
 
 
 def _apply_glm_routing(profile: ToolProfile, forwarded: list[str]) -> list[str]:

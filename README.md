@@ -17,6 +17,7 @@ exact same install works everywhere with zero `.sh`/`.ps1` files.
 | CLI output compression (RTK) | PreToolUse hook rewrites bash commands, ~70-80% savings on output | hook | via instructions |
 | API-level compression (Headroom) | Proxy routing, ~15-20% savings on coding agents (60-95% on JSON) | settings wrap | launcher |
 | GLM provider (z.ai) | `claude -glm` toggles Claude Code between Anthropic and the GLM Coding Plan | ✓ | ✗ |
+| Copilot provider | `claude -copilot` routes Claude Code through the local `copilot-api` bridge | ✓ | ✗ |
 | Auto cache refresh | Launch checks + git hooks (+ PostToolUse hooks for Claude) | ✓ | ✓ |
 | Atlassian & Bitbucket MCP | Global, user-scope registration — enabled once for every session | ✓ | ✓ |
 
@@ -83,6 +84,38 @@ git-clone PROJECT/repo         # clone from the configured Bitbucket host
 
 The `claude -glm` provider toggle switches Claude Code between the Anthropic API
 and the GLM Coding Plan (z.ai).
+
+The `claude -copilot` toggle switches Claude Code between Anthropic and GitHub
+Copilot. On the first Copilot-backed launch, `llm_cli` installs
+[`copilot-api`](https://github.com/ericc-ch/copilot-api), starts GitHub's device
+authentication flow, then keeps the local Anthropic-compatible proxy running on
+`127.0.0.1:4141`. The proxy stores its GitHub token itself in its user-private
+data directory; `llm_cli` never reads, prints or copies that token.
+
+```bash
+claude -copilot   # switch to GitHub Copilot
+claude            # authenticate on first use, then launch through Copilot
+claude -copilot   # switch back to Anthropic
+```
+
+The main and small models are selected from the live Copilot catalog. Override
+them in `~/.config/llm_cli/atlassian.env` when needed:
+
+```text
+CLAUDE_COPILOT_MODEL=claude-sonnet-5
+CLAUDE_COPILOT_SMALL_MODEL=gpt-5-mini
+COPILOT_API_ACCOUNT_TYPE=individual
+COPILOT_API_PORT=4141
+```
+
+`COPILOT_API_ACCOUNT_TYPE` accepts `individual`, `business` or `enterprise`.
+Passing Claude's normal `--model <copilot-model-id>` option overrides the main
+model for one launch.
+
+> `copilot-api` is a reverse-engineered, third-party proxy that is not supported
+> by GitHub and may break when Copilot changes. Excessive automated use may
+> trigger GitHub abuse detection or account restrictions; use it responsibly
+> and review its upstream warnings before enabling this mode.
 
 ## Windows notes
 

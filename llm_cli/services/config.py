@@ -5,7 +5,9 @@ Single source of truth, written by `setup-atlassian` and read by every consumer:
     CONFLUENCE_URL, JIRA_URL, BITBUCKET_URL, BITBUCKET_USERNAME,
     CONFLUENCE_TOKEN, JIRA_TOKEN, BITBUCKET_TOKEN,
     MCP_REGISTRY_URL (optional), GITHUB_COPILOT_ENTERPRISE_DOMAIN (optional),
-    CLAUDE_PROVIDER (optional, "glm"|"anthropic" — the `claude -glm` toggle).
+    CLAUDE_PROVIDER (optional, "anthropic"|"glm"|"copilot"),
+    COPILOT_API_PORT, COPILOT_API_ACCOUNT_TYPE,
+    CLAUDE_COPILOT_MODEL, CLAUDE_COPILOT_SMALL_MODEL (optional).
 """
 
 from __future__ import annotations

@@ -11,7 +11,14 @@ import argparse
 from pathlib import Path
 
 from llm_cli import tool_profile
-from llm_cli.services import cache, git, headroom, log, settings_editor
+from llm_cli.services import (
+    cache,
+    claude_provider,
+    git,
+    headroom,
+    log,
+    settings_editor,
+)
 from llm_cli.tool_profile import ToolProfile
 
 
@@ -69,6 +76,11 @@ def _refresh_cache(profile: ToolProfile) -> None:
 
 
 def _ensure_proxy(profile: ToolProfile) -> None:
+    if (
+        profile.name == "claude"
+        and claude_provider.active() != claude_provider.ANTHROPIC
+    ):
+        return
     # Launcher mode routes at launch time (`headroom wrap`) — no proxy needed.
     if profile.headroom_mode == "settings":
         headroom.ensure_proxy(profile)
