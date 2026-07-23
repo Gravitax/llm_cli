@@ -32,6 +32,7 @@ llm_cli/             the Python core (invoked as `python3 run.py <command>`)
   services/          reusable logic: indexer, cache, settings.json editor,
                      instructions templates, headroom, deps, atlassian API...
   commands/          one module per subcommand (orchestration only)
+  vendor/            third-party trees shipped with the package (copilot-api)
 install.py           one-command cross-platform installer (venv + pip + wizard)
 pyproject.toml       packaging + the claude/copilot/llm_cli entry points
 run.py               launcher — installed to ~/.llm_cli/run.py for hooks
@@ -94,6 +95,15 @@ Copilot. On the first Copilot-backed launch, `llm_cli` installs
 authentication flow, then keeps the local Anthropic-compatible proxy running on
 `127.0.0.1:4141`. The proxy stores its GitHub token itself in its user-private
 data directory; `llm_cli` never reads, prints or copies that token.
+
+That build is **not** the one on npm: a patched copy is vendored in
+`llm_cli/vendor/copilot-api`, deployed to `~/.llm_cli/copilot-api` and installed
+from there, so a clone of this repository is self-sufficient. The registry build
+is github.com-only, binds to every network interface and answers `/token` with
+the live Copilot bearer without authenticating the caller. See
+`llm_cli/vendor/copilot-api/VENDORED.md` for the full list of changes — and for
+the rule that any edit under its `src/` must be rebuilt and committed, since the
+prebuilt bundle is what gets deployed.
 
 ```bash
 claude -copilot   # switch to GitHub Copilot
@@ -201,12 +211,27 @@ The three servers use the exact IDs of your enterprise MCP registry (if any):
 Copilot's enterprise "Registry only" allowlist matches on server name — a server
 configured under any other name (e.g. `jira`, `mcp-atlassian`) is blocked.
 
-## Headroom — API-level context compression (optional)
+## Headroom — API-level context compression (opt-in, off by default)
 
 [Headroom](https://github.com/headroomlabs-ai/headroom) compresses the request
 payload between the agent and the provider API through a local proxy, on top of
 RTK (CLI output) and the symbol index (project context) — three independent
-layers. Two routing modes, resolved by the tool profile:
+layers.
+
+It is **off unless you ask for it**: it inserts a proxy into every API call and
+pulls a large dependency tree (`litellm` among others). Nothing is installed and
+no routing is written until the toggle is on.
+
+```bash
+claude -u      # toggle headroom on, then off again — installs and wraps on first enable
+copilot -u     # same switch for the copilot profile
+```
+
+The state persists as `HEADROOM_ENABLED` in the llm_cli config, and `setup-env`
+skips headroom entirely while it is off. `LLM_CLI_NO_HEADROOM=1` still disables
+it for a single session without touching the toggle.
+
+Two routing modes, resolved by the tool profile:
 
 - **claude (settings)** — durable `ANTHROPIC_BASE_URL` routing in
   `~/.claude/settings.json`; `launch` starts the proxy before each session.
@@ -220,7 +245,7 @@ layers. Two routing modes, resolved by the tool profile:
 ```bash
 ~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-headroom --tool claude      # install + wrap + verify
 ~/.llm_cli/.venv/bin/python ~/.llm_cli/run.py setup-headroom --tool claude -u   # unwrap — restore direct API access
-headroom perf                                               # token savings after a session
+headroom perf                                                                   # token savings after a session
 ```
 
 ## Diagnostics

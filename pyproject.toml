@@ -19,4 +19,11 @@ copilot = "llm_cli.entry:copilot_main"
 packages = ["llm_cli", "llm_cli.commands", "llm_cli.services", "llm_cli.platforms"]
 
 [tool.setuptools.package-data]
-llm_cli = ["templates/*.yaml", "queries/*.scm"]
+# The vendored copilot-api ships whole (sources, prebuilt bundle, lockfile):
+# llm_cli deploys that tree and installs it with npm, so a clone carries the
+# patched build instead of pulling the registry one.
+llm_cli = [
+    "templates/*.yaml",
+    "queries/*.scm",
+    "vendor/copilot-api/**/*",
+]

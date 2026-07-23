@@ -22,15 +22,15 @@ from llm_cli.services import (
     headroom,
     log,
     model_picker,
+    vendored,
 )
 
 _PACKAGE = "copilot-api"
 _BINARY = "copilot-api"
 # GitHub Enterprise tenants need a copilot-api build that derives its three
 # hosts from the tenant root; the registry build is github.com-only. That build
-# is the local checkout under the install root, installed from there instead.
+# is vendored in this package and deployed under the install root.
 _ENTERPRISE_FLAG = "--enterprise-url"
-_ENTERPRISE_SOURCE_NAME = "copilot-api"
 _DEFAULT_PORT = 4141
 _EXTRA_MODEL_KEY = "CLAUDE_COPILOT_EXTRA_MODEL"
 _DISCOVERY_KEY = "CLAUDE_COPILOT_MODEL_DISCOVERY"
@@ -60,14 +60,8 @@ _SMALL_MODEL_PREFERENCES = (
     "gpt-4.1",
 )
 _PROVIDER_OVERRIDE_VARS = (
-    "ANTHROPIC_BASE_URL",
+    *claude_provider.ROUTING_ENV_VARS,
     "ANTHROPIC_API_KEY",
-    "ANTHROPIC_AUTH_TOKEN",
-    "ANTHROPIC_MODEL",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
-    "ANTHROPIC_SMALL_FAST_MODEL",
     "CLAUDE_CONFIG_DIR",
 )
 
@@ -244,8 +238,8 @@ def _supports_enterprise(binary: str) -> bool:
 
 
 def _enterprise_source_dir() -> Path:
-    """Local checkout carrying the enterprise patch."""
-    return paths.install_root() / _ENTERPRISE_SOURCE_NAME
+    """Where the vendored build lands once deployed."""
+    return vendored.target_dir(vendored.COPILOT_API)
 
 
 def _ensure_installed() -> bool:
@@ -256,11 +250,14 @@ def _ensure_installed() -> bool:
 
 
 def _install_source() -> str:
-    """What to hand to `npm install -g`: the patched local checkout when a
-    tenant is configured and it is present, the registry package otherwise."""
-    source = _enterprise_source_dir()
-    if _enterprise_domain() and source.is_dir():
-        return str(source)
+    """What to hand to `npm install -g`: the vendored build, deployed next to
+    the install root. It wins over the registry package on github.com too, not
+    only on enterprise tenants — the registry build binds to every interface
+    and serves the Copilot token unauthenticated. The registry package stays as
+    a fallback for installs whose package carries no vendored tree."""
+    deployed = vendored.deploy(vendored.COPILOT_API)
+    if deployed is not None:
+        return str(deployed)
     return _PACKAGE
 
 

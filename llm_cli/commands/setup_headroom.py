@@ -36,6 +36,14 @@ def run(args: argparse.Namespace) -> int:
     profile = tool_profile.resolve(args.tool)
     if args.remove:
         return _remove_wrap(profile)
+    if args.ensure and not headroom.is_enabled():
+        # Opt-in: a repair run must not install headroom, nor re-add routing the
+        # user turned off. `-u` is what enables it, and it bypasses this branch
+        # by flipping the toggle before calling in.
+        log.print_info(
+            f"[SKIP] headroom is off — enable with: {profile.name} -u"
+        )
+        return 0
     if args.ensure and not headroom.is_installed():
         repair = instructions.run_command_prefix()
         log.print_info(
@@ -103,7 +111,7 @@ def _verify_wrap(profile: ToolProfile) -> int:
         log.print_err(
             f"headroom proxy is not reachable — {profile.name} cannot call the API while wrapped."
         )
-        log.print_err(f"Unwrap with: {repair} setup-headroom --tool {profile.name} -u")
+        log.print_err(f"Turn it back off with: {profile.name} -u")
         return 1
     # Doctor output is diagnostic: unrelated warnings (other tools, shell env)
     # must not fail the setup; the load-bearing checks above already did.

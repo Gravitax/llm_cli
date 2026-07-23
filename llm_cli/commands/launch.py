@@ -16,7 +16,12 @@ import sys
 from pathlib import Path
 
 from llm_cli import platforms, tool_profile
-from llm_cli.commands import copilot_models, prelaunch, provider_models
+from llm_cli.commands import (
+    copilot_models,
+    prelaunch,
+    provider_models,
+    setup_headroom,
+)
 from llm_cli.services import (
     claude_provider,
     copilot_proxy,
@@ -38,8 +43,9 @@ _CLAUDE_TELEMETRY_OPT_OUT = {
 # that re-entrant call exec the real binary directly and break the recursion.
 _WRAPPED_SENTINEL = "LLM_CLI_WRAPPED"
 
-# Wrapper-only flag, consumed here and never forwarded to the tool.
+# Wrapper-only flags, consumed here and never forwarded to the tool.
 _MODELS_FLAG = "--models"
+_HEADROOM_FLAGS = ("-u", "--headroom")
 
 
 def configure(subparsers) -> None:
@@ -63,6 +69,9 @@ def run(args: argparse.Namespace) -> int:
     forwarded, toggle_result = _handle_provider_toggle(profile, forwarded)
     if toggle_result is not None:
         return toggle_result
+    forwarded, headroom_result = _handle_headroom_toggle(profile, forwarded)
+    if headroom_result is not None:
+        return headroom_result
 
     deps.export_local_bin_path()
     real_binary = _resolve_real_binary(profile.name)
@@ -93,6 +102,8 @@ def run(args: argparse.Namespace) -> int:
             f"(/model also offers {slots.opus} and {slots.small})"
         )
         forwarded = copilot_proxy.with_default_model(forwarded, slots.main)
+    elif profile.name == "claude":
+        claude_provider.reset_env()
     argv = _build_argv(profile, real_binary, forwarded)
     if _wraps_through_headroom(argv, real_binary):
         os.environ[_WRAPPED_SENTINEL] = "1"
@@ -134,6 +145,21 @@ def _handle_provider_toggle(
     else:
         copilot_proxy.toggle()
     return kept, 0
+
+
+def _handle_headroom_toggle(
+    profile: ToolProfile, arguments: list[str]
+) -> tuple[list[str], int | None]:
+    """Handles the wrapper-only `-u` switch: flips the persisted headroom state
+    and applies it, so the routing in settings.json follows the toggle instead
+    of drifting out of sync with it."""
+    kept = [arg for arg in arguments if arg not in _HEADROOM_FLAGS]
+    if len(kept) == len(arguments):
+        return arguments, None
+    enabled = headroom.toggle()
+    return kept, setup_headroom.run(
+        argparse.Namespace(tool=profile.name, ensure=True, remove=not enabled)
+    )
 
 
 def _uses_provider(profile: ToolProfile, provider: str) -> bool:

@@ -26,3 +26,9 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+# The vendored copilot-api ships its prebuilt bundle on purpose: llm_cli
+# deploys it as-is, so a clone needs no Node build toolchain. Regenerate it
+# with `npm run build` in that directory and commit the result.
+!llm_cli/vendor/copilot-api/dist/
+!llm_cli/vendor/copilot-api/dist/**

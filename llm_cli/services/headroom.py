@@ -16,7 +16,7 @@ import urllib.error
 import urllib.request
 
 from llm_cli import paths, platforms
-from llm_cli.services import config, fs, log
+from llm_cli.services import claude_provider, config, fs, log
 from llm_cli.tool_profile import ToolProfile
 
 # One proxy instance PER TOOL. `headroom wrap copilot --subscription` pins its
@@ -33,17 +33,44 @@ _WRAP_PATTERN = re.compile(r"headroom|ANTHROPIC_BASE_URL.*(localhost|127\.0\.0\.
 # proxy (re)started during a GLM or copilot session would otherwise route
 # "Anthropic" traffic to the wrong upstream for its whole lifetime.
 _PROVIDER_OVERRIDE_VARS = (
-    "ANTHROPIC_BASE_URL",
-    "ANTHROPIC_AUTH_TOKEN",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL",
+    *claude_provider.ROUTING_ENV_VARS,
     "OPENAI_TARGET_API_URL",
     "GITHUB_COPILOT_API_URL",
     "GITHUB_COPILOT_API_TOKEN",
 )
 
 _LITELLM_NOISE = re.compile(r"Provider List|docs\.litellm\.ai")
+
+# Persisted opt-in, flipped by the `-u` wrapper switch. Headroom inserts a
+# local proxy into every API call and pulls a large dependency tree (litellm
+# among others), so it stays off until asked for: nothing is installed, no
+# routing is written and the tool talks to its provider directly.
+_ENABLED_KEY = "HEADROOM_ENABLED"
+_SESSION_OPT_OUT = "LLM_CLI_NO_HEADROOM"
+_ENABLED_VALUES = {"1", "true", "yes", "on"}
+
+
+def is_enabled() -> bool:
+    """False unless the toggle was turned on and the session does not opt out."""
+    if os.environ.get(_SESSION_OPT_OUT):
+        return False
+    return _persisted_enabled()
+
+
+def toggle() -> bool:
+    """Flips the persisted opt-in; returns the new state."""
+    enabled = not _persisted_enabled()
+    values = config.load()
+    values[_ENABLED_KEY] = "1" if enabled else "0"
+    config.store(values)
+    state = "ENABLED" if enabled else "DISABLED"
+    print(f"Headroom {state}.")
+    return enabled
+
+
+def _persisted_enabled() -> bool:
+    """Off by default: an absent key means the user never opted in."""
+    return config.load().get(_ENABLED_KEY, "").strip().lower() in _ENABLED_VALUES
 
 
 def proxy_port(tool: str = "claude") -> int:
@@ -186,7 +213,7 @@ def launch_argv(tool: str, binary: str, arguments: list[str]) -> list[str]:
     `headroom wrap <tool>` takes the tool's Click subcommand name (headroom
     re-resolves and launches the tool itself); the plain fallback uses `binary`,
     the resolved real executable, to bypass our own same-named entry point."""
-    if os.environ.get("LLM_CLI_NO_HEADROOM") or not is_installed():
+    if not is_enabled() or not is_installed():
         return [binary, *arguments]
 
     export_ghe_env()

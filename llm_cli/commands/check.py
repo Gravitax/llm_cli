@@ -135,7 +135,7 @@ def _check_headroom(checker: Checker, profile: ToolProfile, repair: str) -> None
             )
         else:
             checker.info("headroom not installed — optional, ~15-20% extra token savings")
-            checker.info(f"Enable if wanted: {repair} setup-headroom --tool {profile.name}")
+            checker.info(f"Enable if wanted: {profile.name} -u")
         return
 
     checker.ok(f"headroom present at {shutil.which('headroom')}")
@@ -144,10 +144,7 @@ def _check_headroom(checker: Checker, profile: ToolProfile, repair: str) -> None
         return
 
     if not headroom.is_wrapped(profile):
-        checker.info(
-            f"{profile.name} not wrapped — enable with: "
-            f"{repair} setup-headroom --tool {profile.name}"
-        )
+        checker.info(f"{profile.name} not wrapped — enable with: {profile.name} -u")
         return
     checker.ok(f"{profile.name} wrapped — proxy routing active in settings.json")
 
