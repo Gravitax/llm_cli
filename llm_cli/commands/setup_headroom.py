@@ -12,8 +12,16 @@ import shutil
 import subprocess
 
 from llm_cli import tool_profile
-from llm_cli.services import deps, headroom, instructions, log, settings_editor
+from llm_cli.services import deps, headroom, instructions, log, proc, settings_editor
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
+
+# `headroom wrap` starts a real (immediately exiting) tool session and
+# `headroom doctor` probes every tool it can reach: both are captured, so a
+# child that stalls would freeze the wizard silently. Neither is load-bearing
+# enough to wait on forever — wrap is re-checked against settings.json right
+# after, and doctor output is purely diagnostic.
+_WRAP_TIMEOUT_SECONDS = 120
+_DOCTOR_TIMEOUT_SECONDS = 60
 
 
 def configure(subparsers) -> None:
@@ -82,13 +90,24 @@ def _apply_wrap(profile: ToolProfile) -> int:
     # Durable part 1 — `headroom wrap` registers the retrieve/compression MCP
     # servers and context tools. It also launches a session of the tool;
     # `-- --version` makes that child session exit immediately.
-    result = subprocess.run(
-        ["headroom", "wrap", profile.name, "--", "--version"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-    )
+    print(f"    Running headroom wrap (up to {_WRAP_TIMEOUT_SECONDS}s)...")
+    try:
+        result = proc.run_captured(
+            ["headroom", "wrap", profile.name, "--", "--version"],
+            timeout=_WRAP_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        log.print_err(
+            f"headroom wrap {profile.name} did not answer within "
+            f"{_WRAP_TIMEOUT_SECONDS}s — leaving {profile.name} unwrapped."
+        )
+        return 1
+    except OSError as error:
+        log.print_err(f"could not run headroom wrap {profile.name}: {error}")
+        return 1
     if result.returncode != 0:
         log.print_err(log.console_safe(
-            f"headroom wrap {profile.name} failed: {result.stdout}{result.stderr}"
+            f"headroom wrap {profile.name} failed: {result.stdout}"
         ))
         return 1
     # Durable part 2 — proxy routing in settings.json (what `headroom doctor`
@@ -117,13 +136,16 @@ def _verify_wrap(profile: ToolProfile) -> int:
     # must not fail the setup; the load-bearing checks above already did.
     # Codex rows are filtered out — doctor probes every tool it can wrap, and
     # the OpenAI Codex CLI is not part of this layer.
-    doctor = subprocess.run(
-        ["headroom", "doctor"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-    )
-    for line in headroom.strip_litellm_noise(doctor.stdout + doctor.stderr):
-        if "codex" not in line.lower():
-            print(f"    {log.console_safe(line)}")
+    try:
+        doctor = proc.run_captured(
+            ["headroom", "doctor"], timeout=_DOCTOR_TIMEOUT_SECONDS
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        log.print_warn("headroom doctor unavailable — skipping the diagnostic report.")
+    else:
+        for line in headroom.strip_litellm_noise(doctor.stdout):
+            if "codex" not in line.lower():
+                print(f"    {log.console_safe(line)}")
     log.print_ok(f"headroom proxy reachable and {profile.name} routed.")
     return 0
 

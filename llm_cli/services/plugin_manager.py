@@ -16,7 +16,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from llm_cli.services import log, settings_editor, templates, tool_binary
+from llm_cli.services import log, proc, settings_editor, templates, tool_binary
 
 _TEMPLATE = "plugins"
 _SKILL_MANIFEST = "SKILL.md"
@@ -141,8 +141,6 @@ def _ensure_skill(skill: dict, skills_dir: Path) -> bool:
     if (target / _SKILL_MANIFEST).is_file():
         log.print_ok(f"Skill already installed: {name}")
         return True
-
-    import tempfile
 
     url = repo if "://" in repo else f"https://github.com/{repo}.git"
     with tempfile.TemporaryDirectory() as tmp:
@@ -279,7 +277,7 @@ def _plugin_id(name: str) -> str:
 def _run(argv: list[str]) -> bool:
     """Runs a CLI command, echoing its output indented; True on exit code 0."""
     try:
-        result = _subprocess_run(argv)
+        result = proc.run_captured(argv, timeout=_CLI_TIMEOUT_SECONDS)
     except OSError as error:
         log.print_warn(f"could not run {' '.join(argv)}: {error}")
         return False
@@ -296,39 +294,9 @@ def _run(argv: list[str]) -> bool:
 def _capture(argv: list[str]) -> str:
     """Captures stdout of a read-only query; '' on any failure."""
     try:
-        result = _subprocess_run(argv, timeout=_QUERY_TIMEOUT_SECONDS)
+        result = proc.run_captured(argv, timeout=_QUERY_TIMEOUT_SECONDS)
     except (OSError, subprocess.TimeoutExpired):
         return ""
     if result.returncode != 0:
         return ""
     return result.stdout.strip()
-
-
-def _subprocess_run(
-    argv: list[str], timeout: int = _CLI_TIMEOUT_SECONDS
-) -> subprocess.CompletedProcess[str]:
-    """Captured, non-interactive CLI call whose timeout actually fires.
-
-    Output goes to a temporary file rather than an OS pipe. On Windows a
-    `claude`/`git` child that spawns its own children keeps the pipe's write end
-    open, so the pipe drain subprocess.run performs on timeout blocks forever and
-    the timeout never takes effect — the exact freeze seen on the plugin step. A
-    plain file has no such back-pressure, so the child can be killed and
-    TimeoutExpired raised on schedule.
-
-    stdin is closed so a CLI that asks for confirmation (marketplace trust, git
-    credentials) fails fast instead of waiting on a prompt nobody can see.
-    """
-    with tempfile.TemporaryFile() as sink:
-        try:
-            completed = subprocess.run(
-                argv,
-                stdout=sink,
-                stderr=subprocess.STDOUT,
-                stdin=subprocess.DEVNULL,
-                timeout=timeout,
-            )
-        finally:
-            sink.seek(0)
-            output = sink.read().decode("utf-8", "replace")
-    return subprocess.CompletedProcess(argv, completed.returncode, output, "")

@@ -19,7 +19,7 @@ import re
 from pathlib import Path
 
 from llm_cli import paths, platforms
-from llm_cli.services import log
+from llm_cli.services import log, proc
 
 MIN_NODE_MAJOR = 20
 
@@ -308,15 +308,25 @@ def _resolve_binary(argv: list[str]) -> list[str] | None:
     return [binary, *argv[1:]]
 
 
+# Version probes (`node --version`, `npm config get prefix`) are meant to be
+# instantaneous. A capped, non-interactive call keeps a wedged shim — npm on a
+# stale prefix, a node install mid-repair — from freezing the whole setup on
+# what is only a lookup.
+_PROBE_TIMEOUT_SECONDS = 20
+
+
 def _command_stdout(argv: list[str]) -> str:
     """Runs a command and returns its stripped stdout; '' when the binary is
-    missing or cannot be launched — probes must degrade, never crash setup."""
+    missing, cannot be launched or does not answer in time — probes must
+    degrade, never crash or block setup."""
     resolved = _resolve_binary(argv)
     if not resolved:
         return ""
     try:
-        result = subprocess.run(resolved, capture_output=True, text=True)
-    except OSError:
+        result = proc.run_captured(
+            resolved, timeout=_PROBE_TIMEOUT_SECONDS, merge_stderr=False
+        )
+    except (OSError, subprocess.TimeoutExpired):
         return ""
     return result.stdout.strip()
 

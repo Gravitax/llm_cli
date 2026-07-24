@@ -11,10 +11,15 @@ import argparse
 import subprocess
 
 from llm_cli import platforms
-from llm_cli.services import deps, fs, log, settings_editor, text_blocks
+from llm_cli.services import deps, fs, log, proc, settings_editor, text_blocks
 from llm_cli.tool_profile import CLAUDE
 
 _PATH_EXPORT_LINE = 'export PATH="$HOME/.local/bin:$PATH"'
+# `rtk init` rewrites settings.json and, depending on the build, may ask before
+# overwriting an existing hook entry. A prompt nobody can see would freeze the
+# whole wizard on this step, so the call gets a hard deadline and the direct
+# registration below takes over when it expires.
+_INIT_TIMEOUT_SECONDS = 30
 
 
 def configure(subparsers) -> None:
@@ -71,6 +76,9 @@ def _rtk_binary() -> str | None:
 
 
 def _rtk_init() -> None:
+    """Best-effort: lets rtk register its own hook. Never load-bearing — the
+    caller checks the result and registers the entry itself when this did
+    nothing, so a missing, failing or hanging rtk only costs the deadline."""
     rtk = _rtk_binary()
     if rtk is None:
         return
@@ -79,6 +87,7 @@ def _rtk_init() -> None:
     argv = [rtk, "init", "-g"]
     if not platforms.current().is_windows:
         argv.append("--auto-patch")
+    print(f"    Running rtk init (up to {_INIT_TIMEOUT_SECONDS}s)...")
     _run_indented(argv)
 
 
@@ -116,8 +125,19 @@ def _ensure_local_bin_in_profile() -> None:
 
 
 def _run_indented(argv: list[str]) -> None:
-    result = subprocess.run(
-        argv, capture_output=True, text=True, encoding="utf-8", errors="replace"
-    )
-    for line in (result.stdout + result.stderr).splitlines():
+    """Echoes an rtk call indented under the current step, and degrades every
+    failure to a warning: rtk is an optional compression layer, so nothing it
+    does may block the install."""
+    try:
+        result = proc.run_captured(argv, timeout=_INIT_TIMEOUT_SECONDS)
+    except OSError as error:
+        log.print_warn(f"could not run {' '.join(argv)}: {error}")
+        return
+    except subprocess.TimeoutExpired:
+        log.print_warn(
+            f"rtk did not answer within {_INIT_TIMEOUT_SECONDS}s — "
+            "registering the hook directly instead."
+        )
+        return
+    for line in result.stdout.splitlines():
         print(f"    {log.console_safe(line)}")
