@@ -248,7 +248,10 @@ def _ensure_installed() -> bool:
     installer = deps.installer()
     if not installer.ensure_node():
         return False
-    return installer.ensure_npm_cli(_install_source(), _BINARY)
+    source = _install_source()
+    if not installer.ensure_npm_deps(Path(source)):
+        return False
+    return installer.ensure_npm_cli(source, _BINARY)
 
 
 def _install_source() -> str:

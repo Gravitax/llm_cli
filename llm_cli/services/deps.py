@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sysconfig
 import re
+from pathlib import Path
 
 from llm_cli import paths, platforms
 from llm_cli.services import log
@@ -89,6 +90,28 @@ class DependencyInstaller(abc.ABC):
     @abc.abstractmethod
     def ensure_headroom(self) -> bool:
         """Headroom (context-compression proxy)."""
+
+    def ensure_npm_deps(self, directory: Path) -> bool:
+        """Installs a local package's runtime dependencies next to its bundle.
+
+        `npm install -g <directory>` only symlinks the tree, and node resolves
+        imports from the link target: the dependencies have to sit in
+        <directory>/node_modules, since the global root is never searched from
+        there. Separate from ensure_npm_cli — the binary can be on PATH while
+        the tree it points at has no node_modules at all.
+        """
+        # ponytail: presence check only; rerun npm install there by hand after a
+        # vendor bump that adds a dependency.
+        if not (directory / "package.json").is_file():
+            return True
+        if (directory / "node_modules").is_dir():
+            return True
+        log.print_info(f"Installing {directory.name} dependencies via npm...")
+        if not _run_ok(["npm", "install", "--prefix", str(directory), "--omit=dev"]):
+            log.print_err(f"npm install in {directory} failed.")
+            return False
+        log.print_ok(f"{directory.name} dependencies installed.")
+        return True
 
     def ensure_npm_cli(self, package: str, binary: str) -> bool:
         """Installs a global npm CLI when its binary is missing."""
