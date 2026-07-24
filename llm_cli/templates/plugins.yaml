@@ -25,6 +25,7 @@ plugins:
   - name: frontend-design@claude-plugins-official
   - name: security-guidance@claude-plugins-official
   - name: skill-creator@claude-plugins-official
+  - name: superpowers@claude-plugins-official
   - name: claude-hud@claude-hud
   - name: understand-anything@understand-anything
   - name: ponytail@ponytail

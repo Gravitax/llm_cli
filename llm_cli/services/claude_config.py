@@ -8,10 +8,16 @@ import subprocess
 from pathlib import Path
 
 from llm_cli import platforms
-from llm_cli.services import log, settings_editor
+from llm_cli.services import claude_provider, log, settings_editor
 
 _MAIN_CONFIG_DIR = ".claude"
-_SHARED_ITEMS = ("CLAUDE.md", "agents", "commands", "skills", "plugins")
+_SHARED_ITEMS = ("CLAUDE.md", "agents", "commands", "skills")
+# Plugins are shared too, but through their own path: unlike the items above
+# they can be reconciled when both homes hold real content, because
+# installed_plugins.json makes "nothing would be lost" a checkable property.
+_PLUGINS = "plugins"
+_INSTALLED_PLUGINS = "installed_plugins.json"
+_BACKUP_SUFFIX = ".bak"
 _PROJECTS = "projects"
 _STATE_FILE = ".claude.json"
 # Org entitlement caches read from the main state file. Without them the
@@ -36,6 +42,8 @@ def ensure(provider: str, label: str) -> Path:
     _sync_entitlements(provider_dir)
     _copy_settings(main, provider_dir)
     _link_shared_items(main, provider_dir)
+    _share_plugins(main, provider_dir)
+    discard_covered_backups()
     _link_projects_dir(main, provider_dir, label)
     return provider_dir
 
@@ -111,6 +119,91 @@ def _link_shared_items(main: Path, provider_dir: Path) -> None:
             target.symlink_to(source)
         except OSError:
             _copy_item(source, target)
+
+
+def share_plugins() -> None:
+    """Points every existing provider home's plugins dir at the main one.
+
+    Called at install time so all providers are reconciled at once, and again
+    from ensure() so a home created later still converges on its first launch.
+    """
+    main = Path.home() / _MAIN_CONFIG_DIR
+    for provider in (claude_provider.GLM, claude_provider.COPILOT):
+        provider_dir = Path.home() / f".claude-{provider}"
+        if provider_dir.is_dir():
+            _share_plugins(main, provider_dir)
+
+
+def discard_covered_backups() -> None:
+    """Drops every set-aside provider copy the main home now covers.
+
+    Runs after the plugins declared in plugins.yaml have been reinstalled, so a
+    plugin that only existed in a provider copy is already back in the main home
+    and no longer counts as a reason to keep the backup.
+    """
+    source = Path.home() / _MAIN_CONFIG_DIR / _PLUGINS
+    for provider in (claude_provider.GLM, claude_provider.COPILOT):
+        backup = Path.home() / f".claude-{provider}" / (_PLUGINS + _BACKUP_SUFFIX)
+        if backup.is_dir():
+            _discard_covered_backup(backup, source)
+
+
+def _share_plugins(main: Path, provider_dir: Path) -> None:
+    """Makes provider_dir/plugins a symlink to the main home's plugins dir.
+
+    A plugin installed from any provider must be visible from all of them, which
+    one shared directory gives for free. The main home wins when both hold real
+    content: plugins.yaml reinstalls whatever is missing, so the provider copy is
+    set aside rather than merged.
+    """
+    source, target = main / _PLUGINS, provider_dir / _PLUGINS
+    if target.is_symlink():
+        return
+    if not target.exists():
+        if source.exists():
+            _link_plugins(source, target)
+        return
+    if not source.exists():
+        # Only the provider holds plugins: promote them instead of stranding
+        # them in a home the other providers never read.
+        target.rename(source)
+        _link_plugins(source, target)
+        return
+
+    backup = target.with_name(target.name + _BACKUP_SUFFIX)
+    if backup.exists():
+        log.print_warn(f"{backup} already exists — left {target} untouched.")
+        return
+    target.rename(backup)
+    _link_plugins(source, target)
+
+
+def _link_plugins(source: Path, target: Path) -> None:
+    try:
+        target.symlink_to(source, target_is_directory=True)
+    except OSError:
+        _copy_item(source, target)
+
+
+def _discard_covered_backup(backup: Path, source: Path) -> None:
+    """Removes the set-aside copy once the main home covers all of its plugins.
+
+    The check is what makes the removal safe: a plugin installed by hand and
+    absent from plugins.yaml would not come back, so an uncovered backup is kept.
+    """
+    extra = _installed_ids(backup) - _installed_ids(source)
+    if extra:
+        log.print_warn(
+            f"{backup} kept — {', '.join(sorted(extra))} missing from {source}."
+        )
+        return
+    shutil.rmtree(backup, ignore_errors=True)
+
+
+def _installed_ids(plugins_dir: Path) -> set[str]:
+    """Plugin ids recorded in a plugins dir (empty when unreadable)."""
+    installed = _load_state(plugins_dir / _INSTALLED_PLUGINS).get("plugins", {})
+    return set(installed) if isinstance(installed, dict) else set()
 
 
 def _copy_item(source: Path, target: Path) -> None:
