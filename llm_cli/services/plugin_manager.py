@@ -13,12 +13,19 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
-from llm_cli.services import log, settings_editor, templates
+from llm_cli.services import log, settings_editor, templates, tool_binary
 
 _TEMPLATE = "plugins"
 _SKILL_MANIFEST = "SKILL.md"
+# Every `claude plugin` call is a network operation (marketplace clone, plugin
+# fetch). These caps are deliberately short: a CLI stuck on an invisible prompt
+# (marketplace trust, git credentials) must fail fast and let the setup move on
+# rather than freeze it. Plugins are optional, so a missed one is a warning.
+_CLI_TIMEOUT_SECONDS = 30
+_QUERY_TIMEOUT_SECONDS = 15
 
 
 def load_spec() -> dict:
@@ -48,8 +55,13 @@ def missing_plugins(claude: str, settings_json: Path) -> list[str]:
 
 
 def claude_binary() -> str | None:
-    """Path to the `claude` CLI, or None when it is not installed."""
-    return shutil.which("claude")
+    """Path to the real `claude` CLI, or None when it is not installed.
+
+    Resolved through tool_binary: our own `claude` entry point shadows the real
+    one on PATH, and going through it would replay the entire pre-launch
+    pipeline (context re-index, proxy start, hook repair) on every plugin call.
+    """
+    return tool_binary.resolve("claude")
 
 
 def sync_plugins(settings_json: Path) -> bool:
@@ -71,10 +83,14 @@ def sync_plugins(settings_json: Path) -> bool:
 
     spec = load_spec()
     ok = True
+    log.print_info(
+        f"Querying registered marketplaces (up to {_QUERY_TIMEOUT_SECONDS}s)..."
+    )
     known = _known_marketplaces(claude)
     for marketplace in spec.get("marketplaces", []):
         ok = _ensure_marketplace(claude, marketplace, known) and ok
 
+    log.print_info(f"Querying installed plugins (up to {_QUERY_TIMEOUT_SECONDS}s)...")
     installed = _installed_ids(claude)
     to_enable: list[str] = []
     for plugin in spec.get("plugins", []):
@@ -164,6 +180,7 @@ def _ensure_marketplace(claude: str, marketplace: dict, known: set[str]) -> bool
     scope = marketplace.get("scope")
     if scope:
         argv += ["--scope", scope]
+    log.print_info(f"Adding marketplace {source} (network, up to {_CLI_TIMEOUT_SECONDS}s)...")
     if _run(argv):
         log.print_ok(f"Marketplace added: {source}")
         return True
@@ -189,6 +206,7 @@ def _ensure_installed(claude: str, plugin: dict, installed: set[str]) -> str | N
     scope = plugin.get("scope")
     if scope:
         argv += ["--scope", scope]
+    log.print_info(f"Installing plugin {name} (network, up to {_CLI_TIMEOUT_SECONDS}s)...")
     if _run(argv):
         log.print_ok(f"Plugin installed: {name}")
         return name
@@ -261,11 +279,14 @@ def _plugin_id(name: str) -> str:
 def _run(argv: list[str]) -> bool:
     """Runs a CLI command, echoing its output indented; True on exit code 0."""
     try:
-        result = subprocess.run(
-            argv, capture_output=True, text=True, encoding="utf-8", errors="replace"
-        )
+        result = _subprocess_run(argv)
     except OSError as error:
         log.print_warn(f"could not run {' '.join(argv)}: {error}")
+        return False
+    except subprocess.TimeoutExpired:
+        log.print_warn(
+            f"timed out after {_CLI_TIMEOUT_SECONDS}s: {' '.join(argv)}"
+        )
         return False
     for line in (result.stdout + result.stderr).splitlines():
         log.print_info(log.console_safe(line))
@@ -275,11 +296,39 @@ def _run(argv: list[str]) -> bool:
 def _capture(argv: list[str]) -> str:
     """Captures stdout of a read-only query; '' on any failure."""
     try:
-        result = subprocess.run(
-            argv, capture_output=True, text=True, encoding="utf-8", errors="replace"
-        )
-    except OSError:
+        result = _subprocess_run(argv, timeout=_QUERY_TIMEOUT_SECONDS)
+    except (OSError, subprocess.TimeoutExpired):
         return ""
     if result.returncode != 0:
         return ""
     return result.stdout.strip()
+
+
+def _subprocess_run(
+    argv: list[str], timeout: int = _CLI_TIMEOUT_SECONDS
+) -> subprocess.CompletedProcess[str]:
+    """Captured, non-interactive CLI call whose timeout actually fires.
+
+    Output goes to a temporary file rather than an OS pipe. On Windows a
+    `claude`/`git` child that spawns its own children keeps the pipe's write end
+    open, so the pipe drain subprocess.run performs on timeout blocks forever and
+    the timeout never takes effect — the exact freeze seen on the plugin step. A
+    plain file has no such back-pressure, so the child can be killed and
+    TimeoutExpired raised on schedule.
+
+    stdin is closed so a CLI that asks for confirmation (marketplace trust, git
+    credentials) fails fast instead of waiting on a prompt nobody can see.
+    """
+    with tempfile.TemporaryFile() as sink:
+        try:
+            completed = subprocess.run(
+                argv,
+                stdout=sink,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL,
+                timeout=timeout,
+            )
+        finally:
+            sink.seek(0)
+            output = sink.read().decode("utf-8", "replace")
+    return subprocess.CompletedProcess(argv, completed.returncode, output, "")

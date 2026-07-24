@@ -2,18 +2,15 @@
 
 The `claude`/`copilot` console entry points delegate here so all routing logic
 (headroom wrap for copilot, telemetry opt-out, PATH fixes) lives in one tested
-place. Since our entry point shares the tool's name, the real binary is resolved
-by scanning PATH while excluding our own executable's directory — otherwise the
-entry point would invoke itself in an infinite loop.
+place. Since our entry point shares the tool's name, the real binary comes from
+the shared `tool_binary` resolver — otherwise the entry point would invoke
+itself in an infinite loop.
 """
 
 from __future__ import annotations
 
 import argparse
 import os
-import shutil
-import sys
-from pathlib import Path
 
 from llm_cli import platforms, tool_profile
 from llm_cli.commands import (
@@ -29,6 +26,7 @@ from llm_cli.services import (
     glm,
     headroom,
     log,
+    tool_binary,
 )
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 
@@ -74,7 +72,7 @@ def run(args: argparse.Namespace) -> int:
         return headroom_result
 
     deps.export_local_bin_path()
-    real_binary = _resolve_real_binary(profile.name)
+    real_binary = tool_binary.resolve(profile.name)
     if real_binary is None:
         log.print_err(
             f"{profile.name} is not installed — run `activate {profile.name}` "
@@ -196,33 +194,6 @@ def _wraps_through_headroom(argv: list[str], real_binary: str) -> bool:
     """True when argv routes through `headroom wrap` rather than launching the
     tool directly — the case that re-invokes our own entry point."""
     return bool(argv) and argv[0] != real_binary
-
-
-def _resolve_real_binary(name: str) -> str | None:
-    """Locates the real tool binary, skipping the directory of our own entry
-    point so the wrapper never resolves to itself (infinite recursion)."""
-    own_dir = _own_executable_dir()
-    path_dirs = os.environ.get("PATH", "").split(os.pathsep)
-    kept = [
-        directory
-        for directory in path_dirs
-        if directory and _resolve_dir(directory) != own_dir
-    ]
-    return shutil.which(name, path=os.pathsep.join(kept))
-
-
-def _own_executable_dir() -> Path | None:
-    try:
-        return Path(sys.argv[0]).resolve().parent
-    except (OSError, IndexError, ValueError):
-        return None
-
-
-def _resolve_dir(directory: str) -> Path | None:
-    try:
-        return Path(directory).resolve()
-    except (OSError, ValueError):
-        return None
 
 
 def _export_tool_env(profile: ToolProfile) -> None:

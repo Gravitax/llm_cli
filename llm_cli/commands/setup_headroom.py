@@ -129,12 +129,24 @@ def _verify_wrap(profile: ToolProfile) -> int:
 
 
 def _remove_wrap(profile: ToolProfile) -> int:
-    if not shutil.which("headroom"):
-        log.print_err("headroom not installed — nothing to unwrap.")
-        return 1
-    if subprocess.run(["headroom", "unwrap", profile.name]).returncode != 0:
-        log.print_err(f"headroom unwrap {profile.name} failed.")
-        return 1
+    """Removes the durable proxy routing so API calls go straight to the
+    provider.
+
+    The settings.json routing (env.ANTHROPIC_BASE_URL) is written by us and
+    survives independently of the headroom binary: uninstalling headroom, or a
+    reinstall that drops it, leaves the tool pointed at a proxy port with
+    nothing listening — every API call then fails with ConnectionRefused.
+    Stripping that routing must therefore never be gated on headroom being
+    installed; only the `headroom unwrap` bookkeeping (MCP servers, context
+    tools) is, and its absence is a warning, not a hard stop."""
+    if shutil.which("headroom"):
+        if subprocess.run(["headroom", "unwrap", profile.name]).returncode != 0:
+            log.print_warn(
+                f"headroom unwrap {profile.name} reported an error — "
+                "removing the settings routing anyway."
+            )
+    else:
+        log.print_info("headroom not installed — removing leftover settings routing.")
     if profile.headroom_mode == "settings":
         _write_proxy_routing(profile, add=False)
     log.print_ok(f"{profile.name} unwrapped — API calls go directly to the provider again.")
