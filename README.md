@@ -112,7 +112,7 @@ claude -copilot   # switch back to Anthropic
 ```
 
 Models are picked from the live Copilot catalog and can be pinned in
-`~/.config/llm_cli/atlassian.env`:
+`~/.config/llm_cli/llm_cli.env`:
 
 ```text
 CLAUDE_COPILOT_MODEL=gpt-5.6-terra
@@ -203,7 +203,7 @@ cost) for a simpler, one-time init:
 (`~/.claude.json` for Claude Code, `~/.copilot/mcp-config.json` for Copilot
 CLI). The instance URLs and tokens are prompted by `setup-atlassian` (tokens
 via hidden input; nothing company-specific is hardcoded) and live in
-`~/.config/llm_cli/atlassian.env` (user-only access), passed through the
+`~/.config/llm_cli/llm_cli.env` (user-only access), passed through the
 environment, never through argv.
 
 The three servers use the exact IDs of your enterprise MCP registry (if any):

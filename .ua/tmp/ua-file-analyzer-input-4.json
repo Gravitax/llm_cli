@@ -1,0 +1,264 @@
+{
+ "projectRoot": "/opt/eca/llm_cli",
+ "batchFiles": [
+  {
+   "path": "llm_cli/commands/copilot_models.py",
+   "language": "python",
+   "sizeLines": 37,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/launch.py",
+   "language": "python",
+   "sizeLines": 246,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/prelaunch.py",
+   "language": "python",
+   "sizeLines": 86,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/provider_models.py",
+   "language": "python",
+   "sizeLines": 89,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/provider_usage.py",
+   "language": "python",
+   "sizeLines": 60,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_headroom.py",
+   "language": "python",
+   "sizeLines": 168,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_plugins.py",
+   "language": "python",
+   "sizeLines": 34,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/__init__.py",
+   "language": "python",
+   "sizeLines": 1,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/anthropic_catalog.py",
+   "language": "python",
+   "sizeLines": 91,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/claude_config.py",
+   "language": "python",
+   "sizeLines": 196,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/claude_provider.py",
+   "language": "python",
+   "sizeLines": 86,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/copilot_catalog.py",
+   "language": "python",
+   "sizeLines": 108,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/copilot_proxy.py",
+   "language": "python",
+   "sizeLines": 426,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/glm.py",
+   "language": "python",
+   "sizeLines": 169,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/glm_api.py",
+   "language": "python",
+   "sizeLines": 151,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/headroom.py",
+   "language": "python",
+   "sizeLines": 266,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/log.py",
+   "language": "python",
+   "sizeLines": 112,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/model_picker.py",
+   "language": "python",
+   "sizeLines": 46,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/plugin_manager.py",
+   "language": "python",
+   "sizeLines": 285,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/settings_editor.py",
+   "language": "python",
+   "sizeLines": 87,
+   "fileCategory": "code"
+  }
+ ],
+ "batchImportData": {
+  "llm_cli/commands/copilot_models.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/copilot_catalog.py",
+   "llm_cli/services/log.py"
+  ],
+  "llm_cli/commands/launch.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/copilot_models.py",
+   "llm_cli/commands/prelaunch.py",
+   "llm_cli/commands/provider_models.py",
+   "llm_cli/commands/setup_headroom.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/copilot_proxy.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/glm.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/prelaunch.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/cache.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/git.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/provider_models.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/anthropic_catalog.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/copilot_proxy.py",
+   "llm_cli/services/glm_api.py",
+   "llm_cli/services/log.py"
+  ],
+  "llm_cli/commands/provider_usage.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/copilot_proxy.py",
+   "llm_cli/services/glm_api.py",
+   "llm_cli/services/log.py"
+  ],
+  "llm_cli/commands/setup_headroom.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/instructions.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_plugins.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/plugin_manager.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/services/__init__.py": [],
+  "llm_cli/services/anthropic_catalog.py": [],
+  "llm_cli/services/claude_config.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py"
+  ],
+  "llm_cli/services/claude_provider.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/config.py"
+  ],
+  "llm_cli/services/copilot_catalog.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/headroom.py"
+  ],
+  "llm_cli/services/copilot_proxy.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/claude_config.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/model_picker.py",
+   "llm_cli/services/vendored.py"
+  ],
+  "llm_cli/services/glm.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/platforms/base.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/claude_config.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/model_picker.py",
+   "llm_cli/services/text_blocks.py"
+  ],
+  "llm_cli/services/glm_api.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/glm.py"
+  ],
+  "llm_cli/services/headroom.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/claude_provider.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/services/log.py": [],
+  "llm_cli/services/model_picker.py": [],
+  "llm_cli/services/plugin_manager.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/services/templates.py"
+  ],
+  "llm_cli/services/settings_editor.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/fs.py"
+  ]
+ }
+}

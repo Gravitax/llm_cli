@@ -927,11 +927,11 @@ function translateModelName(model) {
 	return model;
 }
 function translateAnthropicMessagesToOpenAI(anthropicMessages, system) {
-	const systemMessages = handleSystemPrompt(system);
-	const otherMessages = anthropicMessages.flatMap((message) => message.role === "user" ? handleUserMessage(message) : handleAssistantMessage(message));
+	const systemMessages = handleSystemPrompt$1(system);
+	const otherMessages = anthropicMessages.flatMap((message) => message.role === "user" ? handleUserMessage$1(message) : handleAssistantMessage$1(message));
 	return [...systemMessages, ...otherMessages];
 }
-function handleSystemPrompt(system) {
+function handleSystemPrompt$1(system) {
 	if (!system) return [];
 	if (typeof system === "string") return [{
 		role: "system",
@@ -942,7 +942,7 @@ function handleSystemPrompt(system) {
 		content: system.map((block) => block.text).join("\n\n")
 	}];
 }
-function handleUserMessage(message) {
+function handleUserMessage$1(message) {
 	const newMessages = [];
 	if (Array.isArray(message.content)) {
 		const toolResultBlocks = message.content.filter((block) => block.type === "tool_result");
@@ -962,7 +962,7 @@ function handleUserMessage(message) {
 	});
 	return newMessages;
 }
-function handleAssistantMessage(message) {
+function handleAssistantMessage$1(message) {
 	if (!Array.isArray(message.content)) return [{
 		role: "assistant",
 		content: mapContent(message.content)
@@ -1124,6 +1124,369 @@ async function handleCountTokens(c) {
 }
 
 //#endregion
+//#region src/lib/model-endpoints.ts
+const RESPONSES_ONLY_PREFIXES = [
+	"gpt-5.6-",
+	"gpt-5.5",
+	"gpt-5.4",
+	"gpt-5.3-codex"
+];
+const ERROR_UNSUPPORTED_API = "unsupported_api_for_model";
+const usesResponsesApi = (model) => RESPONSES_ONLY_PREFIXES.some((prefix) => model.startsWith(prefix));
+
+//#endregion
+//#region src/services/copilot/create-responses.ts
+const createResponses = async (payload) => {
+	if (!state.copilotToken) throw new Error("Copilot token not found");
+	const enableVision = payload.input.some((item) => item.type === "message" && typeof item.content !== "string" && item.content.some((part) => part.type === "input_image"));
+	const isAgentCall = payload.input.some((item) => item.type === "function_call" || item.type === "function_call_output" || item.type === "message" && item.role === "assistant");
+	const headers = {
+		...copilotHeaders(state, enableVision),
+		"X-Initiator": isAgentCall ? "agent" : "user"
+	};
+	const response = await fetch(`${copilotBaseUrl(state)}/responses`, {
+		method: "POST",
+		headers,
+		body: JSON.stringify(payload)
+	});
+	if (!response.ok) {
+		consola.error("Failed to create responses", response);
+		throw new HTTPError("Failed to create responses", response);
+	}
+	if (payload.stream) return events(response);
+	return await response.json();
+};
+
+//#endregion
+//#region src/routes/messages/responses-translation.ts
+const MAX_USER_LENGTH = 64;
+function translateToResponses(payload) {
+	return {
+		model: payload.model,
+		instructions: handleSystemPrompt(payload.system),
+		input: payload.messages.flatMap(translateMessage),
+		max_output_tokens: payload.max_tokens,
+		temperature: payload.temperature,
+		top_p: payload.top_p,
+		stream: payload.stream,
+		user: truncateUser(payload.metadata?.user_id),
+		tools: translateTools(payload.tools),
+		tool_choice: translateToolChoice(payload.tool_choice)
+	};
+}
+function truncateUser(user) {
+	if (!user) return void 0;
+	return user.length > MAX_USER_LENGTH ? user.slice(0, MAX_USER_LENGTH) : user;
+}
+function handleSystemPrompt(system) {
+	if (!system) return null;
+	if (typeof system === "string") return system;
+	return system.map((block) => block.text).join("\n\n");
+}
+function translateMessage(message) {
+	return message.role === "user" ? handleUserMessage(message) : handleAssistantMessage(message);
+}
+function handleUserMessage(message) {
+	if (typeof message.content === "string") return [{
+		type: "message",
+		role: "user",
+		content: message.content
+	}];
+	const items = [];
+	for (const block of message.content) if (block.type === "tool_result") items.push({
+		type: "function_call_output",
+		call_id: block.tool_use_id,
+		output: mapToolResultContent(block)
+	});
+	const contentParts = mapUserContent(message.content.filter((block) => block.type !== "tool_result"));
+	if (contentParts.length > 0) items.push({
+		type: "message",
+		role: "user",
+		content: contentParts
+	});
+	return items;
+}
+function mapToolResultContent(block) {
+	return typeof block.content === "string" ? block.content : "";
+}
+function mapUserContent(blocks) {
+	const parts = [];
+	for (const block of blocks) if (block.type === "text") parts.push({
+		type: "input_text",
+		text: block.text
+	});
+	else if (block.type === "image") parts.push({
+		type: "input_image",
+		image_url: `data:${block.source.media_type};base64,${block.source.data}`
+	});
+	return parts;
+}
+function handleAssistantMessage(message) {
+	if (typeof message.content === "string") return [{
+		type: "message",
+		role: "assistant",
+		content: [{
+			type: "output_text",
+			text: message.content
+		}]
+	}];
+	const items = [];
+	const textParts = [];
+	for (const block of message.content) if (block.type === "text") textParts.push({
+		type: "output_text",
+		text: block.text
+	});
+	else if (block.type === "tool_use") items.push({
+		type: "function_call",
+		call_id: block.id,
+		name: block.name,
+		arguments: JSON.stringify(block.input)
+	});
+	if (textParts.length > 0) items.unshift({
+		type: "message",
+		role: "assistant",
+		content: textParts
+	});
+	return items;
+}
+function translateTools(tools) {
+	if (!tools) return void 0;
+	return tools.map((tool) => ({
+		type: "function",
+		name: tool.name,
+		description: tool.description,
+		parameters: tool.input_schema
+	}));
+}
+function translateToolChoice(toolChoice) {
+	if (!toolChoice) return void 0;
+	switch (toolChoice.type) {
+		case "auto": return "auto";
+		case "any": return "required";
+		case "tool": return toolChoice.name ? {
+			type: "function",
+			name: toolChoice.name
+		} : void 0;
+		case "none": return "none";
+		default: return;
+	}
+}
+function translateResponsesToAnthropic(response) {
+	const textBlocks = [];
+	const thinkingBlocks = [];
+	const toolUseBlocks = [];
+	for (const item of response.output) if (item.type === "message") {
+		for (const part of item.content) if (part.type === "output_text") textBlocks.push({
+			type: "text",
+			text: part.text
+		});
+	} else if (item.type === "reasoning") {
+		const text = (item.summary ?? []).map((entry) => entry.text).join("\n\n");
+		if (text) thinkingBlocks.push({
+			type: "thinking",
+			thinking: text
+		});
+	} else toolUseBlocks.push({
+		type: "tool_use",
+		id: item.call_id,
+		name: item.name,
+		input: parseArguments(item.arguments)
+	});
+	const cached = response.usage?.input_tokens_details?.cached_tokens ?? 0;
+	return {
+		id: response.id,
+		type: "message",
+		role: "assistant",
+		model: response.model,
+		content: [
+			...thinkingBlocks,
+			...textBlocks,
+			...toolUseBlocks
+		],
+		stop_reason: toolUseBlocks.length > 0 ? "tool_use" : "end_turn",
+		stop_sequence: null,
+		usage: {
+			input_tokens: (response.usage?.input_tokens ?? 0) - cached,
+			output_tokens: response.usage?.output_tokens ?? 0,
+			...cached > 0 && { cache_read_input_tokens: cached }
+		}
+	};
+}
+function parseArguments(raw) {
+	try {
+		return JSON.parse(raw);
+	} catch {
+		return {};
+	}
+}
+function createResponsesStreamState() {
+	return {
+		messageStartSent: false,
+		id: "",
+		model: "",
+		nextBlockIndex: 0,
+		sawToolCall: false,
+		outputTokens: 0,
+		inputTokens: 0,
+		cachedTokens: 0,
+		blocks: {}
+	};
+}
+function translateResponsesChunkToAnthropicEvents(event, state$1) {
+	const events$1 = [];
+	const emitMessageStart = () => {
+		if (state$1.messageStartSent) return;
+		events$1.push({
+			type: "message_start",
+			message: {
+				id: state$1.id,
+				type: "message",
+				role: "assistant",
+				content: [],
+				model: state$1.model,
+				stop_reason: null,
+				stop_sequence: null,
+				usage: {
+					input_tokens: state$1.inputTokens,
+					output_tokens: 0
+				}
+			}
+		});
+		state$1.messageStartSent = true;
+	};
+	switch (event.type) {
+		case "response.created":
+		case "response.in_progress":
+			if (event.response) {
+				state$1.id = event.response.id;
+				state$1.model = event.response.model;
+				state$1.inputTokens = event.response.usage?.input_tokens ?? 0;
+			}
+			break;
+		case "response.output_item.added": {
+			emitMessageStart();
+			const index = event.output_index ?? 0;
+			const item = event.item;
+			if (item?.type === "function_call") {
+				state$1.sawToolCall = true;
+				const anthropicIndex = state$1.nextBlockIndex++;
+				state$1.blocks[index] = {
+					anthropicIndex,
+					type: "tool_use"
+				};
+				events$1.push({
+					type: "content_block_start",
+					index: anthropicIndex,
+					content_block: {
+						type: "tool_use",
+						id: item.call_id ?? item.id ?? "",
+						name: item.name ?? "",
+						input: {}
+					}
+				});
+			}
+			break;
+		}
+		case "response.output_text.delta": {
+			emitMessageStart();
+			const block = ensureBlock(state$1, event.output_index ?? 0, "text", events$1);
+			if (event.delta) events$1.push({
+				type: "content_block_delta",
+				index: block.anthropicIndex,
+				delta: {
+					type: "text_delta",
+					text: event.delta
+				}
+			});
+			break;
+		}
+		case "response.reasoning_summary_text.delta":
+		case "response.reasoning_text.delta": {
+			emitMessageStart();
+			const block = ensureBlock(state$1, event.output_index ?? 0, "thinking", events$1);
+			if (event.delta) events$1.push({
+				type: "content_block_delta",
+				index: block.anthropicIndex,
+				delta: {
+					type: "thinking_delta",
+					thinking: event.delta
+				}
+			});
+			break;
+		}
+		case "response.function_call_arguments.delta": {
+			const block = state$1.blocks[event.output_index ?? 0];
+			if (block && event.delta) events$1.push({
+				type: "content_block_delta",
+				index: block.anthropicIndex,
+				delta: {
+					type: "input_json_delta",
+					partial_json: event.delta
+				}
+			});
+			break;
+		}
+		case "response.output_item.done": {
+			const block = state$1.blocks[event.output_index ?? 0];
+			if (block) {
+				events$1.push({
+					type: "content_block_stop",
+					index: block.anthropicIndex
+				});
+				delete state$1.blocks[event.output_index ?? 0];
+			}
+			break;
+		}
+		case "response.completed":
+		case "response.incomplete": {
+			for (const key of Object.keys(state$1.blocks)) events$1.push({
+				type: "content_block_stop",
+				index: state$1.blocks[Number(key)].anthropicIndex
+			});
+			state$1.blocks = {};
+			const usage = event.response?.usage;
+			const cached = usage?.input_tokens_details?.cached_tokens ?? 0;
+			events$1.push({
+				type: "message_delta",
+				delta: {
+					stop_reason: event.type === "response.incomplete" ? "max_tokens" : state$1.sawToolCall ? "tool_use" : "end_turn",
+					stop_sequence: null
+				},
+				usage: {
+					input_tokens: (usage?.input_tokens ?? state$1.inputTokens) - cached,
+					output_tokens: usage?.output_tokens ?? state$1.outputTokens,
+					...cached > 0 && { cache_read_input_tokens: cached }
+				}
+			}, { type: "message_stop" });
+			break;
+		}
+		default: break;
+	}
+	return events$1;
+}
+function ensureBlock(state$1, outputIndex, type, events$1) {
+	const existing = state$1.blocks[outputIndex];
+	if (existing) return existing;
+	const anthropicIndex = state$1.nextBlockIndex++;
+	state$1.blocks[outputIndex] = {
+		anthropicIndex,
+		type
+	};
+	events$1.push({
+		type: "content_block_start",
+		index: anthropicIndex,
+		content_block: type === "text" ? {
+			type: "text",
+			text: ""
+		} : {
+			type: "thinking",
+			thinking: ""
+		}
+	});
+	return state$1.blocks[outputIndex];
+}
+
+//#endregion
 //#region src/routes/messages/stream-translation.ts
 function isToolBlockOpen(state$1) {
 	if (!state$1.contentBlockOpen) return false;
@@ -1253,6 +1616,24 @@ async function handleCompletion(c) {
 	await checkRateLimit(state);
 	const anthropicPayload = await c.req.json();
 	consola.debug("Anthropic request payload:", JSON.stringify(anthropicPayload));
+	if (usesResponsesApi(anthropicPayload.model)) return await handleWithResponses(c, anthropicPayload);
+	try {
+		return await handleWithChatCompletions(c, anthropicPayload);
+	} catch (error) {
+		if (!await isUnsupportedApiError(error)) throw error;
+		consola.debug(`Model ${anthropicPayload.model} rejected /chat/completions, retrying on /responses`);
+		return await handleWithResponses(c, anthropicPayload);
+	}
+}
+async function isUnsupportedApiError(error) {
+	if (!(error instanceof HTTPError)) return false;
+	try {
+		return (await error.response.clone().text()).includes(ERROR_UNSUPPORTED_API);
+	} catch {
+		return false;
+	}
+}
+async function handleWithChatCompletions(c, anthropicPayload) {
 	const openAIPayload = translateToOpenAI(anthropicPayload);
 	consola.debug("Translated OpenAI request payload:", JSON.stringify(openAIPayload));
 	if (state.manualApprove) await awaitApproval();
@@ -1286,7 +1667,37 @@ async function handleCompletion(c) {
 		}
 	});
 }
+async function handleWithResponses(c, anthropicPayload) {
+	const responsesPayload = translateToResponses(anthropicPayload);
+	consola.debug("Translated Responses request payload:", JSON.stringify(responsesPayload));
+	if (state.manualApprove) await awaitApproval();
+	const response = await createResponses(responsesPayload);
+	if (isNonStreamingResponses(response)) {
+		consola.debug("Non-streaming response from Copilot (/responses):", JSON.stringify(response).slice(-400));
+		const anthropicResponse = translateResponsesToAnthropic(response);
+		consola.debug("Translated Anthropic response:", JSON.stringify(anthropicResponse));
+		return c.json(anthropicResponse);
+	}
+	consola.debug("Streaming response from Copilot (/responses)");
+	return streamSSE(c, async (stream) => {
+		const streamState = createResponsesStreamState();
+		for await (const rawEvent of response) {
+			consola.debug("Copilot raw stream event:", JSON.stringify(rawEvent));
+			if (rawEvent.data === "[DONE]") break;
+			if (!rawEvent.data) continue;
+			const events$1 = translateResponsesChunkToAnthropicEvents(JSON.parse(rawEvent.data), streamState);
+			for (const event of events$1) {
+				consola.debug("Translated Anthropic event:", JSON.stringify(event));
+				await stream.writeSSE({
+					event: event.type,
+					data: JSON.stringify(event)
+				});
+			}
+		}
+	});
+}
 const isNonStreaming = (response) => Object.hasOwn(response, "choices");
+const isNonStreamingResponses = (response) => Object.hasOwn(response, "output");
 
 //#endregion
 //#region src/routes/messages/route.ts

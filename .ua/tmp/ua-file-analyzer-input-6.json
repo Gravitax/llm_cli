@@ -1,0 +1,28 @@
+{
+ "projectRoot": "/opt/eca/llm_cli",
+ "batchFiles": [
+  {
+   "path": "llm_cli/templates/instructions.yaml",
+   "language": "yaml",
+   "sizeLines": 167,
+   "fileCategory": "config"
+  },
+  {
+   "path": "llm_cli/templates/plugins.yaml",
+   "language": "yaml",
+   "sizeLines": 39,
+   "fileCategory": "config"
+  },
+  {
+   "path": "llm_cli/templates/slash_commands.yaml",
+   "language": "yaml",
+   "sizeLines": 32,
+   "fileCategory": "config"
+  }
+ ],
+ "batchImportData": {
+  "llm_cli/templates/instructions.yaml": [],
+  "llm_cli/templates/plugins.yaml": [],
+  "llm_cli/templates/slash_commands.yaml": []
+ }
+}

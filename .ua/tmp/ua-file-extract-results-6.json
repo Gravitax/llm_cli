@@ -1,0 +1,111 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 3,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 3,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 0,
+      "failed": 0,
+      "skipped": 3
+    }
+  },
+  "results": [
+    {
+      "path": "llm_cli/templates/instructions.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 167,
+      "nonEmptyLines": 150,
+      "sections": [
+        {
+          "heading": "ignore_file",
+          "level": 1,
+          "line": 14
+        },
+        {
+          "heading": "index_entry",
+          "level": 1,
+          "line": 111
+        },
+        {
+          "heading": "global_rules",
+          "level": 1,
+          "line": 123
+        },
+        {
+          "heading": "tool_extra",
+          "level": 1,
+          "line": 161
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": "llm_cli/templates/plugins.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 39,
+      "nonEmptyLines": 35,
+      "sections": [
+        {
+          "heading": "marketplaces",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "plugins",
+          "level": 1,
+          "line": 23
+        },
+        {
+          "heading": "skills",
+          "level": 1,
+          "line": 35
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "llm_cli/templates/slash_commands.yaml",
+      "language": "yaml",
+      "fileCategory": "config",
+      "totalLines": 32,
+      "nonEmptyLines": 27,
+      "sections": [
+        {
+          "heading": "models",
+          "level": 1,
+          "line": 6
+        },
+        {
+          "heading": "quota",
+          "level": 1,
+          "line": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    }
+  ]
+}

@@ -1,0 +1,1938 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 23,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 23,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 23,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 357,
+      "nonEmptyLines": 317,
+      "functions": [
+        {
+          "name": "translateToOpenAI",
+          "startLine": 29,
+          "endLine": 47,
+          "params": [
+            "payload"
+          ]
+        },
+        {
+          "name": "translateModelName",
+          "startLine": 49,
+          "endLine": 57,
+          "params": [
+            "model"
+          ]
+        },
+        {
+          "name": "translateAnthropicMessagesToOpenAI",
+          "startLine": 59,
+          "endLine": 72,
+          "params": [
+            "anthropicMessages",
+            "system"
+          ]
+        },
+        {
+          "name": "handleSystemPrompt",
+          "startLine": 74,
+          "endLine": 87,
+          "params": [
+            "system"
+          ]
+        },
+        {
+          "name": "handleUserMessage",
+          "startLine": 89,
+          "endLine": 124,
+          "params": [
+            "message"
+          ]
+        },
+        {
+          "name": "handleAssistantMessage",
+          "startLine": 126,
+          "endLine": 177,
+          "params": [
+            "message"
+          ]
+        },
+        {
+          "name": "mapContent",
+          "startLine": 179,
+          "endLine": 229,
+          "params": [
+            "content"
+          ]
+        },
+        {
+          "name": "translateAnthropicToolsToOpenAI",
+          "startLine": 231,
+          "endLine": 245,
+          "params": [
+            "anthropicTools"
+          ]
+        },
+        {
+          "name": "translateAnthropicToolChoiceToOpenAI",
+          "startLine": 247,
+          "endLine": 277,
+          "params": [
+            "anthropicToolChoice"
+          ]
+        },
+        {
+          "name": "translateToAnthropic",
+          "startLine": 281,
+          "endLine": 327,
+          "params": [
+            "response"
+          ]
+        },
+        {
+          "name": "getAnthropicTextBlocks",
+          "startLine": 329,
+          "endLine": 343,
+          "params": [
+            "messageContent"
+          ]
+        },
+        {
+          "name": "getAnthropicToolUseBlocks",
+          "startLine": 345,
+          "endLine": 357,
+          "params": [
+            "toolCalls"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "translateToOpenAI",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "translateToAnthropic",
+          "line": 281,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "translateToOpenAI",
+          "callee": "translateModelName",
+          "lineNumber": 33
+        },
+        {
+          "caller": "translateToOpenAI",
+          "callee": "translateAnthropicMessagesToOpenAI",
+          "lineNumber": 34
+        },
+        {
+          "caller": "translateToOpenAI",
+          "callee": "translateAnthropicToolsToOpenAI",
+          "lineNumber": 44
+        },
+        {
+          "caller": "translateToOpenAI",
+          "callee": "translateAnthropicToolChoiceToOpenAI",
+          "lineNumber": 45
+        },
+        {
+          "caller": "translateModelName",
+          "callee": "model.startsWith",
+          "lineNumber": 51
+        },
+        {
+          "caller": "translateModelName",
+          "callee": "model.replace",
+          "lineNumber": 52
+        },
+        {
+          "caller": "translateModelName",
+          "callee": "model.startsWith",
+          "lineNumber": 53
+        },
+        {
+          "caller": "translateModelName",
+          "callee": "model.replace",
+          "lineNumber": 54
+        },
+        {
+          "caller": "translateAnthropicMessagesToOpenAI",
+          "callee": "handleSystemPrompt",
+          "lineNumber": 63
+        },
+        {
+          "caller": "translateAnthropicMessagesToOpenAI",
+          "callee": "anthropicMessages.flatMap",
+          "lineNumber": 65
+        },
+        {
+          "caller": "translateAnthropicMessagesToOpenAI",
+          "callee": "handleUserMessage",
+          "lineNumber": 67
+        },
+        {
+          "caller": "translateAnthropicMessagesToOpenAI",
+          "callee": "handleAssistantMessage",
+          "lineNumber": 68
+        },
+        {
+          "caller": "handleSystemPrompt",
+          "callee": "system.map((block) => block.text).join",
+          "lineNumber": 84
+        },
+        {
+          "caller": "handleSystemPrompt",
+          "callee": "system.map",
+          "lineNumber": 84
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "Array.isArray",
+          "lineNumber": 92
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 93
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 97
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "newMessages.push",
+          "lineNumber": 103
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "mapContent",
+          "lineNumber": 106
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "newMessages.push",
+          "lineNumber": 111
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "mapContent",
+          "lineNumber": 113
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "newMessages.push",
+          "lineNumber": 117
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "mapContent",
+          "lineNumber": 119
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "Array.isArray",
+          "lineNumber": 129
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "mapContent",
+          "lineNumber": 133
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 138
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 142
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 146
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "[\n    ...textBlocks.map((b) => b.text),\n    ...thinkingBlocks.map((b) => b.thinking),\n  ].join",
+          "lineNumber": 151
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "textBlocks.map",
+          "lineNumber": 152
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "thinkingBlocks.map",
+          "lineNumber": 153
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "toolUseBlocks.map",
+          "lineNumber": 161
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "JSON.stringify",
+          "lineNumber": 166
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "mapContent",
+          "lineNumber": 174
+        },
+        {
+          "caller": "mapContent",
+          "callee": "Array.isArray",
+          "lineNumber": 187
+        },
+        {
+          "caller": "mapContent",
+          "callee": "content.some",
+          "lineNumber": 191
+        },
+        {
+          "caller": "mapContent",
+          "callee": "content\n      .filter(\n        (block): block is AnthropicTextBlock | AnthropicThinkingBlock =>\n          block.type === \"text\" || block.type === \"thinking\",\n      )\n      .map((block) => (block.type === \"text\" ? block.text : block.thinking))\n      .join",
+          "lineNumber": 193
+        },
+        {
+          "caller": "mapContent",
+          "callee": "content\n      .filter(\n        (block): block is AnthropicTextBlock | AnthropicThinkingBlock =>\n          block.type === \"text\" || block.type === \"thinking\",\n      )\n      .map",
+          "lineNumber": 193
+        },
+        {
+          "caller": "mapContent",
+          "callee": "content\n      .filter",
+          "lineNumber": 193
+        },
+        {
+          "caller": "mapContent",
+          "callee": "contentParts.push",
+          "lineNumber": 206
+        },
+        {
+          "caller": "mapContent",
+          "callee": "contentParts.push",
+          "lineNumber": 211
+        },
+        {
+          "caller": "mapContent",
+          "callee": "contentParts.push",
+          "lineNumber": 216
+        },
+        {
+          "caller": "translateAnthropicToolsToOpenAI",
+          "callee": "anthropicTools.map",
+          "lineNumber": 237
+        },
+        {
+          "caller": "translateToAnthropic",
+          "callee": "getAnthropicTextBlocks",
+          "lineNumber": 293
+        },
+        {
+          "caller": "translateToAnthropic",
+          "callee": "getAnthropicToolUseBlocks",
+          "lineNumber": 294
+        },
+        {
+          "caller": "translateToAnthropic",
+          "callee": "allTextBlocks.push",
+          "lineNumber": 296
+        },
+        {
+          "caller": "translateToAnthropic",
+          "callee": "allToolUseBlocks.push",
+          "lineNumber": 297
+        },
+        {
+          "caller": "translateToAnthropic",
+          "callee": "mapOpenAIStopReasonToAnthropic",
+          "lineNumber": 313
+        },
+        {
+          "caller": "getAnthropicTextBlocks",
+          "callee": "Array.isArray",
+          "lineNumber": 336
+        },
+        {
+          "caller": "getAnthropicTextBlocks",
+          "callee": "messageContent\n      .filter((part): part is TextPart => part.type === \"text\")\n      .map",
+          "lineNumber": 337
+        },
+        {
+          "caller": "getAnthropicTextBlocks",
+          "callee": "messageContent\n      .filter",
+          "lineNumber": 337
+        },
+        {
+          "caller": "getAnthropicToolUseBlocks",
+          "callee": "toolCalls.map",
+          "lineNumber": 351
+        },
+        {
+          "caller": "getAnthropicToolUseBlocks",
+          "callee": "JSON.parse",
+          "lineNumber": 355
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 461,
+      "nonEmptyLines": 419,
+      "functions": [
+        {
+          "name": "translateToResponses",
+          "startLine": 32,
+          "endLine": 47,
+          "params": [
+            "payload"
+          ]
+        },
+        {
+          "name": "truncateUser",
+          "startLine": 49,
+          "endLine": 52,
+          "params": [
+            "user"
+          ]
+        },
+        {
+          "name": "handleSystemPrompt",
+          "startLine": 54,
+          "endLine": 60,
+          "params": [
+            "system"
+          ]
+        },
+        {
+          "name": "translateMessage",
+          "startLine": 62,
+          "endLine": 66,
+          "params": [
+            "message"
+          ]
+        },
+        {
+          "name": "handleUserMessage",
+          "startLine": 68,
+          "endLine": 99,
+          "params": [
+            "message"
+          ]
+        },
+        {
+          "name": "mapToolResultContent",
+          "startLine": 101,
+          "endLine": 103,
+          "params": [
+            "block"
+          ]
+        },
+        {
+          "name": "mapUserContent",
+          "startLine": 105,
+          "endLine": 120,
+          "params": [
+            "blocks"
+          ]
+        },
+        {
+          "name": "handleAssistantMessage",
+          "startLine": 122,
+          "endLine": 161,
+          "params": [
+            "message"
+          ]
+        },
+        {
+          "name": "translateTools",
+          "startLine": 163,
+          "endLine": 173,
+          "params": [
+            "tools"
+          ]
+        },
+        {
+          "name": "translateToolChoice",
+          "startLine": 175,
+          "endLine": 198,
+          "params": [
+            "toolChoice"
+          ]
+        },
+        {
+          "name": "translateResponsesToAnthropic",
+          "startLine": 202,
+          "endLine": 247,
+          "params": [
+            "response"
+          ]
+        },
+        {
+          "name": "parseArguments",
+          "startLine": 249,
+          "endLine": 255,
+          "params": [
+            "raw"
+          ]
+        },
+        {
+          "name": "createResponsesStreamState",
+          "startLine": 277,
+          "endLine": 289,
+          "params": []
+        },
+        {
+          "name": "translateResponsesChunkToAnthropicEvents",
+          "startLine": 292,
+          "endLine": 440,
+          "params": [
+            "event",
+            "state"
+          ]
+        },
+        {
+          "name": "ensureBlock",
+          "startLine": 442,
+          "endLine": 461,
+          "params": [
+            "state",
+            "outputIndex",
+            "type",
+            "events"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "translateToResponses",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "translateResponsesToAnthropic",
+          "line": 202,
+          "isDefault": false
+        },
+        {
+          "name": "createResponsesStreamState",
+          "line": 277,
+          "isDefault": false
+        },
+        {
+          "name": "translateResponsesChunkToAnthropicEvents",
+          "line": 292,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "translateToResponses",
+          "callee": "handleSystemPrompt",
+          "lineNumber": 37
+        },
+        {
+          "caller": "translateToResponses",
+          "callee": "payload.messages.flatMap",
+          "lineNumber": 38
+        },
+        {
+          "caller": "translateToResponses",
+          "callee": "truncateUser",
+          "lineNumber": 43
+        },
+        {
+          "caller": "translateToResponses",
+          "callee": "translateTools",
+          "lineNumber": 44
+        },
+        {
+          "caller": "translateToResponses",
+          "callee": "translateToolChoice",
+          "lineNumber": 45
+        },
+        {
+          "caller": "truncateUser",
+          "callee": "user.slice",
+          "lineNumber": 51
+        },
+        {
+          "caller": "handleSystemPrompt",
+          "callee": "system.map((block) => block.text).join",
+          "lineNumber": 59
+        },
+        {
+          "caller": "handleSystemPrompt",
+          "callee": "system.map",
+          "lineNumber": 59
+        },
+        {
+          "caller": "translateMessage",
+          "callee": "handleUserMessage",
+          "lineNumber": 64
+        },
+        {
+          "caller": "translateMessage",
+          "callee": "handleAssistantMessage",
+          "lineNumber": 65
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "items.push",
+          "lineNumber": 83
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "mapToolResultContent",
+          "lineNumber": 86
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "mapUserContent",
+          "lineNumber": 91
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "message.content.filter",
+          "lineNumber": 92
+        },
+        {
+          "caller": "handleUserMessage",
+          "callee": "items.push",
+          "lineNumber": 95
+        },
+        {
+          "caller": "mapUserContent",
+          "callee": "parts.push",
+          "lineNumber": 111
+        },
+        {
+          "caller": "mapUserContent",
+          "callee": "parts.push",
+          "lineNumber": 113
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "textParts.push",
+          "lineNumber": 140
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "items.push",
+          "lineNumber": 142
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "JSON.stringify",
+          "lineNumber": 146
+        },
+        {
+          "caller": "handleAssistantMessage",
+          "callee": "items.unshift",
+          "lineNumber": 153
+        },
+        {
+          "caller": "translateTools",
+          "callee": "tools.map",
+          "lineNumber": 167
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "textBlocks.push",
+          "lineNumber": 213
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "(item.summary ?? [])\n        .map((entry) => entry.text)\n        .join",
+          "lineNumber": 217
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "(item.summary ?? [])\n        .map",
+          "lineNumber": 217
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "thinkingBlocks.push",
+          "lineNumber": 220
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "toolUseBlocks.push",
+          "lineNumber": 222
+        },
+        {
+          "caller": "translateResponsesToAnthropic",
+          "callee": "parseArguments",
+          "lineNumber": 226
+        },
+        {
+          "caller": "parseArguments",
+          "callee": "JSON.parse",
+          "lineNumber": 251
+        },
+        {
+          "caller": "emitMessageStart",
+          "callee": "events.push",
+          "lineNumber": 300
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "emitMessageStart",
+          "lineNumber": 328
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 335
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "emitMessageStart",
+          "lineNumber": 350
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "ensureBlock",
+          "lineNumber": 351
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 353
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "emitMessageStart",
+          "lineNumber": 364
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "ensureBlock",
+          "lineNumber": 365
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 372
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 384
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 396
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "Object.keys",
+          "lineNumber": 404
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 405
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "Number",
+          "lineNumber": 407
+        },
+        {
+          "caller": "translateResponsesChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 413
+        },
+        {
+          "caller": "ensureBlock",
+          "callee": "events.push",
+          "lineNumber": 452
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 4,
+        "functionCount": 15,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 24,
+      "nonEmptyLines": 19,
+      "exports": [
+        {
+          "name": "messageRoutes",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 190,
+      "nonEmptyLines": 173,
+      "functions": [
+        {
+          "name": "isToolBlockOpen",
+          "startLine": 9,
+          "endLine": 17,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "translateChunkToAnthropicEvents",
+          "startLine": 20,
+          "endLine": 180,
+          "params": [
+            "chunk",
+            "state"
+          ]
+        },
+        {
+          "name": "translateErrorToAnthropicErrorEvent",
+          "startLine": 182,
+          "endLine": 190,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "translateChunkToAnthropicEvents",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "translateErrorToAnthropicErrorEvent",
+          "line": 182,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isToolBlockOpen",
+          "callee": "Object.values(state.toolCalls).some",
+          "lineNumber": 14
+        },
+        {
+          "caller": "isToolBlockOpen",
+          "callee": "Object.values",
+          "lineNumber": 14
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 34
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "isToolBlockOpen",
+          "lineNumber": 61
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 63
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 72
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 83
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 99
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 114
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 132
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 147
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "events.push",
+          "lineNumber": 154
+        },
+        {
+          "caller": "translateChunkToAnthropicEvents",
+          "callee": "mapOpenAIStopReasonToAnthropic",
+          "lineNumber": 158
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 15,
+      "functions": [
+        {
+          "name": "mapOpenAIStopReasonToAnthropic",
+          "startLine": 3,
+          "endLine": 16,
+          "params": [
+            "finishReason"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "mapOpenAIStopReasonToAnthropic",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/models/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 34,
+      "nonEmptyLines": 29,
+      "exports": [
+        {
+          "name": "modelRoutes",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/token/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 16,
+      "nonEmptyLines": 13,
+      "exports": [
+        {
+          "name": "tokenRoute",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/usage/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 12,
+      "exports": [
+        {
+          "name": "usageRoute",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/server.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 36,
+      "nonEmptyLines": 28,
+      "exports": [
+        {
+          "name": "server",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 193,
+      "nonEmptyLines": 166,
+      "functions": [
+        {
+          "name": "createChatCompletions",
+          "startLine": 8,
+          "endLine": 47,
+          "params": [
+            "payload"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createChatCompletions",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createChatCompletions",
+          "callee": "payload.messages.some",
+          "lineNumber": 13
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "x.content?.some",
+          "lineNumber": 16
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "payload.messages.some",
+          "lineNumber": 21
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "[\"assistant\", \"tool\"].includes",
+          "lineNumber": 22
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "copilotHeaders",
+          "lineNumber": 27
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "fetch",
+          "lineNumber": 31
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "copilotBaseUrl",
+          "lineNumber": 31
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 34
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "consola.error",
+          "lineNumber": 38
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "events",
+          "lineNumber": 43
+        },
+        {
+          "caller": "createChatCompletions",
+          "callee": "response.json",
+          "lineNumber": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 38,
+      "nonEmptyLines": 31,
+      "functions": [
+        {
+          "name": "createEmbeddings",
+          "startLine": 5,
+          "endLine": 17,
+          "params": [
+            "payload"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createEmbeddings",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createEmbeddings",
+          "callee": "fetch",
+          "lineNumber": 8
+        },
+        {
+          "caller": "createEmbeddings",
+          "callee": "copilotBaseUrl",
+          "lineNumber": 8
+        },
+        {
+          "caller": "createEmbeddings",
+          "callee": "copilotHeaders",
+          "lineNumber": 10
+        },
+        {
+          "caller": "createEmbeddings",
+          "callee": "JSON.stringify",
+          "lineNumber": 11
+        },
+        {
+          "caller": "createEmbeddings",
+          "callee": "response.json",
+          "lineNumber": 16
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 163,
+      "nonEmptyLines": 137,
+      "functions": [
+        {
+          "name": "createResponses",
+          "startLine": 11,
+          "endLine": 50,
+          "params": [
+            "payload"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "createResponses",
+          "line": 11,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "createResponses",
+          "callee": "payload.input.some",
+          "lineNumber": 14
+        },
+        {
+          "caller": "createResponses",
+          "callee": "item.content.some",
+          "lineNumber": 18
+        },
+        {
+          "caller": "createResponses",
+          "callee": "payload.input.some",
+          "lineNumber": 22
+        },
+        {
+          "caller": "createResponses",
+          "callee": "copilotHeaders",
+          "lineNumber": 30
+        },
+        {
+          "caller": "createResponses",
+          "callee": "fetch",
+          "lineNumber": 34
+        },
+        {
+          "caller": "createResponses",
+          "callee": "copilotBaseUrl",
+          "lineNumber": 34
+        },
+        {
+          "caller": "createResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 37
+        },
+        {
+          "caller": "createResponses",
+          "callee": "consola.error",
+          "lineNumber": 41
+        },
+        {
+          "caller": "createResponses",
+          "callee": "events",
+          "lineNumber": 46
+        },
+        {
+          "caller": "createResponses",
+          "callee": "response.json",
+          "lineNumber": 49
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 55,
+      "nonEmptyLines": 47,
+      "functions": [
+        {
+          "name": "getModels",
+          "startLine": 5,
+          "endLine": 13,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getModels",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getModels",
+          "callee": "fetch",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getModels",
+          "callee": "copilotBaseUrl",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getModels",
+          "callee": "copilotHeaders",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getModels",
+          "callee": "response.json",
+          "lineNumber": 12
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 33,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "getVSCodeVersion",
+          "startLine": 3,
+          "endLine": 31,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getVSCodeVersion",
+          "line": 3,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "setTimeout",
+          "lineNumber": 5
+        },
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "controller.abort",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "fetch",
+          "lineNumber": 10
+        },
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "response.text",
+          "lineNumber": 17
+        },
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "pkgbuild.match",
+          "lineNumber": 19
+        },
+        {
+          "caller": "getVSCodeVersion",
+          "callee": "clearTimeout",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 23,
+      "nonEmptyLines": 19,
+      "functions": [
+        {
+          "name": "getCopilotToken",
+          "startLine": 5,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getCopilotToken",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getCopilotToken",
+          "callee": "fetch",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getCopilotToken",
+          "callee": "githubApiBaseUrl",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getCopilotToken",
+          "callee": "githubHeaders",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getCopilotToken",
+          "callee": "response.json",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 48,
+      "nonEmptyLines": 42,
+      "functions": [
+        {
+          "name": "getCopilotUsage",
+          "startLine": 5,
+          "endLine": 18,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getCopilotUsage",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getCopilotUsage",
+          "callee": "fetch",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getCopilotUsage",
+          "callee": "githubApiBaseUrl",
+          "lineNumber": 7
+        },
+        {
+          "caller": "getCopilotUsage",
+          "callee": "githubHeaders",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getCopilotUsage",
+          "callee": "response.json",
+          "lineNumber": 17
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 31,
+      "nonEmptyLines": 27,
+      "functions": [
+        {
+          "name": "getDeviceCode",
+          "startLine": 10,
+          "endLine": 23,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getDeviceCode",
+          "line": 10,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getDeviceCode",
+          "callee": "fetch",
+          "lineNumber": 11
+        },
+        {
+          "caller": "getDeviceCode",
+          "callee": "githubBaseUrl",
+          "lineNumber": 11
+        },
+        {
+          "caller": "getDeviceCode",
+          "callee": "standardHeaders",
+          "lineNumber": 13
+        },
+        {
+          "caller": "getDeviceCode",
+          "callee": "JSON.stringify",
+          "lineNumber": 14
+        },
+        {
+          "caller": "getDeviceCode",
+          "callee": "response.json",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/github/get-user.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 21,
+      "nonEmptyLines": 17,
+      "functions": [
+        {
+          "name": "getGitHubUser",
+          "startLine": 5,
+          "endLine": 16,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "getGitHubUser",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getGitHubUser",
+          "callee": "fetch",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getGitHubUser",
+          "callee": "githubApiBaseUrl",
+          "lineNumber": 6
+        },
+        {
+          "caller": "getGitHubUser",
+          "callee": "standardHeaders",
+          "lineNumber": 9
+        },
+        {
+          "caller": "getGitHubUser",
+          "callee": "response.json",
+          "lineNumber": 15
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 59,
+      "nonEmptyLines": 49,
+      "functions": [
+        {
+          "name": "pollAccessToken",
+          "startLine": 13,
+          "endLine": 53,
+          "params": [
+            "deviceCode"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "pollAccessToken",
+          "line": 13,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "pollAccessToken",
+          "callee": "consola.debug",
+          "lineNumber": 19
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "fetch",
+          "lineNumber": 22
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "githubBaseUrl",
+          "lineNumber": 23
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "standardHeaders",
+          "lineNumber": 26
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "JSON.stringify",
+          "lineNumber": 27
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "sleep",
+          "lineNumber": 36
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "consola.error",
+          "lineNumber": 37
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "response.text",
+          "lineNumber": 37
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "response.json",
+          "lineNumber": 42
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "consola.debug",
+          "lineNumber": 43
+        },
+        {
+          "caller": "pollAccessToken",
+          "callee": "sleep",
+          "lineNumber": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/start.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 231,
+      "nonEmptyLines": 208,
+      "functions": [
+        {
+          "name": "runServer",
+          "startLine": 39,
+          "endLine": 136,
+          "params": [
+            "options"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "runServer",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "start",
+          "line": 138,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "runServer",
+          "callee": "initProxyFromEnv",
+          "lineNumber": 41
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.info",
+          "lineNumber": 46
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.info",
+          "lineNumber": 51
+        },
+        {
+          "caller": "runServer",
+          "callee": "applyEnterpriseDomain",
+          "lineNumber": 54
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.info",
+          "lineNumber": 56
+        },
+        {
+          "caller": "runServer",
+          "callee": "ensurePaths",
+          "lineNumber": 64
+        },
+        {
+          "caller": "runServer",
+          "callee": "cacheVSCodeVersion",
+          "lineNumber": 65
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.info",
+          "lineNumber": 69
+        },
+        {
+          "caller": "runServer",
+          "callee": "setupGitHubToken",
+          "lineNumber": 71
+        },
+        {
+          "caller": "runServer",
+          "callee": "setupCopilotToken",
+          "lineNumber": 74
+        },
+        {
+          "caller": "runServer",
+          "callee": "cacheModels",
+          "lineNumber": 75
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.info",
+          "lineNumber": 77
+        },
+        {
+          "caller": "runServer",
+          "callee": "state.models?.data.map((model) => `- ${model.id}`).join",
+          "lineNumber": 78
+        },
+        {
+          "caller": "runServer",
+          "callee": "state.models?.data.map",
+          "lineNumber": 78
+        },
+        {
+          "caller": "runServer",
+          "callee": "invariant",
+          "lineNumber": 84
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.prompt",
+          "lineNumber": 86
+        },
+        {
+          "caller": "runServer",
+          "callee": "state.models.data.map",
+          "lineNumber": 90
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.prompt",
+          "lineNumber": 94
+        },
+        {
+          "caller": "runServer",
+          "callee": "state.models.data.map",
+          "lineNumber": 98
+        },
+        {
+          "caller": "runServer",
+          "callee": "generateEnvScript",
+          "lineNumber": 102
+        },
+        {
+          "caller": "runServer",
+          "callee": "clipboard.writeSync",
+          "lineNumber": 117
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.success",
+          "lineNumber": 118
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.warn",
+          "lineNumber": 120
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.log",
+          "lineNumber": 123
+        },
+        {
+          "caller": "runServer",
+          "callee": "consola.box",
+          "lineNumber": 127
+        },
+        {
+          "caller": "runServer",
+          "callee": "serve",
+          "lineNumber": 131
+        },
+        {
+          "caller": "run",
+          "callee": "Number.parseInt",
+          "lineNumber": 214
+        },
+        {
+          "caller": "run",
+          "callee": "runServer",
+          "lineNumber": 216
+        },
+        {
+          "caller": "run",
+          "callee": "Number.parseInt",
+          "lineNumber": 217
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/tests/anthropic-request.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 313,
+      "nonEmptyLines": 286,
+      "functions": [
+        {
+          "name": "isValidChatCompletionRequest",
+          "startLine": 60,
+          "endLine": 63,
+          "params": [
+            "payload"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isValidChatCompletionRequest",
+          "callee": "chatCompletionRequestSchema.safeParse",
+          "lineNumber": 61
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 365,
+      "nonEmptyLines": 339,
+      "functions": [
+        {
+          "name": "isValidAnthropicResponse",
+          "startLine": 51,
+          "endLine": 53,
+          "params": [
+            "payload"
+          ]
+        },
+        {
+          "name": "isValidAnthropicStreamEvent",
+          "startLine": 66,
+          "endLine": 68,
+          "params": [
+            "payload"
+          ]
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "isValidAnthropicResponse",
+          "callee": "anthropicMessageResponseSchema.safeParse",
+          "lineNumber": 52
+        },
+        {
+          "caller": "isValidAnthropicStreamEvent",
+          "callee": "anthropicStreamEventSchema.safeParse",
+          "lineNumber": 67
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 0,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/tests/create-chat-completions.test.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 56,
+      "nonEmptyLines": 50,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    }
+  ]
+}

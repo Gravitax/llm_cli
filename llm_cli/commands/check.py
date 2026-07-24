@@ -46,6 +46,8 @@ def run(args: argparse.Namespace) -> int:
 
     if profile.has_agent_hooks:
         _check_post_tool_use_hooks(checker, profile, repair)
+    if profile.has_plugins:
+        _check_plugins(checker, profile, repair)
     _check_headroom(checker, profile, repair)
 
     _check_shell_wrapper(checker, repair)
@@ -119,6 +121,46 @@ def _check_post_tool_use_hooks(checker: Checker, profile: ToolProfile, repair: s
         else:
             checker.fail(f"PostToolUse hook missing: {hook_arg}")
             checker.warn(f"Fix: {repair} setup-env --tool {profile.name}")
+
+
+def _check_plugins(checker: Checker, profile: ToolProfile, repair: str) -> None:
+    log.print_step("Claude Code plugins (optional)")
+    from llm_cli.services import plugin_manager
+
+    if plugin_manager.claude_binary() is None:
+        checker.info("claude CLI not on PATH — plugin setup skipped")
+        return
+    try:
+        wanted = plugin_manager.declared_plugin_names()
+        missing = plugin_manager.missing_plugins(
+            plugin_manager.claude_binary(), profile.settings_json
+        )
+    except (OSError, ValueError, RuntimeError) as error:
+        checker.warn(f"could not read plugins.yaml: {error}")
+        return
+
+    if not wanted:
+        checker.info("no plugins declared in plugins.yaml")
+    elif missing:
+        checker.warn(f"plugins not installed: {', '.join(missing)}")
+        checker.warn(f"Fix: {repair} setup-plugins")
+    else:
+        checker.ok(f"all {len(wanted)} declared plugins installed")
+
+    try:
+        skills = plugin_manager.load_spec().get("skills", [])
+    except (OSError, ValueError, RuntimeError):
+        skills = []
+    missing_skills = [
+        s["name"]
+        for s in skills
+        if s.get("name") and not (profile.skills_dir / s["name"] / "SKILL.md").is_file()
+    ]
+    if skills and missing_skills:
+        checker.warn(f"skills not installed: {', '.join(missing_skills)}")
+        checker.warn(f"Fix: {repair} setup-plugins")
+    elif skills:
+        checker.ok(f"all {len(skills)} declared skills installed")
 
 
 def _check_headroom(checker: Checker, profile: ToolProfile, repair: str) -> None:

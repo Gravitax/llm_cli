@@ -11,8 +11,20 @@ from llm_cli import platforms
 from llm_cli.services import log, settings_editor
 
 _MAIN_CONFIG_DIR = ".claude"
-_SHARED_ITEMS = ("CLAUDE.md", "agents", "commands", "skills")
+_SHARED_ITEMS = ("CLAUDE.md", "agents", "commands", "skills", "plugins")
 _PROJECTS = "projects"
+_STATE_FILE = ".claude.json"
+# Org entitlement caches read from the main state file. Without them the
+# provider config dir hides the "full powers" step (auto/bypass) of the
+# Shift+Tab permission-mode cycle, because Claude Code gates it on these flags.
+_ENTITLEMENT_KEYS = (
+    "penguinModeOrgEnabled",
+    "hasSeenAutoModeEntryWarning",
+    "cachedGrowthBookFeatures",
+    "cachedGrowthBookFeaturesAt",
+    "cachedExperimentFeatures",
+    "orgModelDefaultCache",
+)
 
 
 def ensure(provider: str, label: str) -> Path:
@@ -21,6 +33,7 @@ def ensure(provider: str, label: str) -> Path:
     provider_dir = Path.home() / f".claude-{provider}"
     provider_dir.mkdir(exist_ok=True)
     _seed_state(provider_dir)
+    _sync_entitlements(provider_dir)
     _copy_settings(main, provider_dir)
     _link_shared_items(main, provider_dir)
     _link_projects_dir(main, provider_dir, label)
@@ -28,9 +41,39 @@ def ensure(provider: str, label: str) -> Path:
 
 
 def _seed_state(provider_dir: Path) -> None:
-    state = provider_dir / ".claude.json"
+    state = provider_dir / _STATE_FILE
     if not state.is_file():
         state.write_text(json.dumps({"hasCompletedOnboarding": True}) + "\n")
+
+
+def _sync_entitlements(provider_dir: Path) -> None:
+    """Copies the org entitlement caches from the main state file into the
+    provider one, so the provider session keeps the permission modes the org
+    unlocked. The main OAuth session, userID, machineID and project history
+    stay untouched — only the entitlement keys cross over.
+
+    The main state lives at ~/.claude.json (home root), not inside ~/.claude:
+    that directory only holds settings.json and shared assets."""
+    main_state = _load_state(Path.home() / _STATE_FILE)
+    if not main_state:
+        return
+    target = provider_dir / _STATE_FILE
+    provider_state = _load_state(target)
+    changed = False
+    for key in _ENTITLEMENT_KEYS:
+        if key in main_state and provider_state.get(key) != main_state[key]:
+            provider_state[key] = main_state[key]
+            changed = True
+    if changed:
+        target.write_text(json.dumps(provider_state, indent=2) + "\n")
+
+
+def _load_state(path: Path) -> dict:
+    try:
+        loaded = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return loaded if isinstance(loaded, dict) else {}
 
 
 def _copy_settings(main: Path, provider_dir: Path) -> None:
@@ -42,9 +85,27 @@ def _copy_settings(main: Path, provider_dir: Path) -> None:
 
 
 def _link_shared_items(main: Path, provider_dir: Path) -> None:
+    """Points every shared item of a provider home at the main one.
+
+    Plugins are shared this way too: installing from any provider must show up
+    in all of them, which a symlink gives for free. When only the provider holds
+    the item, it is promoted to the main home first so it ends up shared instead
+    of stranded. Real content on both sides is never merged — that would need a
+    destructive pick between two copies, so it is reported and left untouched.
+    """
     for name in _SHARED_ITEMS:
         source, target = main / name, provider_dir / name
-        if not source.exists() or target.is_symlink():
+        if target.is_symlink():
+            continue
+        if not source.exists():
+            if not target.exists():
+                continue
+            target.rename(source)
+        elif target.exists():
+            log.print_warn(
+                f"{target} and {source} both exist — kept separate. "
+                f"Merge them by hand to share {name} across providers."
+            )
             continue
         try:
             target.symlink_to(source)

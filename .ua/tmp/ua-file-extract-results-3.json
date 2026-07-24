@@ -1,0 +1,5442 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 21,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 21,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 21,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "llm_cli/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 3,
+      "nonEmptyLines": 2,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/__main__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 8,
+      "nonEmptyLines": 5,
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/cli.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 73,
+      "nonEmptyLines": 65,
+      "functions": [
+        {
+          "name": "build_parser",
+          "startLine": 59,
+          "endLine": 68,
+          "params": []
+        },
+        {
+          "name": "main",
+          "startLine": 71,
+          "endLine": 73,
+          "params": [
+            "argv"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "build_parser",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "main",
+          "line": 71,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "build_parser",
+          "callee": "argparse.ArgumentParser",
+          "lineNumber": 60
+        },
+        {
+          "caller": "build_parser",
+          "callee": "parser.add_argument",
+          "lineNumber": 64
+        },
+        {
+          "caller": "build_parser",
+          "callee": "parser.add_subparsers",
+          "lineNumber": 65
+        },
+        {
+          "caller": "build_parser",
+          "callee": "module.configure",
+          "lineNumber": 67
+        },
+        {
+          "caller": "main",
+          "callee": "build_parser().parse_args",
+          "lineNumber": 72
+        },
+        {
+          "caller": "main",
+          "callee": "build_parser",
+          "lineNumber": 72
+        },
+        {
+          "caller": "main",
+          "callee": "args.func",
+          "lineNumber": 73
+        }
+      ],
+      "metrics": {
+        "importCount": 24,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/__init__.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 1,
+      "nonEmptyLines": 1,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/activate.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 63,
+      "nonEmptyLines": 50,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 23,
+          "endLine": 33,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 36,
+          "endLine": 46,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_ensure_prerequisites",
+          "startLine": 49,
+          "endLine": 54,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_warn_when_compression_idle",
+          "startLine": 57,
+          "endLine": 63,
+          "params": [
+            "profile"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_prerequisites",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "_warn_when_compression_idle",
+          "line": 57,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 24
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 28
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 33
+        },
+        {
+          "caller": "run",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 37
+        },
+        {
+          "caller": "run",
+          "callee": "getattr",
+          "lineNumber": 38
+        },
+        {
+          "caller": "run",
+          "callee": "_ensure_prerequisites",
+          "lineNumber": 39
+        },
+        {
+          "caller": "run",
+          "callee": "setup_env.run",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "setup_shell_wrapper.run",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "_warn_when_compression_idle",
+          "lineNumber": 44
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_ensure_prerequisites",
+          "callee": "deps.installer",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_ensure_prerequisites",
+          "callee": "installer.ensure_node",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_ensure_prerequisites",
+          "callee": "installer.ensure_npm_cli",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_warn_when_compression_idle",
+          "callee": "headroom.is_installed",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_warn_when_compression_idle",
+          "callee": "headroom.export_ghe_env",
+          "lineNumber": 61
+        },
+        {
+          "caller": "_warn_when_compression_idle",
+          "callee": "headroom.copilot_mode",
+          "lineNumber": 62
+        },
+        {
+          "caller": "_warn_when_compression_idle",
+          "callee": "headroom.print_login_warning",
+          "lineNumber": 63
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/bootstrap.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 111,
+      "nonEmptyLines": 86,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 24,
+          "endLine": 26,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 29,
+          "endLine": 51,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_prompt_tool_selection",
+          "startLine": 54,
+          "endLine": 63,
+          "params": []
+        },
+        {
+          "name": "_ask_yes_no",
+          "startLine": 66,
+          "endLine": 69,
+          "params": [
+            "prompt",
+            "default"
+          ]
+        },
+        {
+          "name": "_offer_atlassian_setup",
+          "startLine": 72,
+          "endLine": 84,
+          "params": []
+        },
+        {
+          "name": "_offer_global_mcp",
+          "startLine": 87,
+          "endLine": 103,
+          "params": []
+        },
+        {
+          "name": "_mcp_already_registered",
+          "startLine": 106,
+          "endLine": 111,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 24,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "_prompt_tool_selection",
+          "line": 54,
+          "isDefault": false
+        },
+        {
+          "name": "_ask_yes_no",
+          "line": 66,
+          "isDefault": false
+        },
+        {
+          "name": "_offer_atlassian_setup",
+          "line": 72,
+          "isDefault": false
+        },
+        {
+          "name": "_offer_global_mcp",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "_mcp_already_registered",
+          "line": 106,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 25
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 26
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 30
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_info",
+          "lineNumber": 31
+        },
+        {
+          "caller": "run",
+          "callee": "paths.package_root",
+          "lineNumber": 31
+        },
+        {
+          "caller": "run",
+          "callee": "_prompt_tool_selection",
+          "lineNumber": 33
+        },
+        {
+          "caller": "run",
+          "callee": "setup_deps.run",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "deps.export_local_bin_path",
+          "lineNumber": 36
+        },
+        {
+          "caller": "run",
+          "callee": "enumerate",
+          "lineNumber": 39
+        },
+        {
+          "caller": "run",
+          "callee": "activate.run",
+          "lineNumber": 40
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 40
+        },
+        {
+          "caller": "run",
+          "callee": "_offer_atlassian_setup",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "_offer_global_mcp",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 45
+        },
+        {
+          "caller": "run",
+          "callee": "check.run",
+          "lineNumber": 47
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 47
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 49
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 50
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "log.print_step",
+          "lineNumber": 55
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "print",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "print",
+          "lineNumber": 57
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "print",
+          "lineNumber": 58
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "input(\"  Choice [3]: \").strip",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "input",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_prompt_tool_selection",
+          "callee": "{\n        \"1\": [\"claude\"],\n        \"2\": [\"copilot\"],\n    }.get",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_ask_yes_no",
+          "callee": "input(f\"{prompt} [{hint}] \").strip",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_ask_yes_no",
+          "callee": "input",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_ask_yes_no",
+          "callee": "reply.lower().startswith",
+          "lineNumber": 69
+        },
+        {
+          "caller": "_ask_yes_no",
+          "callee": "reply.lower",
+          "lineNumber": 69
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "log.print_step",
+          "lineNumber": 73
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "paths.config_env",
+          "lineNumber": 74
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "credentials_file.is_file",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "log.print_ok",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "_ask_yes_no",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "log.print_info",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "_ask_yes_no",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "setup_atlassian.run",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "argparse.Namespace",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_offer_atlassian_setup",
+          "callee": "log.print_err",
+          "lineNumber": 84
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_step",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "paths.config_env().is_file",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "paths.config_env",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_info",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "_mcp_already_registered",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_ok",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_info",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "_ask_yes_no",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "setup_mcp.run",
+          "lineNumber": 97
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "argparse.Namespace",
+          "lineNumber": 97
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_err",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_info",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "log.print_info",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_offer_global_mcp",
+          "callee": "instructions.run_command_prefix",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_mcp_already_registered",
+          "callee": "settings_editor.contains",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_mcp_already_registered",
+          "callee": "paths.home",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_mcp_already_registered",
+          "callee": "settings_editor.contains",
+          "lineNumber": 109
+        },
+        {
+          "caller": "_mcp_already_registered",
+          "callee": "paths.home",
+          "lineNumber": 110
+        }
+      ],
+      "metrics": {
+        "importCount": 12,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/check.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 342,
+      "nonEmptyLines": 286,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 23,
+          "endLine": 29,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 32,
+          "endLine": 61,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_check_rtk_binary",
+          "startLine": 64,
+          "endLine": 71,
+          "params": [
+            "checker",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_rtk_hook",
+          "startLine": 74,
+          "endLine": 83,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_rtk_savings",
+          "startLine": 86,
+          "endLine": 95,
+          "params": [
+            "checker"
+          ]
+        },
+        {
+          "name": "_check_rtk_instructions",
+          "startLine": 98,
+          "endLine": 113,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_post_tool_use_hooks",
+          "startLine": 116,
+          "endLine": 123,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_plugins",
+          "startLine": 126,
+          "endLine": 163,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_headroom",
+          "startLine": 166,
+          "endLine": 203,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_headroom_launcher",
+          "startLine": 206,
+          "endLine": 242,
+          "params": [
+            "checker",
+            "profile"
+          ]
+        },
+        {
+          "name": "_check_shell_wrapper",
+          "startLine": 245,
+          "endLine": 258,
+          "params": [
+            "checker",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_context_cache",
+          "startLine": 261,
+          "endLine": 277,
+          "params": [
+            "checker",
+            "profile",
+            "project",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_instructions",
+          "startLine": 280,
+          "endLine": 296,
+          "params": [
+            "checker",
+            "profile",
+            "project",
+            "repair"
+          ]
+        },
+        {
+          "name": "_check_global_mcp",
+          "startLine": 299,
+          "endLine": 306,
+          "params": [
+            "checker",
+            "profile",
+            "repair"
+          ]
+        },
+        {
+          "name": "_mcp_config_path",
+          "startLine": 309,
+          "endLine": 312,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_find_pre_tool_use_command",
+          "startLine": 315,
+          "endLine": 325,
+          "params": [
+            "settings_path",
+            "needle"
+          ]
+        },
+        {
+          "name": "_command_output",
+          "startLine": 328,
+          "endLine": 337,
+          "params": [
+            "argv"
+          ]
+        },
+        {
+          "name": "_first_match",
+          "startLine": 340,
+          "endLine": 342,
+          "params": [
+            "pattern",
+            "text"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "_check_rtk_binary",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "_check_rtk_hook",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "_check_rtk_savings",
+          "line": 86,
+          "isDefault": false
+        },
+        {
+          "name": "_check_rtk_instructions",
+          "line": 98,
+          "isDefault": false
+        },
+        {
+          "name": "_check_post_tool_use_hooks",
+          "line": 116,
+          "isDefault": false
+        },
+        {
+          "name": "_check_plugins",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "_check_headroom",
+          "line": 166,
+          "isDefault": false
+        },
+        {
+          "name": "_check_headroom_launcher",
+          "line": 206,
+          "isDefault": false
+        },
+        {
+          "name": "_check_shell_wrapper",
+          "line": 245,
+          "isDefault": false
+        },
+        {
+          "name": "_check_context_cache",
+          "line": 261,
+          "isDefault": false
+        },
+        {
+          "name": "_check_instructions",
+          "line": 280,
+          "isDefault": false
+        },
+        {
+          "name": "_check_global_mcp",
+          "line": 299,
+          "isDefault": false
+        },
+        {
+          "name": "_mcp_config_path",
+          "line": 309,
+          "isDefault": false
+        },
+        {
+          "name": "_find_pre_tool_use_command",
+          "line": 315,
+          "isDefault": false
+        },
+        {
+          "name": "_command_output",
+          "line": 328,
+          "isDefault": false
+        },
+        {
+          "name": "_first_match",
+          "line": 340,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 24
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 28
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 29
+        },
+        {
+          "caller": "run",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 33
+        },
+        {
+          "caller": "run",
+          "callee": "Path(args.project).resolve",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "Path",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "git.toplevel",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "Checker",
+          "lineNumber": 35
+        },
+        {
+          "caller": "run",
+          "callee": "instructions.run_command_prefix",
+          "lineNumber": 36
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 38
+        },
+        {
+          "caller": "run",
+          "callee": "_check_rtk_binary",
+          "lineNumber": 40
+        },
+        {
+          "caller": "run",
+          "callee": "shutil.which",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "_check_rtk_hook",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "_check_rtk_savings",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "_check_rtk_instructions",
+          "lineNumber": 45
+        },
+        {
+          "caller": "run",
+          "callee": "_check_post_tool_use_hooks",
+          "lineNumber": 48
+        },
+        {
+          "caller": "run",
+          "callee": "_check_plugins",
+          "lineNumber": 50
+        },
+        {
+          "caller": "run",
+          "callee": "_check_headroom",
+          "lineNumber": 51
+        },
+        {
+          "caller": "run",
+          "callee": "_check_shell_wrapper",
+          "lineNumber": 53
+        },
+        {
+          "caller": "run",
+          "callee": "_check_context_cache",
+          "lineNumber": 54
+        },
+        {
+          "caller": "run",
+          "callee": "_check_instructions",
+          "lineNumber": 55
+        },
+        {
+          "caller": "run",
+          "callee": "_check_global_mcp",
+          "lineNumber": 56
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 58
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 59
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "log.print_step",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "shutil.which",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "checker.ok",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "_command_output",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "checker.fail",
+          "lineNumber": 70
+        },
+        {
+          "caller": "_check_rtk_binary",
+          "callee": "checker.warn",
+          "lineNumber": 71
+        },
+        {
+          "caller": "_check_rtk_hook",
+          "callee": "log.print_step",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_check_rtk_hook",
+          "callee": "_find_pre_tool_use_command",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_check_rtk_hook",
+          "callee": "checker.ok",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_check_rtk_hook",
+          "callee": "checker.fail",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_check_rtk_hook",
+          "callee": "checker.warn",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "log.print_step",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "_command_output",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "checker.warn",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "_first_match",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "_first_match",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "checker.ok",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "print",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "\"\\n\".join",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_check_rtk_savings",
+          "callee": "savings.splitlines",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "log.print_step",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "shutil.which",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.ok",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "_command_output",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.fail",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.warn",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "settings_editor.contains",
+          "lineNumber": 109
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.ok",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.fail",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_check_rtk_instructions",
+          "callee": "checker.warn",
+          "lineNumber": 113
+        },
+        {
+          "caller": "_check_post_tool_use_hooks",
+          "callee": "log.print_step",
+          "lineNumber": 117
+        },
+        {
+          "caller": "_check_post_tool_use_hooks",
+          "callee": "settings_editor.contains",
+          "lineNumber": 119
+        },
+        {
+          "caller": "_check_post_tool_use_hooks",
+          "callee": "checker.ok",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_check_post_tool_use_hooks",
+          "callee": "checker.fail",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_check_post_tool_use_hooks",
+          "callee": "checker.warn",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "log.print_step",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.claude_binary",
+          "lineNumber": 130
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.info",
+          "lineNumber": 131
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.declared_plugin_names",
+          "lineNumber": 134
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.missing_plugins",
+          "lineNumber": 135
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.claude_binary",
+          "lineNumber": 136
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.warn",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.info",
+          "lineNumber": 143
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.warn",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "', '.join",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.warn",
+          "lineNumber": 146
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.ok",
+          "lineNumber": 148
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "len",
+          "lineNumber": 148
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.load_spec().get",
+          "lineNumber": 151
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "plugin_manager.load_spec",
+          "lineNumber": 151
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "s.get",
+          "lineNumber": 157
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "(profile.skills_dir / s[\"name\"] / \"SKILL.md\").is_file",
+          "lineNumber": 157
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.warn",
+          "lineNumber": 160
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "', '.join",
+          "lineNumber": 160
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.warn",
+          "lineNumber": 161
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "checker.ok",
+          "lineNumber": 163
+        },
+        {
+          "caller": "_check_plugins",
+          "callee": "len",
+          "lineNumber": 163
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "log.print_step",
+          "lineNumber": 167
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.is_installed",
+          "lineNumber": 168
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.is_wrapped",
+          "lineNumber": 169
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.fail",
+          "lineNumber": 170
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.warn",
+          "lineNumber": 174
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.info",
+          "lineNumber": 179
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.info",
+          "lineNumber": 180
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.ok",
+          "lineNumber": 183
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "shutil.which",
+          "lineNumber": 183
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "_check_headroom_launcher",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.is_wrapped",
+          "lineNumber": 188
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.info",
+          "lineNumber": 189
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.ok",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.proxy_alive",
+          "lineNumber": 195
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.ok",
+          "lineNumber": 196
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.proxy_port",
+          "lineNumber": 196
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.info",
+          "lineNumber": 198
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "checker.info",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "headroom.perf_summary",
+          "lineNumber": 201
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "print",
+          "lineNumber": 203
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "\"\\n\".join",
+          "lineNumber": 203
+        },
+        {
+          "caller": "_check_headroom",
+          "callee": "perf.splitlines",
+          "lineNumber": 203
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "shutil.which",
+          "lineNumber": 209
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "str",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "platforms.current().entry_points_dir",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "platforms.current",
+          "lineNumber": 210
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "entry_point.startswith",
+          "lineNumber": 211
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.ok",
+          "lineNumber": 212
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.warn",
+          "lineNumber": 214
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.fail",
+          "lineNumber": 219
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.proxy_alive",
+          "lineNumber": 223
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.ok",
+          "lineNumber": 224
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.proxy_port",
+          "lineNumber": 225
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.info",
+          "lineNumber": 228
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.proxy_port",
+          "lineNumber": 230
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.export_ghe_env",
+          "lineNumber": 233
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.copilot_mode",
+          "lineNumber": 234
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.ok",
+          "lineNumber": 236
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.info",
+          "lineNumber": 238
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "checker.info",
+          "lineNumber": 242
+        },
+        {
+          "caller": "_check_headroom_launcher",
+          "callee": "headroom.login_hint",
+          "lineNumber": 242
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "log.print_step",
+          "lineNumber": 246
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "platforms.current().shell_profile_targets",
+          "lineNumber": 247
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "platforms.current",
+          "lineNumber": 247
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "checker.warn",
+          "lineNumber": 249
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "text_blocks.contains",
+          "lineNumber": 254
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "checker.ok",
+          "lineNumber": 255
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "checker.fail",
+          "lineNumber": 257
+        },
+        {
+          "caller": "_check_shell_wrapper",
+          "callee": "checker.warn",
+          "lineNumber": 258
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "log.print_step",
+          "lineNumber": 264
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "cache.cache_file_for",
+          "lineNumber": 265
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "checker.info",
+          "lineNumber": 266
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "checker.info",
+          "lineNumber": 267
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "cache_file.is_file",
+          "lineNumber": 268
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "checker.fail",
+          "lineNumber": 269
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "checker.warn",
+          "lineNumber": 270
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "fs.read_text",
+          "lineNumber": 272
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "_first_match(r\"Generated: ([^|]+)\", content).strip",
+          "lineNumber": 273
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "_first_match",
+          "lineNumber": 273
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "cache_file.stat",
+          "lineNumber": 274
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "checker.ok",
+          "lineNumber": 275
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "content.count",
+          "lineNumber": 276
+        },
+        {
+          "caller": "_check_context_cache",
+          "callee": "chr",
+          "lineNumber": 276
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "log.print_step",
+          "lineNumber": 283
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "profile.instructions_global.is_file",
+          "lineNumber": 284
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "fs.read_text(profile.instructions_global).count",
+          "lineNumber": 285
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "fs.read_text",
+          "lineNumber": 285
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.ok",
+          "lineNumber": 286
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.fail",
+          "lineNumber": 288
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.warn",
+          "lineNumber": 289
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "settings_editor.contains",
+          "lineNumber": 292
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.ok",
+          "lineNumber": 293
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.fail",
+          "lineNumber": 295
+        },
+        {
+          "caller": "_check_instructions",
+          "callee": "checker.warn",
+          "lineNumber": 296
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "log.print_step",
+          "lineNumber": 300
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "_mcp_config_path",
+          "lineNumber": 301
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "settings_editor.contains",
+          "lineNumber": 302
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "checker.ok",
+          "lineNumber": 303
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "checker.info",
+          "lineNumber": 305
+        },
+        {
+          "caller": "_check_global_mcp",
+          "callee": "checker.info",
+          "lineNumber": 306
+        },
+        {
+          "caller": "_mcp_config_path",
+          "callee": "paths.home",
+          "lineNumber": 311
+        },
+        {
+          "caller": "_mcp_config_path",
+          "callee": "paths.home",
+          "lineNumber": 312
+        },
+        {
+          "caller": "_find_pre_tool_use_command",
+          "callee": "settings_editor.load_json",
+          "lineNumber": 317
+        },
+        {
+          "caller": "_find_pre_tool_use_command",
+          "callee": "settings.get(\"hooks\", {}).get",
+          "lineNumber": 320
+        },
+        {
+          "caller": "_find_pre_tool_use_command",
+          "callee": "settings.get",
+          "lineNumber": 320
+        },
+        {
+          "caller": "_find_pre_tool_use_command",
+          "callee": "entry.get",
+          "lineNumber": 321
+        },
+        {
+          "caller": "_find_pre_tool_use_command",
+          "callee": "hook.get",
+          "lineNumber": 322
+        },
+        {
+          "caller": "_command_output",
+          "callee": "subprocess.run",
+          "lineNumber": 332
+        },
+        {
+          "caller": "_command_output",
+          "callee": "log.console_safe(result.stdout).strip",
+          "lineNumber": 337
+        },
+        {
+          "caller": "_command_output",
+          "callee": "log.console_safe",
+          "lineNumber": 337
+        },
+        {
+          "caller": "_first_match",
+          "callee": "re.search",
+          "lineNumber": 341
+        },
+        {
+          "caller": "_first_match",
+          "callee": "match.group",
+          "lineNumber": 342
+        }
+      ],
+      "metrics": {
+        "importCount": 14,
+        "exportCount": 18,
+        "functionCount": 18,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/git_clone.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 50,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 15,
+          "endLine": 20,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 23,
+          "endLine": 46,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_find_credential",
+          "startLine": 49,
+          "endLine": 61,
+          "params": [
+            "host"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 15,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 23,
+          "isDefault": false
+        },
+        {
+          "name": "_find_credential",
+          "line": 49,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 16
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 19
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 20
+        },
+        {
+          "caller": "run",
+          "callee": "config.require",
+          "lineNumber": 25
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_err",
+          "lineNumber": 27
+        },
+        {
+          "caller": "run",
+          "callee": "str",
+          "lineNumber": 27
+        },
+        {
+          "caller": "run",
+          "callee": "bitbucket_url.replace",
+          "lineNumber": 31
+        },
+        {
+          "caller": "run",
+          "callee": "_find_credential",
+          "lineNumber": 32
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_err",
+          "lineNumber": 34
+        },
+        {
+          "caller": "run",
+          "callee": "subprocess.run",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "paths.home",
+          "lineNumber": 51
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "credentials_file.is_file",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "fs.read_text(credentials_file).splitlines",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "fs.read_text",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "line.replace(\"https://\", \"\", 1).split",
+          "lineNumber": 57
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "line.replace",
+          "lineNumber": 57
+        },
+        {
+          "caller": "_find_credential",
+          "callee": "account.partition",
+          "lineNumber": 58
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/hooks.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 95,
+      "nonEmptyLines": 75,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 25,
+          "endLine": 47,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "_run_cache_refresh_git",
+          "startLine": 50,
+          "endLine": 59,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_run_cache_refresh_write",
+          "startLine": 62,
+          "endLine": 70,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_run_git_refresh",
+          "startLine": 73,
+          "endLine": 80,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_drain_stdin",
+          "startLine": 83,
+          "endLine": 86,
+          "params": []
+        },
+        {
+          "name": "_read_stdin_tool_command",
+          "startLine": 89,
+          "endLine": 95,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 25,
+          "isDefault": false
+        },
+        {
+          "name": "_run_cache_refresh_git",
+          "line": 50,
+          "isDefault": false
+        },
+        {
+          "name": "_run_cache_refresh_write",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "_run_git_refresh",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "_drain_stdin",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "_read_stdin_tool_command",
+          "line": 89,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 26
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_subparsers",
+          "lineNumber": 29
+        },
+        {
+          "caller": "configure",
+          "callee": "actions.add_parser",
+          "lineNumber": 31
+        },
+        {
+          "caller": "configure",
+          "callee": "git_hook.add_argument",
+          "lineNumber": 34
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 34
+        },
+        {
+          "caller": "configure",
+          "callee": "git_hook.set_defaults",
+          "lineNumber": 35
+        },
+        {
+          "caller": "configure",
+          "callee": "actions.add_parser",
+          "lineNumber": 37
+        },
+        {
+          "caller": "configure",
+          "callee": "write_hook.add_argument",
+          "lineNumber": 40
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 40
+        },
+        {
+          "caller": "configure",
+          "callee": "write_hook.set_defaults",
+          "lineNumber": 41
+        },
+        {
+          "caller": "configure",
+          "callee": "actions.add_parser",
+          "lineNumber": 43
+        },
+        {
+          "caller": "configure",
+          "callee": "git_refresh.add_argument",
+          "lineNumber": 46
+        },
+        {
+          "caller": "configure",
+          "callee": "git_refresh.set_defaults",
+          "lineNumber": 47
+        },
+        {
+          "caller": "_run_cache_refresh_git",
+          "callee": "_read_stdin_tool_command",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_run_cache_refresh_git",
+          "callee": "_STRUCTURAL_GIT.search",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_run_cache_refresh_git",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 55
+        },
+        {
+          "caller": "_run_cache_refresh_git",
+          "callee": "setup_context_cache.refresh_if_indexed",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_run_cache_refresh_git",
+          "callee": "git.toplevel",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_run_cache_refresh_write",
+          "callee": "_drain_stdin",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_run_cache_refresh_write",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_run_cache_refresh_write",
+          "callee": "setup_context_cache.refresh_if_indexed",
+          "lineNumber": 67
+        },
+        {
+          "caller": "_run_cache_refresh_write",
+          "callee": "git.toplevel",
+          "lineNumber": 67
+        },
+        {
+          "caller": "_run_git_refresh",
+          "callee": "git.toplevel",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_run_git_refresh",
+          "callee": "Path",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_run_git_refresh",
+          "callee": "setup_context_cache.refresh_if_indexed",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_drain_stdin",
+          "callee": "sys.stdin.buffer.read",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_read_stdin_tool_command",
+          "callee": "_drain_stdin",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_read_stdin_tool_command",
+          "callee": "json.loads",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_read_stdin_tool_command",
+          "callee": "raw.decode",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_read_stdin_tool_command",
+          "callee": "payload.get(\"tool_input\", {}).get",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_read_stdin_tool_command",
+          "callee": "payload.get",
+          "lineNumber": 95
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_atlassian.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 209,
+      "nonEmptyLines": 174,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 31,
+          "endLine": 35,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 38,
+          "endLine": 71,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_check_prerequisites",
+          "startLine": 74,
+          "endLine": 80,
+          "params": []
+        },
+        {
+          "name": "_prompt_value",
+          "startLine": 83,
+          "endLine": 90,
+          "params": [
+            "label",
+            "hint",
+            "default"
+          ]
+        },
+        {
+          "name": "_prompt_secret",
+          "startLine": 93,
+          "endLine": 99,
+          "params": [
+            "label",
+            "hint"
+          ]
+        },
+        {
+          "name": "_prompt_urls",
+          "startLine": 102,
+          "endLine": 132,
+          "params": [
+            "existing"
+          ]
+        },
+        {
+          "name": "_prompt_credentials",
+          "startLine": 135,
+          "endLine": 157,
+          "params": [
+            "values"
+          ]
+        },
+        {
+          "name": "_validate_tokens",
+          "startLine": 160,
+          "endLine": 175,
+          "params": [
+            "values"
+          ]
+        },
+        {
+          "name": "_refresh_installed_instructions",
+          "startLine": 178,
+          "endLine": 182,
+          "params": []
+        },
+        {
+          "name": "_configure_git_credentials",
+          "startLine": 185,
+          "endLine": 201,
+          "params": [
+            "values"
+          ]
+        },
+        {
+          "name": "_configure_claude_permissions",
+          "startLine": 204,
+          "endLine": 209,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 31,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "_check_prerequisites",
+          "line": 74,
+          "isDefault": false
+        },
+        {
+          "name": "_prompt_value",
+          "line": 83,
+          "isDefault": false
+        },
+        {
+          "name": "_prompt_secret",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "_prompt_urls",
+          "line": 102,
+          "isDefault": false
+        },
+        {
+          "name": "_prompt_credentials",
+          "line": 135,
+          "isDefault": false
+        },
+        {
+          "name": "_validate_tokens",
+          "line": 160,
+          "isDefault": false
+        },
+        {
+          "name": "_refresh_installed_instructions",
+          "line": 178,
+          "isDefault": false
+        },
+        {
+          "name": "_configure_git_credentials",
+          "line": 185,
+          "isDefault": false
+        },
+        {
+          "name": "_configure_claude_permissions",
+          "line": 204,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 32
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 35
+        },
+        {
+          "caller": "run",
+          "callee": "_check_prerequisites",
+          "lineNumber": 39
+        },
+        {
+          "caller": "run",
+          "callee": "_prompt_urls",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "config.load",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "values.update",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "_prompt_credentials",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "_validate_tokens",
+          "lineNumber": 44
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_err",
+          "lineNumber": 45
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 48
+        },
+        {
+          "caller": "run",
+          "callee": "config.store",
+          "lineNumber": 49
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 50
+        },
+        {
+          "caller": "run",
+          "callee": "_refresh_installed_instructions",
+          "lineNumber": 51
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 53
+        },
+        {
+          "caller": "run",
+          "callee": "_configure_git_credentials",
+          "lineNumber": 54
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 55
+        },
+        {
+          "caller": "run",
+          "callee": "shutil.which",
+          "lineNumber": 57
+        },
+        {
+          "caller": "run",
+          "callee": "CLAUDE.home.is_dir",
+          "lineNumber": 57
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 58
+        },
+        {
+          "caller": "run",
+          "callee": "_configure_claude_permissions",
+          "lineNumber": 59
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 60
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 62
+        },
+        {
+          "caller": "run",
+          "callee": "setup_mcp.run",
+          "lineNumber": 63
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 63
+        },
+        {
+          "caller": "run",
+          "callee": "instructions.run_command_prefix",
+          "lineNumber": 65
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_check_prerequisites",
+          "callee": "log.print_step",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_check_prerequisites",
+          "callee": "deps.installer",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_check_prerequisites",
+          "callee": "installer.ensure_node",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_check_prerequisites",
+          "callee": "installer.ensure_uv",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_check_prerequisites",
+          "callee": "log.print_ok",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_prompt_value",
+          "callee": "print",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_prompt_value",
+          "callee": "input(f\"  {label}{suffix}: \").strip",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_prompt_value",
+          "callee": "input",
+          "lineNumber": 87
+        },
+        {
+          "caller": "_prompt_value",
+          "callee": "SystemExit",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_prompt_secret",
+          "callee": "print",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_prompt_secret",
+          "callee": "getpass.getpass(f\"  {label} (input hidden): \").strip",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_prompt_secret",
+          "callee": "getpass.getpass",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_prompt_secret",
+          "callee": "SystemExit",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "log.print_step",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "_prompt_value",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "_prompt_value",
+          "lineNumber": 113
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "_prompt_value",
+          "lineNumber": 116
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 118
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "input(\n        f\"\\n  MCP registry URL (optional, Enter to skip) [{existing.get('MCP_REGISTRY_URL', '')}]: \"\n    ).strip",
+          "lineNumber": 121
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "input",
+          "lineNumber": 121
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "input(\n        \"  GitHub Enterprise domain for Copilot (optional, e.g. mycompany.ghe.com) \"\n        f\"[{existing.get('GITHUB_COPILOT_ENTERPRISE_DOMAIN', '')}]: \"\n    ).strip",
+          "lineNumber": 124
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "input",
+          "lineNumber": 124
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 126
+        },
+        {
+          "caller": "_prompt_urls",
+          "callee": "existing.get",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_prompt_credentials",
+          "callee": "log.print_step",
+          "lineNumber": 136
+        },
+        {
+          "caller": "_prompt_credentials",
+          "callee": "_prompt_value",
+          "lineNumber": 138
+        },
+        {
+          "caller": "_prompt_credentials",
+          "callee": "_prompt_secret",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_prompt_credentials",
+          "callee": "_prompt_secret",
+          "lineNumber": 145
+        },
+        {
+          "caller": "_prompt_credentials",
+          "callee": "_prompt_secret",
+          "lineNumber": 151
+        },
+        {
+          "caller": "_validate_tokens",
+          "callee": "log.print_step",
+          "lineNumber": 161
+        },
+        {
+          "caller": "_validate_tokens",
+          "callee": "log.print_ok",
+          "lineNumber": 171
+        },
+        {
+          "caller": "_validate_tokens",
+          "callee": "validate",
+          "lineNumber": 171
+        },
+        {
+          "caller": "_validate_tokens",
+          "callee": "log.print_err",
+          "lineNumber": 173
+        },
+        {
+          "caller": "_refresh_installed_instructions",
+          "callee": "profile.home.is_dir",
+          "lineNumber": 181
+        },
+        {
+          "caller": "_refresh_installed_instructions",
+          "callee": "instructions.write_global_instructions",
+          "lineNumber": 182
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "values[\"BITBUCKET_URL\"].replace",
+          "lineNumber": 186
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "paths.home",
+          "lineNumber": 187
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "credentials_file.is_file",
+          "lineNumber": 191
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "fs.read_text(credentials_file).splitlines",
+          "lineNumber": 193
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "fs.read_text",
+          "lineNumber": 193
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "lines.append",
+          "lineNumber": 196
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "\"\\n\".join",
+          "lineNumber": 199
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "platforms.current().make_private",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "platforms.current",
+          "lineNumber": 200
+        },
+        {
+          "caller": "_configure_git_credentials",
+          "callee": "git.set_global_config",
+          "lineNumber": 201
+        },
+        {
+          "caller": "_configure_claude_permissions",
+          "callee": "settings_editor.ensure_permission_rule",
+          "lineNumber": 209
+        }
+      ],
+      "metrics": {
+        "importCount": 14,
+        "exportCount": 11,
+        "functionCount": 11,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_context.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 19,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 12,
+          "endLine": 18,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 21,
+          "endLine": 26,
+          "params": [
+            "args"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 21,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 13
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 17
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 17
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 18
+        },
+        {
+          "caller": "run",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 22
+        },
+        {
+          "caller": "run",
+          "callee": "instructions.write_global_instructions",
+          "lineNumber": 23
+        },
+        {
+          "caller": "run",
+          "callee": "fs.read_text(path).count",
+          "lineNumber": 24
+        },
+        {
+          "caller": "run",
+          "callee": "fs.read_text",
+          "lineNumber": 24
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_context_cache.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 113,
+      "nonEmptyLines": 94,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 21,
+          "endLine": 32,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 35,
+          "endLine": 44,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "generate_index",
+          "startLine": 47,
+          "endLine": 68,
+          "params": [
+            "profile",
+            "project",
+            "launch_dir"
+          ]
+        },
+        {
+          "name": "refresh_if_indexed",
+          "startLine": 71,
+          "endLine": 77,
+          "params": [
+            "profile",
+            "project"
+          ]
+        },
+        {
+          "name": "remove_index",
+          "startLine": 80,
+          "endLine": 92,
+          "params": [
+            "profile",
+            "project"
+          ]
+        },
+        {
+          "name": "_build_with_rollback",
+          "startLine": 95,
+          "endLine": 113,
+          "params": [
+            "project",
+            "cache_file"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 21,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 35,
+          "isDefault": false
+        },
+        {
+          "name": "generate_index",
+          "line": 47,
+          "isDefault": false
+        },
+        {
+          "name": "refresh_if_indexed",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "remove_index",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "_build_with_rollback",
+          "line": 95,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 22
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 26
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 26
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 28
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 29
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 32
+        },
+        {
+          "caller": "run",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 36
+        },
+        {
+          "caller": "run",
+          "callee": "Path(args.project).resolve",
+          "lineNumber": 37
+        },
+        {
+          "caller": "run",
+          "callee": "Path",
+          "lineNumber": 37
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 39
+        },
+        {
+          "caller": "run",
+          "callee": "remove_index",
+          "lineNumber": 40
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "Path(args.launch_dir).resolve",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "Path",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "generate_index",
+          "lineNumber": 44
+        },
+        {
+          "caller": "generate_index",
+          "callee": "cache.cache_file_for",
+          "lineNumber": 48
+        },
+        {
+          "caller": "generate_index",
+          "callee": "_build_with_rollback",
+          "lineNumber": 49
+        },
+        {
+          "caller": "generate_index",
+          "callee": "cache_file.is_file",
+          "lineNumber": 51
+        },
+        {
+          "caller": "generate_index",
+          "callee": "instructions.inject_index_entry",
+          "lineNumber": 52
+        },
+        {
+          "caller": "generate_index",
+          "callee": "log.print_ok",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generate_index",
+          "callee": "instructions.write_ignore_file",
+          "lineNumber": 56
+        },
+        {
+          "caller": "generate_index",
+          "callee": "log.print_ok",
+          "lineNumber": 57
+        },
+        {
+          "caller": "generate_index",
+          "callee": "setup_git_hooks.install_global_template",
+          "lineNumber": 60
+        },
+        {
+          "caller": "generate_index",
+          "callee": "setup_git_hooks.install_repo_hooks",
+          "lineNumber": 61
+        },
+        {
+          "caller": "generate_index",
+          "callee": "cache_file.is_file",
+          "lineNumber": 66
+        },
+        {
+          "caller": "generate_index",
+          "callee": "cache_file.touch",
+          "lineNumber": 67
+        },
+        {
+          "caller": "refresh_if_indexed",
+          "callee": "cache.cache_file_for",
+          "lineNumber": 74
+        },
+        {
+          "caller": "refresh_if_indexed",
+          "callee": "cache_file.is_file",
+          "lineNumber": 75
+        },
+        {
+          "caller": "refresh_if_indexed",
+          "callee": "generate_index",
+          "lineNumber": 77
+        },
+        {
+          "caller": "remove_index",
+          "callee": "instructions.strip_index_entry",
+          "lineNumber": 81
+        },
+        {
+          "caller": "remove_index",
+          "callee": "log.print_ok",
+          "lineNumber": 82
+        },
+        {
+          "caller": "remove_index",
+          "callee": "log.print_ok",
+          "lineNumber": 86
+        },
+        {
+          "caller": "remove_index",
+          "callee": "cache.cache_file_for",
+          "lineNumber": 89
+        },
+        {
+          "caller": "remove_index",
+          "callee": "cache_file.is_file",
+          "lineNumber": 90
+        },
+        {
+          "caller": "remove_index",
+          "callee": "cache_file.unlink",
+          "lineNumber": 91
+        },
+        {
+          "caller": "remove_index",
+          "callee": "log.print_ok",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "Path",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "str",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "cache_file.is_file",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "shutil.copy2",
+          "lineNumber": 101
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "indexer.build_index",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "backup.is_file",
+          "lineNumber": 105
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "backup.replace",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "log.print_warn",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "log.print_err",
+          "lineNumber": 109
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "backup.is_file",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_build_with_rollback",
+          "callee": "backup.unlink",
+          "lineNumber": 112
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_deps.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 104,
+      "nonEmptyLines": 86,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 51,
+          "endLine": 59,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 62,
+          "endLine": 90,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_print_missing_banner",
+          "startLine": 93,
+          "endLine": 98,
+          "params": [
+            "missing"
+          ]
+        },
+        {
+          "name": "_is_windows",
+          "startLine": 101,
+          "endLine": 104,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "_print_missing_banner",
+          "line": 93,
+          "isDefault": false
+        },
+        {
+          "name": "_is_windows",
+          "line": 101,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 52
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 55
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 56
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 59
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_step",
+          "lineNumber": 63
+        },
+        {
+          "caller": "run",
+          "callee": "deps.export_configured_path",
+          "lineNumber": 66
+        },
+        {
+          "caller": "run",
+          "callee": "deps.installer",
+          "lineNumber": 67
+        },
+        {
+          "caller": "run",
+          "callee": "installer.ensure_system_tool",
+          "lineNumber": 70
+        },
+        {
+          "caller": "run",
+          "callee": "installer.ensure_system_tool",
+          "lineNumber": 71
+        },
+        {
+          "caller": "run",
+          "callee": "_is_windows",
+          "lineNumber": 72
+        },
+        {
+          "caller": "run",
+          "callee": "steps.append",
+          "lineNumber": 81
+        },
+        {
+          "caller": "run",
+          "callee": "installer.ensure_npm_cli",
+          "lineNumber": 82
+        },
+        {
+          "caller": "run",
+          "callee": "step",
+          "lineNumber": 85
+        },
+        {
+          "caller": "run",
+          "callee": "_print_missing_banner",
+          "lineNumber": 87
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_print_missing_banner",
+          "callee": "_is_windows",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_print_missing_banner",
+          "callee": "log.red_banner",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_is_windows",
+          "callee": "platforms.current",
+          "lineNumber": 104
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_env.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 112,
+      "nonEmptyLines": 90,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 26,
+          "endLine": 35,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 38,
+          "endLine": 60,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_install_slash_commands",
+          "startLine": 63,
+          "endLine": 68,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_ensure_rtk_hook",
+          "startLine": 71,
+          "endLine": 78,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_register_cache_hooks",
+          "startLine": 81,
+          "endLine": 97,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_migrate_legacy_hooks",
+          "startLine": 100,
+          "endLine": 103,
+          "params": [
+            "profile"
+          ]
+        },
+        {
+          "name": "_ensure_cache_read_permission",
+          "startLine": 106,
+          "endLine": 112,
+          "params": [
+            "profile"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 38,
+          "isDefault": false
+        },
+        {
+          "name": "_install_slash_commands",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_rtk_hook",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "_register_cache_hooks",
+          "line": 81,
+          "isDefault": false
+        },
+        {
+          "name": "_migrate_legacy_hooks",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_cache_read_permission",
+          "line": 106,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 30
+        },
+        {
+          "caller": "configure",
+          "callee": "list",
+          "lineNumber": 30
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 31
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 35
+        },
+        {
+          "caller": "run",
+          "callee": "tool_profile.resolve",
+          "lineNumber": 39
+        },
+        {
+          "caller": "run",
+          "callee": "getattr",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "sync.run",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "setup_context.run",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "_ensure_rtk_hook",
+          "lineNumber": 46
+        },
+        {
+          "caller": "run",
+          "callee": "_migrate_legacy_hooks",
+          "lineNumber": 48
+        },
+        {
+          "caller": "run",
+          "callee": "_register_cache_hooks",
+          "lineNumber": 49
+        },
+        {
+          "caller": "run",
+          "callee": "_ensure_cache_read_permission",
+          "lineNumber": 50
+        },
+        {
+          "caller": "run",
+          "callee": "_install_slash_commands",
+          "lineNumber": 52
+        },
+        {
+          "caller": "run",
+          "callee": "setup_plugins.run",
+          "lineNumber": 54
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 54
+        },
+        {
+          "caller": "run",
+          "callee": "setup_headroom.run",
+          "lineNumber": 55
+        },
+        {
+          "caller": "run",
+          "callee": "argparse.Namespace",
+          "lineNumber": 56
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 59
+        },
+        {
+          "caller": "_install_slash_commands",
+          "callee": "slash_commands.install",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_install_slash_commands",
+          "callee": "\", \".join",
+          "lineNumber": 67
+        },
+        {
+          "caller": "_install_slash_commands",
+          "callee": "log.print_ok",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_ensure_rtk_hook",
+          "callee": "settings_editor.contains",
+          "lineNumber": 73
+        },
+        {
+          "caller": "_ensure_rtk_hook",
+          "callee": "settings_editor.contains",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_ensure_rtk_hook",
+          "callee": "shutil.which",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_ensure_rtk_hook",
+          "callee": "setup_rtk.run",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_ensure_rtk_hook",
+          "callee": "argparse.Namespace",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "platforms.current().hook_command",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "platforms.current",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "settings_editor.contains",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "json.dumps",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "settings_editor.remove_hooks",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "settings_editor.register_hook",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_register_cache_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_migrate_legacy_hooks",
+          "callee": "settings_editor.remove_hooks",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_migrate_legacy_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 103
+        },
+        {
+          "caller": "_ensure_cache_read_permission",
+          "callee": "settings_editor.ensure_permission_rule",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_ensure_cache_read_permission",
+          "callee": "log.print_ok",
+          "lineNumber": 112
+        }
+      ],
+      "metrics": {
+        "importCount": 13,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_git_hooks.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 140,
+      "nonEmptyLines": 114,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 48,
+          "endLine": 57,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 60,
+          "endLine": 67,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "hook_body",
+          "startLine": 70,
+          "endLine": 77,
+          "params": [
+            "hook_name"
+          ]
+        },
+        {
+          "name": "install_global_template",
+          "startLine": 80,
+          "endLine": 89,
+          "params": []
+        },
+        {
+          "name": "install_repo_hooks",
+          "startLine": 92,
+          "endLine": 100,
+          "params": [
+            "project"
+          ]
+        },
+        {
+          "name": "remove_repo_hooks",
+          "startLine": 103,
+          "endLine": 116,
+          "params": [
+            "project"
+          ]
+        },
+        {
+          "name": "_repo_hooks_dir",
+          "startLine": 119,
+          "endLine": 123,
+          "params": [
+            "project"
+          ]
+        },
+        {
+          "name": "_install_hook",
+          "startLine": 126,
+          "endLine": 135,
+          "params": [
+            "hook_path",
+            "body"
+          ]
+        },
+        {
+          "name": "_is_legacy_hook",
+          "startLine": 138,
+          "endLine": 140,
+          "params": [
+            "hook_path"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 60,
+          "isDefault": false
+        },
+        {
+          "name": "hook_body",
+          "line": 70,
+          "isDefault": false
+        },
+        {
+          "name": "install_global_template",
+          "line": 80,
+          "isDefault": false
+        },
+        {
+          "name": "install_repo_hooks",
+          "line": 92,
+          "isDefault": false
+        },
+        {
+          "name": "remove_repo_hooks",
+          "line": 103,
+          "isDefault": false
+        },
+        {
+          "name": "_repo_hooks_dir",
+          "line": 119,
+          "isDefault": false
+        },
+        {
+          "name": "_install_hook",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "_is_legacy_hook",
+          "line": 138,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 49
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 53
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 54
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 57
+        },
+        {
+          "caller": "run",
+          "callee": "Path(args.project).resolve",
+          "lineNumber": 61
+        },
+        {
+          "caller": "run",
+          "callee": "Path",
+          "lineNumber": 61
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 63
+        },
+        {
+          "caller": "run",
+          "callee": "remove_repo_hooks",
+          "lineNumber": 64
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 65
+        },
+        {
+          "caller": "run",
+          "callee": "install_global_template",
+          "lineNumber": 66
+        },
+        {
+          "caller": "run",
+          "callee": "install_repo_hooks",
+          "lineNumber": 67
+        },
+        {
+          "caller": "hook_body",
+          "callee": "_HOOK_BODY.format",
+          "lineNumber": 72
+        },
+        {
+          "caller": "hook_body",
+          "callee": "platforms.current().venv_python().as_posix",
+          "lineNumber": 76
+        },
+        {
+          "caller": "hook_body",
+          "callee": "platforms.current().venv_python",
+          "lineNumber": 76
+        },
+        {
+          "caller": "hook_body",
+          "callee": "platforms.current",
+          "lineNumber": 76
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "paths.home",
+          "lineNumber": 82
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "_install_hook",
+          "lineNumber": 84
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "hook_body",
+          "lineNumber": 84
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "git.set_global_config",
+          "lineNumber": 85
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "str",
+          "lineNumber": 85
+        },
+        {
+          "caller": "install_global_template",
+          "callee": "log.print_ok",
+          "lineNumber": 86
+        },
+        {
+          "caller": "install_repo_hooks",
+          "callee": "_repo_hooks_dir",
+          "lineNumber": 93
+        },
+        {
+          "caller": "install_repo_hooks",
+          "callee": "log.print_info",
+          "lineNumber": 95
+        },
+        {
+          "caller": "install_repo_hooks",
+          "callee": "_install_hook",
+          "lineNumber": 98
+        },
+        {
+          "caller": "install_repo_hooks",
+          "callee": "hook_body",
+          "lineNumber": 98
+        },
+        {
+          "caller": "install_repo_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 99
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "_repo_hooks_dir",
+          "lineNumber": 104
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "log.print_info",
+          "lineNumber": 106
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "hook_path.is_file",
+          "lineNumber": 110
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "text_blocks.remove_block",
+          "lineNumber": 112
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "text_blocks.remove_pattern",
+          "lineNumber": 114
+        },
+        {
+          "caller": "remove_repo_hooks",
+          "callee": "log.print_ok",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_repo_hooks_dir",
+          "callee": "git.git_dir",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "platforms.current",
+          "lineNumber": 129
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "hook_path.is_file",
+          "lineNumber": 130
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "_is_legacy_hook",
+          "lineNumber": 130
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 131
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "hook_path.is_file",
+          "lineNumber": 132
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 133
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "text_blocks.upsert_block",
+          "lineNumber": 134
+        },
+        {
+          "caller": "_install_hook",
+          "callee": "ops.make_executable",
+          "lineNumber": 135
+        },
+        {
+          "caller": "_is_legacy_hook",
+          "callee": "fs.read_text",
+          "lineNumber": 139
+        },
+        {
+          "caller": "_is_legacy_hook",
+          "callee": "any",
+          "lineNumber": 140
+        }
+      ],
+      "metrics": {
+        "importCount": 8,
+        "exportCount": 9,
+        "functionCount": 9,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_mcp.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 138,
+      "nonEmptyLines": 119,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 29,
+          "endLine": 36,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 39,
+          "endLine": 46,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_tool_configs",
+          "startLine": 49,
+          "endLine": 61,
+          "params": [
+            "installed_only"
+          ]
+        },
+        {
+          "name": "_enable_global_mcp",
+          "startLine": 64,
+          "endLine": 76,
+          "params": []
+        },
+        {
+          "name": "_server_definitions",
+          "startLine": 79,
+          "endLine": 109,
+          "params": [
+            "credentials"
+          ]
+        },
+        {
+          "name": "_write_servers",
+          "startLine": 112,
+          "endLine": 120,
+          "params": [
+            "config_file",
+            "credentials"
+          ]
+        },
+        {
+          "name": "_remove_servers",
+          "startLine": 123,
+          "endLine": 138,
+          "params": [
+            "config_file"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 29,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 39,
+          "isDefault": false
+        },
+        {
+          "name": "_tool_configs",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "_enable_global_mcp",
+          "line": 64,
+          "isDefault": false
+        },
+        {
+          "name": "_server_definitions",
+          "line": 79,
+          "isDefault": false
+        },
+        {
+          "name": "_write_servers",
+          "line": 112,
+          "isDefault": false
+        },
+        {
+          "name": "_remove_servers",
+          "line": 123,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 30
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 33
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 36
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "_tool_configs",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "_remove_servers",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "print",
+          "lineNumber": 45
+        },
+        {
+          "caller": "run",
+          "callee": "_enable_global_mcp",
+          "lineNumber": 46
+        },
+        {
+          "caller": "_tool_configs",
+          "callee": "paths.home",
+          "lineNumber": 52
+        },
+        {
+          "caller": "_tool_configs",
+          "callee": "paths.home",
+          "lineNumber": 53
+        },
+        {
+          "caller": "_tool_configs",
+          "callee": "shutil.which",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_tool_configs",
+          "callee": "(paths.home() / f\".{tool}\").is_dir",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_tool_configs",
+          "callee": "paths.home",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "config.require",
+          "lineNumber": 66
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "log.print_err",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "str",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "_tool_configs",
+          "lineNumber": 70
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "_write_servers",
+          "lineNumber": 71
+        },
+        {
+          "caller": "_enable_global_mcp",
+          "callee": "log.print_ok",
+          "lineNumber": 72
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "settings_editor.load_json",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "existing.setdefault",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "servers.pop",
+          "lineNumber": 117
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "servers.update",
+          "lineNumber": 118
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "_server_definitions",
+          "lineNumber": 118
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "settings_editor.save_json",
+          "lineNumber": 119
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "platforms.current().make_private",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_write_servers",
+          "callee": "platforms.current",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "config_file.is_file",
+          "lineNumber": 124
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "log.print_ok",
+          "lineNumber": 125
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "settings_editor.load_json",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "existing.get",
+          "lineNumber": 129
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "servers.pop",
+          "lineNumber": 132
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "settings_editor.save_json",
+          "lineNumber": 134
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "log.print_ok",
+          "lineNumber": 136
+        },
+        {
+          "caller": "_remove_servers",
+          "callee": "log.print_ok",
+          "lineNumber": 138
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_rtk.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 123,
+      "nonEmptyLines": 95,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 20,
+          "endLine": 27,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 30,
+          "endLine": 33,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_install",
+          "startLine": 36,
+          "endLine": 50,
+          "params": []
+        },
+        {
+          "name": "_remove_hook",
+          "startLine": 53,
+          "endLine": 62,
+          "params": []
+        },
+        {
+          "name": "_rtk_binary",
+          "startLine": 65,
+          "endLine": 70,
+          "params": []
+        },
+        {
+          "name": "_rtk_init",
+          "startLine": 73,
+          "endLine": 82,
+          "params": []
+        },
+        {
+          "name": "_hook_registered",
+          "startLine": 85,
+          "endLine": 86,
+          "params": []
+        },
+        {
+          "name": "_register_hook_directly",
+          "startLine": 89,
+          "endLine": 97,
+          "params": []
+        },
+        {
+          "name": "_ensure_local_bin_in_profile",
+          "startLine": 100,
+          "endLine": 115,
+          "params": []
+        },
+        {
+          "name": "_run_indented",
+          "startLine": 118,
+          "endLine": 123,
+          "params": [
+            "argv"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 20,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 30,
+          "isDefault": false
+        },
+        {
+          "name": "_install",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "_remove_hook",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "_rtk_binary",
+          "line": 65,
+          "isDefault": false
+        },
+        {
+          "name": "_rtk_init",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "_hook_registered",
+          "line": 85,
+          "isDefault": false
+        },
+        {
+          "name": "_register_hook_directly",
+          "line": 89,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_local_bin_in_profile",
+          "line": 100,
+          "isDefault": false
+        },
+        {
+          "name": "_run_indented",
+          "line": 118,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 21
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.add_argument",
+          "lineNumber": 24
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 27
+        },
+        {
+          "caller": "run",
+          "callee": "_remove_hook",
+          "lineNumber": 32
+        },
+        {
+          "caller": "run",
+          "callee": "_install",
+          "lineNumber": 33
+        },
+        {
+          "caller": "_install",
+          "callee": "print",
+          "lineNumber": 37
+        },
+        {
+          "caller": "_install",
+          "callee": "deps.installer",
+          "lineNumber": 38
+        },
+        {
+          "caller": "_install",
+          "callee": "installer.ensure_rtk",
+          "lineNumber": 39
+        },
+        {
+          "caller": "_install",
+          "callee": "_ensure_local_bin_in_profile",
+          "lineNumber": 41
+        },
+        {
+          "caller": "_install",
+          "callee": "deps.export_local_bin_path",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_install",
+          "callee": "_rtk_init",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_install",
+          "callee": "_hook_registered",
+          "lineNumber": 45
+        },
+        {
+          "caller": "_install",
+          "callee": "_register_hook_directly",
+          "lineNumber": 47
+        },
+        {
+          "caller": "_install",
+          "callee": "print",
+          "lineNumber": 48
+        },
+        {
+          "caller": "_install",
+          "callee": "print",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "print",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "deps.export_local_bin_path",
+          "lineNumber": 55
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "_rtk_binary",
+          "lineNumber": 56
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "_run_indented",
+          "lineNumber": 58
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "log.print_warn",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_remove_hook",
+          "callee": "print",
+          "lineNumber": 61
+        },
+        {
+          "caller": "_rtk_binary",
+          "callee": "platforms.current",
+          "lineNumber": 68
+        },
+        {
+          "caller": "_rtk_binary",
+          "callee": "deps.WindowsDepInstaller.rtk_executable",
+          "lineNumber": 69
+        },
+        {
+          "caller": "_rtk_binary",
+          "callee": "shutil.which",
+          "lineNumber": 70
+        },
+        {
+          "caller": "_rtk_init",
+          "callee": "_rtk_binary",
+          "lineNumber": 74
+        },
+        {
+          "caller": "_rtk_init",
+          "callee": "platforms.current",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_rtk_init",
+          "callee": "argv.append",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_rtk_init",
+          "callee": "_run_indented",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_hook_registered",
+          "callee": "settings_editor.contains",
+          "lineNumber": 86
+        },
+        {
+          "caller": "_register_hook_directly",
+          "callee": "_rtk_binary",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_register_hook_directly",
+          "callee": "platforms.current",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_register_hook_directly",
+          "callee": "settings_editor.register_hook",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_register_hook_directly",
+          "callee": "log.print_ok",
+          "lineNumber": 97
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "platforms.current",
+          "lineNumber": 102
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "paths.home",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "any",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "text_blocks.contains",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "profile.is_file",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "fs.read_text",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_ensure_local_bin_in_profile",
+          "callee": "log.print_ok",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_run_indented",
+          "callee": "subprocess.run",
+          "lineNumber": 119
+        },
+        {
+          "caller": "_run_indented",
+          "callee": "(result.stdout + result.stderr).splitlines",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_run_indented",
+          "callee": "print",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_run_indented",
+          "callee": "log.console_safe",
+          "lineNumber": 123
+        }
+      ],
+      "metrics": {
+        "importCount": 9,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/setup_shell_wrapper.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 100,
+      "nonEmptyLines": 80,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 26,
+          "endLine": 31,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 34,
+          "endLine": 45,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_posix_body",
+          "startLine": 48,
+          "endLine": 50,
+          "params": []
+        },
+        {
+          "name": "_powershell_body",
+          "startLine": 53,
+          "endLine": 59,
+          "params": []
+        },
+        {
+          "name": "_write_block",
+          "startLine": 62,
+          "endLine": 68,
+          "params": [
+            "target"
+          ]
+        },
+        {
+          "name": "_remove_legacy_wrappers",
+          "startLine": 71,
+          "endLine": 90,
+          "params": [
+            "target"
+          ]
+        },
+        {
+          "name": "_remove_legacy_functions_source",
+          "startLine": 93,
+          "endLine": 100,
+          "params": [
+            "target"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 34,
+          "isDefault": false
+        },
+        {
+          "name": "_posix_body",
+          "line": 48,
+          "isDefault": false
+        },
+        {
+          "name": "_powershell_body",
+          "line": 53,
+          "isDefault": false
+        },
+        {
+          "name": "_write_block",
+          "line": 62,
+          "isDefault": false
+        },
+        {
+          "name": "_remove_legacy_wrappers",
+          "line": 71,
+          "isDefault": false
+        },
+        {
+          "name": "_remove_legacy_functions_source",
+          "line": 93,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 27
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 31
+        },
+        {
+          "caller": "run",
+          "callee": "platforms.current().shell_profile_targets",
+          "lineNumber": 35
+        },
+        {
+          "caller": "run",
+          "callee": "platforms.current",
+          "lineNumber": 35
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_warn",
+          "lineNumber": 37
+        },
+        {
+          "caller": "run",
+          "callee": "_remove_legacy_wrappers",
+          "lineNumber": 40
+        },
+        {
+          "caller": "run",
+          "callee": "_write_block",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_posix_body",
+          "callee": "str",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_posix_body",
+          "callee": "platforms.current().entry_points_dir",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_posix_body",
+          "callee": "platforms.current",
+          "lineNumber": 49
+        },
+        {
+          "caller": "_powershell_body",
+          "callee": "str",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_powershell_body",
+          "callee": "platforms.current().entry_points_dir",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_powershell_body",
+          "callee": "platforms.current",
+          "lineNumber": 54
+        },
+        {
+          "caller": "_write_block",
+          "callee": "platforms.current().profile_encoding",
+          "lineNumber": 63
+        },
+        {
+          "caller": "_write_block",
+          "callee": "platforms.current",
+          "lineNumber": 63
+        },
+        {
+          "caller": "_write_block",
+          "callee": "_powershell_body",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_write_block",
+          "callee": "_posix_body",
+          "lineNumber": 64
+        },
+        {
+          "caller": "_write_block",
+          "callee": "text_blocks.upsert_block",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "_remove_legacy_functions_source",
+          "lineNumber": 74
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "text_blocks.remove_block",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "re.compile",
+          "lineNumber": 84
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "re.escape",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "re.escape",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "text_blocks.remove_pattern",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_remove_legacy_wrappers",
+          "callee": "log.print_ok",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_remove_legacy_functions_source",
+          "callee": "re.compile",
+          "lineNumber": 96
+        },
+        {
+          "caller": "_remove_legacy_functions_source",
+          "callee": "re.compile",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_remove_legacy_functions_source",
+          "callee": "text_blocks.remove_pattern",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_remove_legacy_functions_source",
+          "callee": "log.print_ok",
+          "lineNumber": 100
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/commands/sync.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 119,
+      "nonEmptyLines": 100,
+      "functions": [
+        {
+          "name": "configure",
+          "startLine": 49,
+          "endLine": 53,
+          "params": [
+            "subparsers"
+          ]
+        },
+        {
+          "name": "run",
+          "startLine": 56,
+          "endLine": 70,
+          "params": [
+            "args"
+          ]
+        },
+        {
+          "name": "_copy_tree",
+          "startLine": 73,
+          "endLine": 84,
+          "params": [
+            "source",
+            "target"
+          ]
+        },
+        {
+          "name": "_copy_file",
+          "startLine": 87,
+          "endLine": 92,
+          "params": [
+            "source",
+            "target"
+          ]
+        },
+        {
+          "name": "_cleanup_legacy_scripts",
+          "startLine": 95,
+          "endLine": 111,
+          "params": []
+        },
+        {
+          "name": "_write_tombstones",
+          "startLine": 114,
+          "endLine": 119,
+          "params": [
+            "profile",
+            "scripts_dir"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "configure",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "run",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "_copy_tree",
+          "line": 73,
+          "isDefault": false
+        },
+        {
+          "name": "_copy_file",
+          "line": 87,
+          "isDefault": false
+        },
+        {
+          "name": "_cleanup_legacy_scripts",
+          "line": 95,
+          "isDefault": false
+        },
+        {
+          "name": "_write_tombstones",
+          "line": 114,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "configure",
+          "callee": "subparsers.add_parser",
+          "lineNumber": 50
+        },
+        {
+          "caller": "configure",
+          "callee": "parser.set_defaults",
+          "lineNumber": 53
+        },
+        {
+          "caller": "run",
+          "callee": "paths.package_root",
+          "lineNumber": 57
+        },
+        {
+          "caller": "run",
+          "callee": "paths.install_root",
+          "lineNumber": 58
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_info",
+          "lineNumber": 60
+        },
+        {
+          "caller": "run",
+          "callee": "(source_root / \"run.py\").is_file",
+          "lineNumber": 62
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_info",
+          "lineNumber": 63
+        },
+        {
+          "caller": "run",
+          "callee": "_copy_tree",
+          "lineNumber": 66
+        },
+        {
+          "caller": "run",
+          "callee": "_copy_file",
+          "lineNumber": 67
+        },
+        {
+          "caller": "run",
+          "callee": "_cleanup_legacy_scripts",
+          "lineNumber": 68
+        },
+        {
+          "caller": "run",
+          "callee": "log.print_ok",
+          "lineNumber": 69
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "target.is_dir",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "shutil.rmtree",
+          "lineNumber": 76
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "shutil.copytree",
+          "lineNumber": 77
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "shutil.ignore_patterns",
+          "lineNumber": 78
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "platforms.current",
+          "lineNumber": 80
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "target.rglob",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "item.is_file",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "ops.unblock",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_copy_tree",
+          "callee": "ops.make_executable",
+          "lineNumber": 84
+        },
+        {
+          "caller": "_copy_file",
+          "callee": "target.parent.mkdir",
+          "lineNumber": 88
+        },
+        {
+          "caller": "_copy_file",
+          "callee": "shutil.copy2",
+          "lineNumber": 89
+        },
+        {
+          "caller": "_copy_file",
+          "callee": "platforms.current",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_copy_file",
+          "callee": "ops.unblock",
+          "lineNumber": 91
+        },
+        {
+          "caller": "_copy_file",
+          "callee": "ops.make_executable",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_cleanup_legacy_scripts",
+          "callee": "scripts_dir.is_dir",
+          "lineNumber": 100
+        },
+        {
+          "caller": "_cleanup_legacy_scripts",
+          "callee": "scripts_dir.glob",
+          "lineNumber": 104
+        },
+        {
+          "caller": "_cleanup_legacy_scripts",
+          "callee": "legacy.unlink",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_cleanup_legacy_scripts",
+          "callee": "_write_tombstones",
+          "lineNumber": 109
+        },
+        {
+          "caller": "_cleanup_legacy_scripts",
+          "callee": "log.print_ok",
+          "lineNumber": 111
+        },
+        {
+          "caller": "_write_tombstones",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_write_tombstones",
+          "callee": "_TOMBSTONE_LIB_CACHE.replace",
+          "lineNumber": 117
+        },
+        {
+          "caller": "_write_tombstones",
+          "callee": "fs.write_text_atomic",
+          "lineNumber": 119
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 6,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/entry.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 22,
+      "nonEmptyLines": 14,
+      "functions": [
+        {
+          "name": "claude_main",
+          "startLine": 17,
+          "endLine": 18,
+          "params": []
+        },
+        {
+          "name": "copilot_main",
+          "startLine": 21,
+          "endLine": 22,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "claude_main",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "copilot_main",
+          "line": 21,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "claude_main",
+          "callee": "guarded_main",
+          "lineNumber": 18
+        },
+        {
+          "caller": "claude_main",
+          "callee": "main",
+          "lineNumber": 18
+        },
+        {
+          "caller": "copilot_main",
+          "callee": "guarded_main",
+          "lineNumber": 22
+        },
+        {
+          "caller": "copilot_main",
+          "callee": "main",
+          "lineNumber": 22
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 2,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/paths.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 54,
+      "nonEmptyLines": 37,
+      "functions": [
+        {
+          "name": "home",
+          "startLine": 7,
+          "endLine": 9,
+          "params": []
+        },
+        {
+          "name": "install_root",
+          "startLine": 12,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "venv_dir",
+          "startLine": 17,
+          "endLine": 19,
+          "params": []
+        },
+        {
+          "name": "run_py",
+          "startLine": 22,
+          "endLine": 24,
+          "params": []
+        },
+        {
+          "name": "logs_dir",
+          "startLine": 27,
+          "endLine": 29,
+          "params": []
+        },
+        {
+          "name": "config_dir",
+          "startLine": 32,
+          "endLine": 34,
+          "params": []
+        },
+        {
+          "name": "config_env",
+          "startLine": 37,
+          "endLine": 49,
+          "params": []
+        },
+        {
+          "name": "package_root",
+          "startLine": 52,
+          "endLine": 54,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "home",
+          "line": 7,
+          "isDefault": false
+        },
+        {
+          "name": "install_root",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "venv_dir",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "run_py",
+          "line": 22,
+          "isDefault": false
+        },
+        {
+          "name": "logs_dir",
+          "line": 27,
+          "isDefault": false
+        },
+        {
+          "name": "config_dir",
+          "line": 32,
+          "isDefault": false
+        },
+        {
+          "name": "config_env",
+          "line": 37,
+          "isDefault": false
+        },
+        {
+          "name": "package_root",
+          "line": 52,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "home",
+          "callee": "Path.home",
+          "lineNumber": 9
+        },
+        {
+          "caller": "install_root",
+          "callee": "home",
+          "lineNumber": 14
+        },
+        {
+          "caller": "venv_dir",
+          "callee": "install_root",
+          "lineNumber": 19
+        },
+        {
+          "caller": "run_py",
+          "callee": "install_root",
+          "lineNumber": 24
+        },
+        {
+          "caller": "logs_dir",
+          "callee": "install_root",
+          "lineNumber": 29
+        },
+        {
+          "caller": "config_dir",
+          "callee": "home",
+          "lineNumber": 34
+        },
+        {
+          "caller": "config_env",
+          "callee": "config_dir",
+          "lineNumber": 44
+        },
+        {
+          "caller": "config_env",
+          "callee": "config_dir",
+          "lineNumber": 45
+        },
+        {
+          "caller": "config_env",
+          "callee": "legacy.is_file",
+          "lineNumber": 46
+        },
+        {
+          "caller": "config_env",
+          "callee": "current.is_file",
+          "lineNumber": 46
+        },
+        {
+          "caller": "config_env",
+          "callee": "suppress",
+          "lineNumber": 47
+        },
+        {
+          "caller": "config_env",
+          "callee": "legacy.rename",
+          "lineNumber": 48
+        },
+        {
+          "caller": "package_root",
+          "callee": "Path(__file__).resolve",
+          "lineNumber": 54
+        },
+        {
+          "caller": "package_root",
+          "callee": "Path",
+          "lineNumber": 54
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 8,
+        "functionCount": 8,
+        "classCount": 0
+      }
+    }
+  ]
+}

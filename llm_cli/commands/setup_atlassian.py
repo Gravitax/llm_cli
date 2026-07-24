@@ -3,7 +3,7 @@ Bitbucket), shared by Claude Code and Copilot CLI (port of setup_atlassian.sh;
 now also available on Windows).
 
 Prompts the enterprise URLs, prompts and validates the tokens, then:
-  - stores everything in ~/.config/llm_cli/atlassian.env (user-only access)
+  - stores everything in ~/.config/llm_cli/llm_cli.env (user-only access)
   - stores git credentials for the configured Bitbucket host
   - allows read-only git commands in Claude Code settings
   - registers the MCP servers globally (user scope), once, for both tools

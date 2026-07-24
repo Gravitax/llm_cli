@@ -1,0 +1,87 @@
+# .understandignore — patterns for files/dirs to exclude from analysis
+# Syntax: same as .gitignore (globs, # comments, ! negation, trailing / for dirs)
+# Lines below are suggestions — uncomment to activate.
+# Use ! prefix to force-include something excluded by defaults.
+#
+# Built-in defaults (always excluded unless negated):
+#   node_modules/, .git/, dist/, build/, obj/, *.lock, *.min.js, etc.
+#
+
+# --- User overrides (highest priority) ---
+# The vendored copilot-api is patched by this repo, so its sources are part of
+# the project: cancel the built-in "vendor/" exclusion. Its generated bundle
+# (dist/) and lockfiles stay excluded via the built-in defaults.
+!vendor/
+!llm_cli/vendor/
+!llm_cli/vendor/copilot-api/src/
+!llm_cli/vendor/copilot-api/tests/
+
+# --- From .gitignore (uncomment to exclude) ---
+
+# CLAUDE.md
+# AGENTS.md
+# RTK.md
+# .github/copilot-instructions.md
+# .claude/
+# .claudeignore
+# .copilotignore
+# .env
+# .mcp.json
+# *.bak
+# .tokensave/
+# *.egg-info/
+# !llm_cli/vendor/copilot-api/dist/
+# !llm_cli/vendor/copilot-api/dist/**
+
+# --- Detected directories (uncomment to exclude) ---
+
+# docs/
+# tests/
+
+# --- Test file patterns (uncomment to exclude) ---
+
+# JS / TS
+# *.test.*
+# *.spec.*
+# *.snap
+# C# / .NET
+# **/*Tests.cs
+# **/*Test.cs
+# **/*Fixture.cs
+# **/*.Tests.csproj
+# Java / Kotlin
+# **/src/test/**
+# **/*Test.java
+# **/*IT.java
+# **/*Spec.kt
+# Go
+# **/*_test.go
+# C++
+# **/*_test.cc
+# **/*_test.cpp
+# **/*_test.cxx
+# **/*Test.cc
+# **/*Test.cpp
+# **/*_unittest.cc
+# **/*_unittest.cpp
+# **/*_browsertest.cc
+# **/*_benchmark.cc
+# **/*Benchmark.cpp
+# Python
+# **/test_*.py
+# **/*_test.py
+# **/tests.py
+# **/conftest.py
+# Rust
+# **/tests.rs
+# **/test_*.rs
+# **/*_test.rs
+# **/bench_*.rs
+# **/*_bench.rs
+# Ruby
+# **/*_spec.rb
+# **/*_test.rb
+# **/test_*.rb
+# **/spec_helper.rb
+# **/test_helper.rb
+# **/rails_helper.rb

@@ -1,4 +1,4 @@
-"""Shared llm_cli configuration — enterprise URLs + Atlassian tokens
+"""Shared llm_cli configuration — `~/.config/llm_cli/llm_cli.env`
 (port of lib_config.sh / lib_config.ps1).
 
 Single source of truth, written by `setup-atlassian` and read by every consumer:
@@ -26,7 +26,7 @@ class ConfigMissingError(RuntimeError):
 
 def load(path: Path | None = None) -> dict[str, str]:
     """Parses the KEY=value config; returns {} when not configured yet."""
-    config_file = path or paths.atlassian_env()
+    config_file = path or paths.config_env()
     if not config_file.is_file():
         return {}
 
@@ -44,7 +44,7 @@ def require(path: Path | None = None) -> dict[str, str]:
     """Loads the config or fails loudly — for commands that cannot run without it."""
     values = load(path)
     if not values:
-        config_file = path or paths.atlassian_env()
+        config_file = path or paths.config_env()
         raise ConfigMissingError(
             f"no config at {config_file} — run `setup-atlassian` first"
         )
@@ -53,7 +53,7 @@ def require(path: Path | None = None) -> dict[str, str]:
 
 def store(values: dict[str, str], path: Path | None = None) -> Path:
     """Writes the config file with user-only permissions (credentials inside)."""
-    config_file = path or paths.atlassian_env()
+    config_file = path or paths.config_env()
     body = "".join(f"{key}={value}\n" for key, value in values.items() if value)
     fs.write_text_atomic(config_file, body)
     platforms.current().make_private(config_file)

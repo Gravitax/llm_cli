@@ -1,0 +1,35 @@
+{
+ "projectRoot": "/opt/eca/llm_cli",
+ "batchFiles": [
+  {
+   "path": "llm_cli/vendor/copilot-api/README.md",
+   "language": "markdown",
+   "sizeLines": 351,
+   "fileCategory": "docs"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/VENDORED.md",
+   "language": "markdown",
+   "sizeLines": 48,
+   "fileCategory": "docs"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/package.json",
+   "language": "json",
+   "sizeLines": 59,
+   "fileCategory": "config"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/tsconfig.json",
+   "language": "json",
+   "sizeLines": 25,
+   "fileCategory": "config"
+  }
+ ],
+ "batchImportData": {
+  "llm_cli/vendor/copilot-api/README.md": [],
+  "llm_cli/vendor/copilot-api/VENDORED.md": [],
+  "llm_cli/vendor/copilot-api/package.json": [],
+  "llm_cli/vendor/copilot-api/tsconfig.json": []
+ }
+}

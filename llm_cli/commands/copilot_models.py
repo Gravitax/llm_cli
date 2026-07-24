@@ -33,5 +33,5 @@ def run(args: argparse.Namespace) -> int:
         print(f"  {model_id:<28} {name}")
     print()
     print("Use one at launch:  copilot --model <id>")
-    print(f"Set the default:    COPILOT_DEFAULT_MODEL=<id> in {paths.atlassian_env()}")
+    print(f"Set the default:    COPILOT_DEFAULT_MODEL=<id> in {paths.config_env()}")
     return 0

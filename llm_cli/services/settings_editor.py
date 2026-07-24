@@ -65,3 +65,23 @@ def ensure_permission_rule(path: Path, rule: str) -> bool:
     allow.append(rule)
     save_json(path, settings)
     return True
+
+
+def enable_plugins(path: Path, plugin_ids: list[str]) -> list[str]:
+    """Marks each plugin id enabled in settings.json, merging (never replacing).
+
+    `claude plugin enable` rewrites the whole `enabledPlugins` map with a single
+    key, so activating several plugins in a row keeps only the last. Writing the
+    merged map ourselves makes multi-plugin activation deterministic. Returns the
+    ids that were newly enabled.
+    """
+    settings = load_json(path)
+    enabled = settings.setdefault("enabledPlugins", {})
+    newly = [pid for pid in plugin_ids if not enabled.get(pid, False)]
+    if not newly:
+        return []
+    for pid in newly:
+        enabled[pid] = True
+    save_json(path, settings)
+    return newly
+

@@ -1,0 +1,1721 @@
+{
+ "nodes": [
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "type": "file",
+   "name": "auth.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/auth.ts",
+   "summary": "Citty subcommand `auth` that runs the GitHub device-code login flow and persists the resulting token to disk.",
+   "tags": [
+    "cli-command",
+    "authentication",
+    "entry-point",
+    "github"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "type": "file",
+   "name": "check-usage.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "summary": "Citty subcommand `check-usage` that authenticates and prints the account's Copilot quota snapshots (premium interactions, chat, completions).",
+   "tags": [
+    "cli-command",
+    "quota",
+    "reporting",
+    "github"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "type": "file",
+   "name": "debug.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/debug.ts",
+   "summary": "Citty subcommand `debug` that collects runtime diagnostics (package version, Node/Bun runtime, token presence, paths) and prints them as plain text or JSON.",
+   "tags": [
+    "cli-command",
+    "diagnostics",
+    "troubleshooting"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "type": "file",
+   "name": "api-config.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "summary": "Central source of base URLs and request headers for the Copilot and GitHub APIs, switching between public github.com and an enterprise tenant based on global state.",
+   "tags": [
+    "configuration",
+    "http",
+    "api-client",
+    "enterprise"
+   ],
+   "complexity": "moderate",
+   "languageNotes": "All header builders are pure functions of `state`, so enterprise routing is decided at call time rather than at module load."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "type": "file",
+   "name": "approval.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "summary": "Blocks a request on an interactive terminal confirmation, used when the server runs in manual-approve mode.",
+   "tags": [
+    "utility",
+    "interactive",
+    "gating"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "type": "file",
+   "name": "enterprise.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "summary": "Shared citty argument definitions and domain normalization for GitHub Enterprise tenants, stripping any scheme before storing the domain in global state.",
+   "tags": [
+    "configuration",
+    "enterprise",
+    "cli-args",
+    "validation"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "file",
+   "name": "error.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "summary": "Defines the HTTPError wrapper carrying an upstream Response and the forwardError helper that converts thrown errors into Hono JSON responses.",
+   "tags": [
+    "error-handling",
+    "middleware",
+    "http"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "type": "file",
+   "name": "model-endpoints.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "summary": "Local patch: declares which Copilot model id prefixes are served only by the OpenAI Responses API and exports the upstream error code used as the runtime fallback signal.",
+   "tags": [
+    "routing",
+    "model-catalog",
+    "configuration",
+    "local-patch"
+   ],
+   "complexity": "simple",
+   "languageNotes": "A prefix allowlist plus an error-code fallback: the static list is a fast path, and anything it misses is still caught at runtime."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "type": "file",
+   "name": "paths.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "summary": "Resolves the application's on-disk layout (config dir, token files) and ensures those directories and files exist before use.",
+   "tags": [
+    "filesystem",
+    "configuration",
+    "paths",
+    "bootstrap"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+   "type": "file",
+   "name": "proxy.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+   "summary": "Installs a global undici dispatcher that honours HTTP_PROXY/HTTPS_PROXY/NO_PROXY per destination URL; a no-op under Bun, which handles proxying natively.",
+   "tags": [
+    "networking",
+    "proxy",
+    "bootstrap",
+    "undici"
+   ],
+   "complexity": "moderate",
+   "languageNotes": "Caches one ProxyAgent per proxy URL and falls back to a direct Agent, so NO_PROXY hosts skip the tunnel entirely."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "type": "file",
+   "name": "rate-limit.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "summary": "Enforces the optional minimum interval between upstream requests, either sleeping until the window elapses or rejecting the call outright.",
+   "tags": [
+    "rate-limiting",
+    "throttling",
+    "middleware"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "type": "file",
+   "name": "shell.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "summary": "Detects the parent shell (bash, zsh, fish, PowerShell, cmd) and emits a matching environment-variable export script so callers can source the server's settings.",
+   "tags": [
+    "shell",
+    "cross-platform",
+    "code-generation",
+    "utility"
+   ],
+   "complexity": "moderate",
+   "languageNotes": "Shell detection reads the parent process name on Windows and $SHELL elsewhere, so the generated syntax matches the caller's actual shell."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "file",
+   "name": "state.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "summary": "Single mutable module-level State object holding tokens, account type, model catalog, enterprise domain and rate-limit settings shared across the whole server.",
+   "tags": [
+    "singleton",
+    "state",
+    "type-definition",
+    "global"
+   ],
+   "complexity": "simple",
+   "languageNotes": "A module-scoped mutable singleton: importers observe live updates without an event bus or dependency injection."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "type": "file",
+   "name": "token.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "summary": "Acquires and refreshes both credentials: the long-lived GitHub OAuth token (device flow, cached on disk) and the short-lived Copilot token refreshed on a timer.",
+   "tags": [
+    "authentication",
+    "token-refresh",
+    "github",
+    "credentials"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "type": "file",
+   "name": "tokenizer.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Reimplements OpenAI's token accounting on top of gpt-tokenizer, counting messages, multimodal content parts, tool calls and JSON-Schema tool definitions to answer token-count requests without calling upstream.",
+   "tags": [
+    "tokenization",
+    "utility",
+    "cost-estimation",
+    "algorithm"
+   ],
+   "complexity": "complex",
+   "languageNotes": "Per-model constants and a recursive JSON-Schema walker reproduce the provider's documented per-message and per-tool overheads."
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "type": "file",
+   "name": "utils.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "summary": "Small shared helpers: a promise-based sleep, a nullish guard, and cache warmers that populate the model catalog and VS Code version in global state.",
+   "tags": [
+    "utility",
+    "helpers",
+    "caching"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/main.ts",
+   "type": "file",
+   "name": "main.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/main.ts",
+   "summary": "CLI entry point that assembles the citty command tree (auth, start, check-usage, debug) and runs it; this is the file the published bin points at.",
+   "tags": [
+    "entry-point",
+    "cli",
+    "bootstrap"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "type": "file",
+   "name": "handler.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "summary": "Handles OpenAI-compatible /chat/completions requests: applies rate limiting and manual approval, forwards to Copilot, and streams the reply back as SSE or returns it as JSON.",
+   "tags": [
+    "api-handler",
+    "streaming",
+    "openai-compat",
+    "proxy"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+   "type": "file",
+   "name": "route.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+   "summary": "Hono router mounting the POST /chat/completions endpoint and wrapping the handler in the shared error forwarder.",
+   "tags": [
+    "routing",
+    "hono",
+    "openai-compat"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+   "type": "file",
+   "name": "route.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+   "summary": "Hono router exposing POST /embeddings, forwarding the payload straight to the Copilot embeddings service with no translation.",
+   "tags": [
+    "routing",
+    "hono",
+    "embeddings",
+    "openai-compat"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+   "type": "file",
+   "name": "anthropic-types.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+   "summary": "TypeScript type definitions for the Anthropic Messages API: request payloads, content blocks, tool use, and the streaming event union plus the translator's stream state.",
+   "tags": [
+    "type-definition",
+    "anthropic",
+    "api-schema",
+    "streaming"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "type": "file",
+   "name": "count-tokens-handler.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "summary": "Serves Anthropic's /v1/messages/count_tokens by translating the payload to OpenAI shape and counting locally with the bundled tokenizer instead of calling upstream.",
+   "tags": [
+    "api-handler",
+    "tokenization",
+    "anthropic",
+    "local-compute"
+   ],
+   "complexity": "moderate"
+  },
+  {
+   "id": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "type": "file",
+   "name": "handler.ts",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "summary": "Locally patched Anthropic /v1/messages handler that routes each request to either Copilot's /chat/completions or /responses backend, retrying on /responses when the model rejects chat completions, and translates both request and (streamed) response between the Anthropic and OpenAI wire formats.",
+   "tags": [
+    "api-handler",
+    "routing",
+    "streaming",
+    "anthropic",
+    "local-patch"
+   ],
+   "complexity": "complex",
+   "languageNotes": "Dual-backend dispatch: a static prefix check picks the endpoint up front, and an `unsupported_api_for_model` error triggers a transparent retry on the other backend."
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/auth.ts:runAuth",
+   "type": "function",
+   "name": "runAuth",
+   "filePath": "llm_cli/vendor/copilot-api/src/auth.ts",
+   "summary": "Ensures the config directories exist, then drives the GitHub device-code login and optionally echoes the acquired token.",
+   "tags": [
+    "authentication",
+    "cli-command",
+    "github"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    17,
+    32
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/debug.ts:getDebugInfo",
+   "type": "function",
+   "name": "getDebugInfo",
+   "filePath": "llm_cli/vendor/copilot-api/src/debug.ts",
+   "summary": "Gathers the diagnostic snapshot: package version, runtime and platform, token file presence, and resolved application paths.",
+   "tags": [
+    "diagnostics",
+    "introspection"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    70,
+    88
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/debug.ts:runDebug",
+   "type": "function",
+   "name": "runDebug",
+   "filePath": "llm_cli/vendor/copilot-api/src/debug.ts",
+   "summary": "Entry point of the debug subcommand, selecting plain-text or JSON rendering of the collected diagnostics.",
+   "tags": [
+    "diagnostics",
+    "cli-command"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    107,
+    116
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotBaseUrl",
+   "type": "function",
+   "name": "copilotBaseUrl",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "summary": "Builds the Copilot API base URL for the current account type and enterprise domain.",
+   "tags": [
+    "configuration",
+    "url-builder",
+    "enterprise"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    16,
+    25
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotHeaders",
+   "type": "function",
+   "name": "copilotHeaders",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "summary": "Assembles the authorization and editor-identification headers Copilot requires, adding the vision flag when the request carries images.",
+   "tags": [
+    "configuration",
+    "http-headers",
+    "authentication"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    26,
+    43
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:githubHeaders",
+   "type": "function",
+   "name": "githubHeaders",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "summary": "Builds the GitHub REST API headers carrying the stored OAuth token and editor identification.",
+   "tags": [
+    "configuration",
+    "http-headers",
+    "github"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    49,
+    57
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/approval.ts:awaitApproval",
+   "type": "function",
+   "name": "awaitApproval",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "summary": "Prompts on the terminal and throws an HTTPError rejection if the operator declines the pending request.",
+   "tags": [
+    "interactive",
+    "gating",
+    "error-handling"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    5,
+    15
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:normalizeDomain",
+   "type": "function",
+   "name": "normalizeDomain",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "summary": "Strips the URL scheme and trailing slashes from a user-supplied enterprise domain.",
+   "tags": [
+    "validation",
+    "normalization",
+    "enterprise"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    19,
+    22
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:applyEnterpriseDomain",
+   "type": "function",
+   "name": "applyEnterpriseDomain",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "summary": "Normalizes the enterprise domain argument and records it in global state so URL builders switch to the tenant endpoints.",
+   "tags": [
+    "configuration",
+    "enterprise",
+    "state"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    26,
+    33
+   ]
+  },
+  {
+   "id": "class:llm_cli/vendor/copilot-api/src/lib/error.ts:HTTPError",
+   "type": "class",
+   "name": "HTTPError",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "summary": "Error subclass that carries the originating fetch Response so handlers can inspect the upstream status and body.",
+   "tags": [
+    "error-handling",
+    "type-definition"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    6,
+    13
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/error.ts:forwardError",
+   "type": "function",
+   "name": "forwardError",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "summary": "Logs a thrown error and turns it into a Hono JSON response, preserving the upstream status code and body when the error wraps an HTTP response.",
+   "tags": [
+    "error-handling",
+    "middleware",
+    "http"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    15,
+    47
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts:usesResponsesApi",
+   "type": "function",
+   "name": "usesResponsesApi",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "summary": "Returns true when a model id matches a prefix known to be served only by the OpenAI Responses API.",
+   "tags": [
+    "routing",
+    "predicate",
+    "model-catalog"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    19,
+    20
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:githubTokenPath",
+   "type": "function",
+   "name": "githubTokenPath",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "summary": "Returns the on-disk token file path, namespaced per enterprise domain so tenants do not share credentials.",
+   "tags": [
+    "filesystem",
+    "paths",
+    "credentials"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    19,
+    21
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:ensurePaths",
+   "type": "function",
+   "name": "ensurePaths",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "summary": "Creates the application directory and token file if missing, with owner-only permissions.",
+   "tags": [
+    "filesystem",
+    "bootstrap",
+    "security"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    23,
+    26
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/proxy.ts:initProxyFromEnv",
+   "type": "function",
+   "name": "initProxyFromEnv",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+   "summary": "Registers a global undici dispatcher that picks a cached ProxyAgent or a direct Agent per request URL according to the proxy environment variables.",
+   "tags": [
+    "networking",
+    "proxy",
+    "bootstrap"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    5,
+    66
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts:checkRateLimit",
+   "type": "function",
+   "name": "checkRateLimit",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "summary": "Compares the elapsed time since the last request against the configured interval, then either waits or throws a rate-limit error.",
+   "tags": [
+    "rate-limiting",
+    "throttling"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    8,
+    46
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/shell.ts:getShell",
+   "type": "function",
+   "name": "getShell",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "summary": "Identifies the invoking shell from the parent process on Windows or the SHELL environment variable elsewhere.",
+   "tags": [
+    "shell",
+    "cross-platform",
+    "detection"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    7,
+    33
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/shell.ts:generateEnvScript",
+   "type": "function",
+   "name": "generateEnvScript",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "summary": "Renders environment-variable assignments (and an optional command) in the syntax of the detected shell.",
+   "tags": [
+    "shell",
+    "code-generation",
+    "cross-platform"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    42,
+    88
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupCopilotToken",
+   "type": "function",
+   "name": "setupCopilotToken",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "summary": "Exchanges the GitHub token for a short-lived Copilot token and schedules a timer to refresh it before expiry.",
+   "tags": [
+    "authentication",
+    "token-refresh",
+    "scheduling"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    19,
+    47
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupGitHubToken",
+   "type": "function",
+   "name": "setupGitHubToken",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "summary": "Loads the cached GitHub token or, when absent or forced, runs the full device-code flow and writes the new token to disk.",
+   "tags": [
+    "authentication",
+    "device-flow",
+    "credentials",
+    "github"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    53,
+    94
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenCount",
+   "type": "function",
+   "name": "getTokenCount",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Top-level entry point that splits a payload into input and output messages and returns token totals for both, including tool definitions.",
+   "tags": [
+    "tokenization",
+    "cost-estimation",
+    "entry-point"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    319,
+    348
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:numTokensForTools",
+   "type": "function",
+   "name": "numTokensForTools",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Sums the token cost of every tool definition plus the fixed per-request tool overhead.",
+   "tags": [
+    "tokenization",
+    "tools",
+    "cost-estimation"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    303,
+    314
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenizerFromModel",
+   "type": "function",
+   "name": "getTokenizerFromModel",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Maps a model id to the gpt-tokenizer encoding used to count its tokens.",
+   "tags": [
+    "tokenization",
+    "model-catalog"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    145,
+    147
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:calculateMessageTokens",
+   "type": "function",
+   "name": "calculateMessageTokens",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Counts one chat message, covering plain text, multimodal content parts, tool calls and the per-message structural overhead.",
+   "tags": [
+    "tokenization",
+    "algorithm"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    67,
+    97
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:calculateParameterTokens",
+   "type": "function",
+   "name": "calculateParameterTokens",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "summary": "Recursively walks a JSON-Schema property (nested objects, arrays, enums, descriptions) accumulating its token cost inside a tool definition.",
+   "tags": [
+    "tokenization",
+    "json-schema",
+    "recursion",
+    "algorithm"
+   ],
+   "complexity": "complex",
+   "lineRange": [
+    175,
+    235
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheModels",
+   "type": "function",
+   "name": "cacheModels",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "summary": "Fetches the Copilot model catalog once and stores it in global state for later lookups.",
+   "tags": [
+    "caching",
+    "model-catalog",
+    "bootstrap"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    16,
+    19
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheVSCodeVersion",
+   "type": "function",
+   "name": "cacheVSCodeVersion",
+   "filePath": "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "summary": "Resolves the VS Code version string used in editor identification headers and caches it in global state.",
+   "tags": [
+    "caching",
+    "bootstrap",
+    "http-headers"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    21,
+    26
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts:handleCompletion",
+   "type": "function",
+   "name": "handleCompletion",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "summary": "Rate-limits and optionally gates the request, forwards it to Copilot, then returns JSON or relays the SSE stream verbatim.",
+   "tags": [
+    "api-handler",
+    "streaming",
+    "proxy"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    17,
+    64
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts:handleCountTokens",
+   "type": "function",
+   "name": "handleCountTokens",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "summary": "Translates the Anthropic count-tokens payload to OpenAI shape and returns the locally computed input token total.",
+   "tags": [
+    "api-handler",
+    "tokenization",
+    "anthropic"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    14,
+    70
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleCompletion",
+   "type": "function",
+   "name": "handleCompletion",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "summary": "Anthropic /v1/messages entry point: picks the Copilot backend for the requested model and transparently retries on /responses when /chat/completions rejects it.",
+   "tags": [
+    "api-handler",
+    "routing",
+    "fallback",
+    "anthropic"
+   ],
+   "complexity": "moderate",
+   "lineRange": [
+    38,
+    59
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:isUnsupportedApiError",
+   "type": "function",
+   "name": "isUnsupportedApiError",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "summary": "Detects the upstream `unsupported_api_for_model` rejection by reading a clone of the error response, leaving the original body readable for error forwarding.",
+   "tags": [
+    "error-handling",
+    "predicate",
+    "fallback"
+   ],
+   "complexity": "simple",
+   "lineRange": [
+    61,
+    70
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleWithChatCompletions",
+   "type": "function",
+   "name": "handleWithChatCompletions",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "summary": "Runs the Anthropic request through the /chat/completions backend, translating the payload out and the JSON or SSE reply back into Anthropic events.",
+   "tags": [
+    "api-handler",
+    "translation",
+    "streaming"
+   ],
+   "complexity": "complex",
+   "lineRange": [
+    72,
+    132
+   ]
+  },
+  {
+   "id": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleWithResponses",
+   "type": "function",
+   "name": "handleWithResponses",
+   "filePath": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "summary": "Runs the Anthropic request through the /responses backend, translating the payload out and the JSON or SSE reply back into Anthropic events.",
+   "tags": [
+    "api-handler",
+    "translation",
+    "streaming",
+    "local-patch"
+   ],
+   "complexity": "complex",
+   "lineRange": [
+    134,
+    192
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/github/get-user.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/main.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/main.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/check-usage.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/main.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/main.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/start.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/lib/state.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts",
+   "type": "imports",
+   "direction": "forward",
+   "weight": 0.7
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/auth.ts:runAuth",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/auth.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/auth.ts:runAuth",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/debug.ts:getDebugInfo",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/debug.ts:runDebug",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/debug.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/debug.ts:runDebug",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotBaseUrl",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotBaseUrl",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotHeaders",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:copilotHeaders",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:githubHeaders",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/api-config.ts:githubHeaders",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/approval.ts:awaitApproval",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/approval.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/approval.ts:awaitApproval",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:normalizeDomain",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:normalizeDomain",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:applyEnterpriseDomain",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/enterprise.ts:applyEnterpriseDomain",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "target": "class:llm_cli/vendor/copilot-api/src/lib/error.ts:HTTPError",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "target": "class:llm_cli/vendor/copilot-api/src/lib/error.ts:HTTPError",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/error.ts:forwardError",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/error.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/error.ts:forwardError",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts:usesResponsesApi",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts:usesResponsesApi",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:githubTokenPath",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:githubTokenPath",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:ensurePaths",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/paths.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/paths.ts:ensurePaths",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/proxy.ts:initProxyFromEnv",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/proxy.ts:initProxyFromEnv",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts:checkRateLimit",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/rate-limit.ts:checkRateLimit",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/shell.ts:getShell",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/shell.ts:generateEnvScript",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/shell.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/shell.ts:generateEnvScript",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupCopilotToken",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupCopilotToken",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupGitHubToken",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/token.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/token.ts:setupGitHubToken",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenCount",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenCount",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:numTokensForTools",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:numTokensForTools",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenizerFromModel",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:getTokenizerFromModel",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:calculateMessageTokens",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/tokenizer.ts:calculateParameterTokens",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheModels",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheModels",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheVSCodeVersion",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/lib/utils.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/lib/utils.ts:cacheVSCodeVersion",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts:handleCompletion",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts:handleCompletion",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts:handleCountTokens",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts:handleCountTokens",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleCompletion",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleCompletion",
+   "type": "exports",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:isUnsupportedApiError",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleWithChatCompletions",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  },
+  {
+   "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+   "target": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts:handleWithResponses",
+   "type": "contains",
+   "direction": "forward",
+   "weight": 1
+  }
+ ]
+}

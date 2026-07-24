@@ -1,0 +1,329 @@
+{
+ "projectRoot": "/opt/eca/llm_cli",
+ "batchFiles": [
+  {
+   "path": "llm_cli/__init__.py",
+   "language": "python",
+   "sizeLines": 3,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/__main__.py",
+   "language": "python",
+   "sizeLines": 8,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/cli.py",
+   "language": "python",
+   "sizeLines": 73,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/__init__.py",
+   "language": "python",
+   "sizeLines": 1,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/activate.py",
+   "language": "python",
+   "sizeLines": 63,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/bootstrap.py",
+   "language": "python",
+   "sizeLines": 111,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/check.py",
+   "language": "python",
+   "sizeLines": 342,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/git_clone.py",
+   "language": "python",
+   "sizeLines": 61,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/hooks.py",
+   "language": "python",
+   "sizeLines": 95,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_atlassian.py",
+   "language": "python",
+   "sizeLines": 209,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_context.py",
+   "language": "python",
+   "sizeLines": 26,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_context_cache.py",
+   "language": "python",
+   "sizeLines": 113,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_deps.py",
+   "language": "python",
+   "sizeLines": 104,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_env.py",
+   "language": "python",
+   "sizeLines": 112,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_git_hooks.py",
+   "language": "python",
+   "sizeLines": 140,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_mcp.py",
+   "language": "python",
+   "sizeLines": 138,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_rtk.py",
+   "language": "python",
+   "sizeLines": 123,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/setup_shell_wrapper.py",
+   "language": "python",
+   "sizeLines": 100,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/commands/sync.py",
+   "language": "python",
+   "sizeLines": 119,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/entry.py",
+   "language": "python",
+   "sizeLines": 22,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/paths.py",
+   "language": "python",
+   "sizeLines": 54,
+   "fileCategory": "code"
+  }
+ ],
+ "batchImportData": {
+  "llm_cli/__init__.py": [],
+  "llm_cli/__main__.py": [
+   "llm_cli/cli.py",
+   "llm_cli/services/crash_guard.py"
+  ],
+  "llm_cli/cli.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/activate.py",
+   "llm_cli/commands/bootstrap.py",
+   "llm_cli/commands/check.py",
+   "llm_cli/commands/copilot_models.py",
+   "llm_cli/commands/git_clone.py",
+   "llm_cli/commands/hooks.py",
+   "llm_cli/commands/launch.py",
+   "llm_cli/commands/prelaunch.py",
+   "llm_cli/commands/provider_models.py",
+   "llm_cli/commands/provider_usage.py",
+   "llm_cli/commands/setup_atlassian.py",
+   "llm_cli/commands/setup_context.py",
+   "llm_cli/commands/setup_context_cache.py",
+   "llm_cli/commands/setup_deps.py",
+   "llm_cli/commands/setup_env.py",
+   "llm_cli/commands/setup_git_hooks.py",
+   "llm_cli/commands/setup_headroom.py",
+   "llm_cli/commands/setup_mcp.py",
+   "llm_cli/commands/setup_plugins.py",
+   "llm_cli/commands/setup_rtk.py",
+   "llm_cli/commands/setup_shell_wrapper.py",
+   "llm_cli/commands/sync.py"
+  ],
+  "llm_cli/commands/__init__.py": [],
+  "llm_cli/commands/activate.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_env.py",
+   "llm_cli/commands/setup_shell_wrapper.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/bootstrap.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/activate.py",
+   "llm_cli/commands/check.py",
+   "llm_cli/commands/setup_atlassian.py",
+   "llm_cli/commands/setup_deps.py",
+   "llm_cli/commands/setup_mcp.py",
+   "llm_cli/paths.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py"
+  ],
+  "llm_cli/commands/check.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_shell_wrapper.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/cache.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/git.py",
+   "llm_cli/services/headroom.py",
+   "llm_cli/services/instructions.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/git_clone.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/log.py"
+  ],
+  "llm_cli/commands/hooks.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_context_cache.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/git.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_atlassian.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_mcp.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/atlassian_api.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/git.py",
+   "llm_cli/services/instructions.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_context.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/instructions.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_context_cache.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_git_hooks.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/cache.py",
+   "llm_cli/services/instructions.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_deps.py": [
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_env.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/commands/__init__.py",
+   "llm_cli/commands/setup_context.py",
+   "llm_cli/commands/setup_headroom.py",
+   "llm_cli/commands/setup_plugins.py",
+   "llm_cli/commands/setup_rtk.py",
+   "llm_cli/commands/sync.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/services/slash_commands.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_git_hooks.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/git.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/text_blocks.py"
+  ],
+  "llm_cli/commands/setup_mcp.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/config.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py"
+  ],
+  "llm_cli/commands/setup_rtk.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/deps.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/settings_editor.py",
+   "llm_cli/services/text_blocks.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/commands/setup_shell_wrapper.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/platforms/base.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/log.py",
+   "llm_cli/services/text_blocks.py"
+  ],
+  "llm_cli/commands/sync.py": [
+   "llm_cli/__init__.py",
+   "llm_cli/paths.py",
+   "llm_cli/platforms/__init__.py",
+   "llm_cli/services/__init__.py",
+   "llm_cli/services/fs.py",
+   "llm_cli/services/log.py",
+   "llm_cli/tool_profile.py"
+  ],
+  "llm_cli/entry.py": [
+   "llm_cli/cli.py",
+   "llm_cli/services/crash_guard.py"
+  ],
+  "llm_cli/paths.py": []
+ }
+}

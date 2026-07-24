@@ -1,0 +1,331 @@
+{
+  "files": {
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts": {
+      "type": "file",
+      "summary": "Bidirectional translator between the Anthropic Messages format and OpenAI chat completions for non-streaming calls, mapping system prompts, multimodal user content, assistant tool calls, tool definitions and tool_choice in both directions.",
+      "tags": ["translation", "anthropic", "openai-compat", "serialization"],
+      "complexity": "complex",
+      "languageNotes": "Each Anthropic message can fan out to several OpenAI messages, so the mappers return arrays and the caller flattens them."
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts": {
+      "type": "file",
+      "summary": "Local addition: translates Anthropic Messages requests to the OpenAI Responses API and converts both the complete result and the streamed event sequence back into Anthropic responses and SSE events.",
+      "tags": ["translation", "anthropic", "responses-api", "streaming", "local-patch"],
+      "complexity": "complex",
+      "languageNotes": "The streaming side is a small state machine: it tracks open content blocks so partial deltas from /responses become well-formed Anthropic block start/delta/stop events."
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/route.ts": {
+      "type": "file",
+      "summary": "Hono router for the Anthropic-compatible surface, mounting POST /v1/messages and POST /v1/messages/count_tokens behind the shared error forwarder.",
+      "tags": ["routing", "hono", "anthropic"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts": {
+      "type": "file",
+      "summary": "Converts OpenAI chat-completion stream chunks into the Anthropic SSE event sequence, opening and closing text and tool_use content blocks as deltas arrive.",
+      "tags": ["translation", "streaming", "anthropic", "state-machine"],
+      "complexity": "complex",
+      "languageNotes": "Anthropic requires explicit content_block_start/stop framing that OpenAI chunks lack, so the translator carries mutable stream state across chunks."
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts": {
+      "type": "file",
+      "summary": "Maps OpenAI finish_reason values onto the equivalent Anthropic stop_reason strings.",
+      "tags": ["utility", "translation", "mapping"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/models/route.ts": {
+      "type": "file",
+      "summary": "Hono router serving GET /models, reshaping the cached Copilot catalog into the OpenAI model-list format and lazily populating the cache on a cold hit.",
+      "tags": ["routing", "hono", "model-catalog", "openai-compat"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/token/route.ts": {
+      "type": "file",
+      "summary": "Hono router exposing the current Copilot bearer token for local tooling that needs to call Copilot directly.",
+      "tags": ["routing", "hono", "credentials", "security"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/usage/route.ts": {
+      "type": "file",
+      "summary": "Hono router serving the Copilot quota snapshot consumed by the browser-based usage viewer.",
+      "tags": ["routing", "hono", "quota", "reporting"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/server.ts": {
+      "type": "file",
+      "summary": "Builds the Hono application: logging middleware, CORS scoped to /usage only, and every route mounted under both bare and /v1 prefixes plus the Anthropic /v1/messages surface.",
+      "tags": ["server", "routing", "composition", "security"],
+      "complexity": "simple",
+      "languageNotes": "CORS is deliberately mounted on /usage/* rather than globally, so a web page cannot read /token and harvest the live Copilot bearer token."
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts": {
+      "type": "file",
+      "summary": "HTTP client for Copilot's /chat/completions endpoint, setting vision and initiator headers from the payload and returning either a parsed response or an SSE event iterator.",
+      "tags": ["api-client", "http", "streaming", "openai-compat"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts": {
+      "type": "file",
+      "summary": "HTTP client for Copilot's /embeddings endpoint with the request and response payload types.",
+      "tags": ["api-client", "http", "embeddings"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts": {
+      "type": "file",
+      "summary": "Local addition: HTTP client for Copilot's OpenAI Responses endpoint, mirroring the chat-completions client's auth and vision handling but posting to /responses and defining the Responses payload, result and stream-event types.",
+      "tags": ["api-client", "http", "streaming", "responses-api", "local-patch"],
+      "complexity": "moderate",
+      "languageNotes": "Sets X-Initiator to agent when the input already carries assistant or tool output, which is how Copilot distinguishes agent turns from user turns."
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts": {
+      "type": "file",
+      "summary": "Fetches the Copilot model catalog and defines the model metadata types (capabilities, limits, vendor) used across routing and reporting.",
+      "tags": ["api-client", "model-catalog", "type-definition"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts": {
+      "type": "file",
+      "summary": "Resolves the current VS Code release version from the public update API, falling back to a pinned constant when the lookup fails.",
+      "tags": ["api-client", "version-detection", "fallback"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts": {
+      "type": "file",
+      "summary": "Exchanges the stored GitHub OAuth token for a short-lived Copilot API token and its refresh interval.",
+      "tags": ["api-client", "authentication", "github", "credentials"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts": {
+      "type": "file",
+      "summary": "Fetches the account's Copilot quota snapshots (premium interactions, chat, completions) from the GitHub API and types the quota payload.",
+      "tags": ["api-client", "quota", "github", "reporting"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts": {
+      "type": "file",
+      "summary": "Starts the GitHub OAuth device flow, returning the device code, user code and verification URL to display to the operator.",
+      "tags": ["api-client", "authentication", "device-flow", "github"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-user.ts": {
+      "type": "file",
+      "summary": "Fetches the authenticated GitHub user so the CLI can confirm which account the stored token belongs to.",
+      "tags": ["api-client", "github", "identity"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts": {
+      "type": "file",
+      "summary": "Polls GitHub's OAuth token endpoint at the advertised interval until the operator approves the device code, then returns the access token.",
+      "tags": ["api-client", "authentication", "device-flow", "polling"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/start.ts": {
+      "type": "file",
+      "summary": "Citty subcommand `start`: parses server options, initialises proxy support, acquires GitHub and Copilot tokens, warms the model and VS Code caches, then serves the Hono app and optionally prints a shell env script.",
+      "tags": ["entry-point", "cli-command", "bootstrap", "server"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/tests/anthropic-request.test.ts": {
+      "type": "file",
+      "summary": "Verifies that Anthropic request payloads translate into valid OpenAI chat-completion requests, covering system prompts, multimodal content, tool definitions and tool_choice variants.",
+      "tags": ["test", "translation", "anthropic", "validation"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts": {
+      "type": "file",
+      "summary": "Verifies the response direction: complete OpenAI responses and streamed chunks must translate into well-formed Anthropic responses and SSE event sequences.",
+      "tags": ["test", "translation", "streaming", "anthropic"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/tests/create-chat-completions.test.ts": {
+      "type": "file",
+      "summary": "Checks the chat-completions client's request construction, including the vision and initiator headers derived from payload contents.",
+      "tags": ["test", "api-client", "http"],
+      "complexity": "moderate"
+    }
+  },
+  "symbols": {
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts::translateToOpenAI": {
+      "kind": "function",
+      "summary": "Converts a complete Anthropic Messages payload into the OpenAI chat-completions request shape, including model name, messages, tools and tool_choice.",
+      "tags": ["translation", "anthropic", "openai-compat"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts::translateToAnthropic": {
+      "kind": "function",
+      "summary": "Converts a complete OpenAI chat-completion response back into an Anthropic response, rebuilding text and tool_use content blocks and the usage totals.",
+      "tags": ["translation", "anthropic", "openai-compat"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts::handleAssistantMessage": {
+      "kind": "function",
+      "summary": "Splits an Anthropic assistant turn into the OpenAI assistant message plus the separate tool messages that OpenAI expects.",
+      "tags": ["translation", "tools", "algorithm"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts::handleUserMessage": {
+      "kind": "function",
+      "summary": "Translates an Anthropic user turn, promoting tool_result blocks into standalone OpenAI tool messages and mapping image blocks to data URLs.",
+      "tags": ["translation", "multimodal", "tools"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts::translateAnthropicToolChoiceToOpenAI": {
+      "kind": "function",
+      "summary": "Maps Anthropic's tool_choice variants (auto, any, tool, none) onto the OpenAI equivalents.",
+      "tags": ["translation", "tools", "mapping"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts::translateToResponses": {
+      "kind": "function",
+      "summary": "Builds an OpenAI Responses payload from an Anthropic Messages request, mapping the system prompt to instructions and flattening messages into input items.",
+      "tags": ["translation", "responses-api", "local-patch"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts::translateResponsesToAnthropic": {
+      "kind": "function",
+      "summary": "Converts a complete Responses result into an Anthropic response, rebuilding text, thinking and tool_use blocks along with usage totals.",
+      "tags": ["translation", "responses-api", "local-patch"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts::createResponsesStreamState": {
+      "kind": "function",
+      "summary": "Creates the mutable state the Responses stream translator carries across chunks to track open content blocks.",
+      "tags": ["streaming", "state-machine", "factory"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts::translateResponsesChunkToAnthropicEvents": {
+      "kind": "function",
+      "summary": "Turns a single Responses SSE event into the corresponding Anthropic events, opening and closing text, thinking and tool_use blocks as the stream progresses.",
+      "tags": ["translation", "streaming", "state-machine", "local-patch"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts::truncateUser": {
+      "kind": "function",
+      "summary": "Clamps the user identifier to the length the Responses API accepts, preserving per-user grouping instead of dropping the field.",
+      "tags": ["validation", "normalization", "local-patch"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts::translateChunkToAnthropicEvents": {
+      "kind": "function",
+      "summary": "Emits the Anthropic event sequence for one OpenAI stream chunk, managing message_start, content block framing and tool-call argument accumulation.",
+      "tags": ["translation", "streaming", "state-machine"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts::translateErrorToAnthropicErrorEvent": {
+      "kind": "function",
+      "summary": "Wraps a thrown error as an Anthropic error SSE event so failures mid-stream stay in protocol.",
+      "tags": ["error-handling", "streaming", "translation"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts::mapOpenAIStopReasonToAnthropic": {
+      "kind": "function",
+      "summary": "Translates an OpenAI finish_reason into the matching Anthropic stop_reason.",
+      "tags": ["utility", "mapping", "translation"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts::createChatCompletions": {
+      "kind": "function",
+      "summary": "Posts the OpenAI-shaped payload to Copilot, deriving vision and agent-initiator headers, and returns a parsed result or an SSE event stream.",
+      "tags": ["api-client", "http", "streaming"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts::createResponses": {
+      "kind": "function",
+      "summary": "Posts the Responses-shaped payload to Copilot's /responses endpoint and returns either the parsed result or an SSE event stream.",
+      "tags": ["api-client", "http", "streaming", "local-patch"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts::createEmbeddings": {
+      "kind": "function",
+      "summary": "Posts an embedding request to Copilot and returns the vector response.",
+      "tags": ["api-client", "embeddings"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts::getModels": {
+      "kind": "function",
+      "summary": "Retrieves the Copilot model catalog using the current Copilot token.",
+      "tags": ["api-client", "model-catalog"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts::getVSCodeVersion": {
+      "kind": "function",
+      "summary": "Queries the VS Code update endpoint for the latest stable version, returning a pinned fallback on failure.",
+      "tags": ["api-client", "version-detection", "fallback"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts::getCopilotToken": {
+      "kind": "function",
+      "summary": "Calls GitHub's Copilot token endpoint to mint a short-lived API token from the stored OAuth credential.",
+      "tags": ["api-client", "authentication", "credentials"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts::getCopilotUsage": {
+      "kind": "function",
+      "summary": "Retrieves the Copilot quota snapshot for the authenticated account.",
+      "tags": ["api-client", "quota", "github"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts::getDeviceCode": {
+      "kind": "function",
+      "summary": "Requests a device and user code pair to begin the GitHub OAuth device flow.",
+      "tags": ["api-client", "device-flow", "authentication"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/get-user.ts::getGitHubUser": {
+      "kind": "function",
+      "summary": "Returns the GitHub account associated with the stored OAuth token.",
+      "tags": ["api-client", "identity", "github"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts::pollAccessToken": {
+      "kind": "function",
+      "summary": "Repeatedly polls GitHub for the device-flow access token, honouring the advertised interval until the operator authorises the request.",
+      "tags": ["api-client", "polling", "device-flow"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/start.ts::runServer": {
+      "kind": "function",
+      "summary": "Full server bootstrap: applies enterprise and proxy settings, ensures paths, acquires both tokens, warms caches, then binds the Hono app to the configured port.",
+      "tags": ["bootstrap", "server", "entry-point"],
+      "complexity": "complex"
+    }
+  },
+  "extraEdges": [
+    {
+      "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+      "target": "file:llm_cli/vendor/copilot-api/tests/anthropic-request.test.ts",
+      "type": "tested_by",
+      "weight": 0.5
+    },
+    {
+      "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+      "target": "file:llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts",
+      "type": "tested_by",
+      "weight": 0.5
+    },
+    {
+      "source": "file:llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts",
+      "target": "file:llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts",
+      "type": "tested_by",
+      "weight": 0.5
+    },
+    {
+      "source": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+      "target": "file:llm_cli/vendor/copilot-api/tests/create-chat-completions.test.ts",
+      "type": "tested_by",
+      "weight": 0.5
+    },
+    {
+      "source": "file:llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+      "target": "file:llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts",
+      "type": "tested_by",
+      "weight": 0.5
+    },
+    {
+      "source": "function:llm_cli/vendor/copilot-api/src/routes/messages/handler.ts::PLACEHOLDER",
+      "target": "PLACEHOLDER",
+      "type": "related",
+      "weight": 0.5
+    }
+  ]
+}

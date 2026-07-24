@@ -1,0 +1,39 @@
+# Claude Code plugins installed by `setup-plugins`.
+#
+# Only real marketplace plugins/skills belong here — anything not installable
+# via `claude plugin install` (standalone apps, proxies, npm-only skills) is out
+# of scope and handled elsewhere (e.g. headroom, RTK).
+#
+# marketplaces: sources added with `claude plugin marketplace add <source>`.
+#   source: a GitHub "owner/repo", a URL, or a local path.
+# plugins: installed with `claude plugin install <name>@<marketplace>`.
+#   name: the plugin id, optionally suffixed with @<marketplace>.
+#   scope: user (default) | project | local.
+
+marketplaces:
+  - name: claude-plugins-official
+    source: anthropics/claude-plugins-official
+  - name: claude-hud
+    source: jarrodwatts/claude-hud
+  - name: understand-anything
+    source: Egonex-AI/Understand-Anything
+  - name: ponytail
+    source: DietrichGebert/ponytail
+
+plugins:
+  - name: code-simplifier@claude-plugins-official
+  - name: frontend-design@claude-plugins-official
+  - name: security-guidance@claude-plugins-official
+  - name: skill-creator@claude-plugins-official
+  - name: claude-hud@claude-hud
+  - name: understand-anything@understand-anything
+  - name: ponytail@ponytail
+
+# skills: raw SKILL.md skills that ship outside any marketplace. Each is git
+# cloned and copied into <home>/skills/<name>/. `repo` is a GitHub owner/repo,
+# `path` the folder (or file) holding SKILL.md inside that repo.
+skills:
+  - name: grill-me
+    repo: RobMitt/grill-me-skill
+    path: .
+

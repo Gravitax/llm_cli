@@ -1,0 +1,350 @@
+{
+  "files": {
+    "llm_cli/vendor/copilot-api/src/auth.ts": {
+      "type": "file",
+      "summary": "Citty subcommand `auth` that runs the GitHub device-code login flow and persists the resulting token to disk.",
+      "tags": ["cli-command", "authentication", "entry-point", "github"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/check-usage.ts": {
+      "type": "file",
+      "summary": "Citty subcommand `check-usage` that authenticates and prints the account's Copilot quota snapshots (premium interactions, chat, completions).",
+      "tags": ["cli-command", "quota", "reporting", "github"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/debug.ts": {
+      "type": "file",
+      "summary": "Citty subcommand `debug` that collects runtime diagnostics (package version, Node/Bun runtime, token presence, paths) and prints them as plain text or JSON.",
+      "tags": ["cli-command", "diagnostics", "troubleshooting"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/api-config.ts": {
+      "type": "file",
+      "summary": "Central source of base URLs and request headers for the Copilot and GitHub APIs, switching between public github.com and an enterprise tenant based on global state.",
+      "tags": ["configuration", "http", "api-client", "enterprise"],
+      "complexity": "moderate",
+      "languageNotes": "All header builders are pure functions of `state`, so enterprise routing is decided at call time rather than at module load."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/approval.ts": {
+      "type": "file",
+      "summary": "Blocks a request on an interactive terminal confirmation, used when the server runs in manual-approve mode.",
+      "tags": ["utility", "interactive", "gating"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/enterprise.ts": {
+      "type": "file",
+      "summary": "Shared citty argument definitions and domain normalization for GitHub Enterprise tenants, stripping any scheme before storing the domain in global state.",
+      "tags": ["configuration", "enterprise", "cli-args", "validation"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/error.ts": {
+      "type": "file",
+      "summary": "Defines the HTTPError wrapper carrying an upstream Response and the forwardError helper that converts thrown errors into Hono JSON responses.",
+      "tags": ["error-handling", "middleware", "http"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts": {
+      "type": "file",
+      "summary": "Local patch: declares which Copilot model id prefixes are served only by the OpenAI Responses API and exports the upstream error code used as the runtime fallback signal.",
+      "tags": ["routing", "model-catalog", "configuration", "local-patch"],
+      "complexity": "simple",
+      "languageNotes": "A prefix allowlist plus an error-code fallback: the static list is a fast path, and anything it misses is still caught at runtime."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/paths.ts": {
+      "type": "file",
+      "summary": "Resolves the application's on-disk layout (config dir, token files) and ensures those directories and files exist before use.",
+      "tags": ["filesystem", "configuration", "paths", "bootstrap"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/proxy.ts": {
+      "type": "file",
+      "summary": "Installs a global undici dispatcher that honours HTTP_PROXY/HTTPS_PROXY/NO_PROXY per destination URL; a no-op under Bun, which handles proxying natively.",
+      "tags": ["networking", "proxy", "bootstrap", "undici"],
+      "complexity": "moderate",
+      "languageNotes": "Caches one ProxyAgent per proxy URL and falls back to a direct Agent, so NO_PROXY hosts skip the tunnel entirely."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts": {
+      "type": "file",
+      "summary": "Enforces the optional minimum interval between upstream requests, either sleeping until the window elapses or rejecting the call outright.",
+      "tags": ["rate-limiting", "throttling", "middleware"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/shell.ts": {
+      "type": "file",
+      "summary": "Detects the parent shell (bash, zsh, fish, PowerShell, cmd) and emits a matching environment-variable export script so callers can source the server's settings.",
+      "tags": ["shell", "cross-platform", "code-generation", "utility"],
+      "complexity": "moderate",
+      "languageNotes": "Shell detection reads the parent process name on Windows and $SHELL elsewhere, so the generated syntax matches the caller's actual shell."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/state.ts": {
+      "type": "file",
+      "summary": "Single mutable module-level State object holding tokens, account type, model catalog, enterprise domain and rate-limit settings shared across the whole server.",
+      "tags": ["singleton", "state", "type-definition", "global"],
+      "complexity": "simple",
+      "languageNotes": "A module-scoped mutable singleton: importers observe live updates without an event bus or dependency injection."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/token.ts": {
+      "type": "file",
+      "summary": "Acquires and refreshes both credentials: the long-lived GitHub OAuth token (device flow, cached on disk) and the short-lived Copilot token refreshed on a timer.",
+      "tags": ["authentication", "token-refresh", "github", "credentials"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts": {
+      "type": "file",
+      "summary": "Reimplements OpenAI's token accounting on top of gpt-tokenizer, counting messages, multimodal content parts, tool calls and JSON-Schema tool definitions to answer token-count requests without calling upstream.",
+      "tags": ["tokenization", "utility", "cost-estimation", "algorithm"],
+      "complexity": "complex",
+      "languageNotes": "Per-model constants and a recursive JSON-Schema walker reproduce the provider's documented per-message and per-tool overheads."
+    },
+    "llm_cli/vendor/copilot-api/src/lib/utils.ts": {
+      "type": "file",
+      "summary": "Small shared helpers: a promise-based sleep, a nullish guard, and cache warmers that populate the model catalog and VS Code version in global state.",
+      "tags": ["utility", "helpers", "caching"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/main.ts": {
+      "type": "file",
+      "summary": "CLI entry point that assembles the citty command tree (auth, start, check-usage, debug) and runs it; this is the file the published bin points at.",
+      "tags": ["entry-point", "cli", "bootstrap"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts": {
+      "type": "file",
+      "summary": "Handles OpenAI-compatible /chat/completions requests: applies rate limiting and manual approval, forwards to Copilot, and streams the reply back as SSE or returns it as JSON.",
+      "tags": ["api-handler", "streaming", "openai-compat", "proxy"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts": {
+      "type": "file",
+      "summary": "Hono router mounting the POST /chat/completions endpoint and wrapping the handler in the shared error forwarder.",
+      "tags": ["routing", "hono", "openai-compat"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts": {
+      "type": "file",
+      "summary": "Hono router exposing POST /embeddings, forwarding the payload straight to the Copilot embeddings service with no translation.",
+      "tags": ["routing", "hono", "embeddings", "openai-compat"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts": {
+      "type": "file",
+      "summary": "TypeScript type definitions for the Anthropic Messages API: request payloads, content blocks, tool use, and the streaming event union plus the translator's stream state.",
+      "tags": ["type-definition", "anthropic", "api-schema", "streaming"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts": {
+      "type": "file",
+      "summary": "Serves Anthropic's /v1/messages/count_tokens by translating the payload to OpenAI shape and counting locally with the bundled tokenizer instead of calling upstream.",
+      "tags": ["api-handler", "tokenization", "anthropic", "local-compute"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts": {
+      "type": "file",
+      "summary": "Locally patched Anthropic /v1/messages handler that routes each request to either Copilot's /chat/completions or /responses backend, retrying on /responses when the model rejects chat completions, and translates both request and (streamed) response between the Anthropic and OpenAI wire formats.",
+      "tags": ["api-handler", "routing", "streaming", "anthropic", "local-patch"],
+      "complexity": "complex",
+      "languageNotes": "Dual-backend dispatch: a static prefix check picks the endpoint up front, and an `unsupported_api_for_model` error triggers a transparent retry on the other backend."
+    }
+  },
+  "symbols": {
+    "llm_cli/vendor/copilot-api/src/auth.ts::runAuth": {
+      "kind": "function",
+      "summary": "Ensures the config directories exist, then drives the GitHub device-code login and optionally echoes the acquired token.",
+      "tags": ["authentication", "cli-command", "github"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/debug.ts::getDebugInfo": {
+      "kind": "function",
+      "summary": "Gathers the diagnostic snapshot: package version, runtime and platform, token file presence, and resolved application paths.",
+      "tags": ["diagnostics", "introspection"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/debug.ts::runDebug": {
+      "kind": "function",
+      "summary": "Entry point of the debug subcommand, selecting plain-text or JSON rendering of the collected diagnostics.",
+      "tags": ["diagnostics", "cli-command"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/api-config.ts::copilotBaseUrl": {
+      "kind": "function",
+      "summary": "Builds the Copilot API base URL for the current account type and enterprise domain.",
+      "tags": ["configuration", "url-builder", "enterprise"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/api-config.ts::copilotHeaders": {
+      "kind": "function",
+      "summary": "Assembles the authorization and editor-identification headers Copilot requires, adding the vision flag when the request carries images.",
+      "tags": ["configuration", "http-headers", "authentication"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/api-config.ts::githubHeaders": {
+      "kind": "function",
+      "summary": "Builds the GitHub REST API headers carrying the stored OAuth token and editor identification.",
+      "tags": ["configuration", "http-headers", "github"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/approval.ts::awaitApproval": {
+      "kind": "function",
+      "summary": "Prompts on the terminal and throws an HTTPError rejection if the operator declines the pending request.",
+      "tags": ["interactive", "gating", "error-handling"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/enterprise.ts::normalizeDomain": {
+      "kind": "function",
+      "summary": "Strips the URL scheme and trailing slashes from a user-supplied enterprise domain.",
+      "tags": ["validation", "normalization", "enterprise"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/enterprise.ts::applyEnterpriseDomain": {
+      "kind": "function",
+      "summary": "Normalizes the enterprise domain argument and records it in global state so URL builders switch to the tenant endpoints.",
+      "tags": ["configuration", "enterprise", "state"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/error.ts::HTTPError": {
+      "kind": "class",
+      "summary": "Error subclass that carries the originating fetch Response so handlers can inspect the upstream status and body.",
+      "tags": ["error-handling", "type-definition"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/error.ts::forwardError": {
+      "kind": "function",
+      "summary": "Logs a thrown error and turns it into a Hono JSON response, preserving the upstream status code and body when the error wraps an HTTP response.",
+      "tags": ["error-handling", "middleware", "http"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts::usesResponsesApi": {
+      "kind": "function",
+      "summary": "Returns true when a model id matches a prefix known to be served only by the OpenAI Responses API.",
+      "tags": ["routing", "predicate", "model-catalog"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/paths.ts::githubTokenPath": {
+      "kind": "function",
+      "summary": "Returns the on-disk token file path, namespaced per enterprise domain so tenants do not share credentials.",
+      "tags": ["filesystem", "paths", "credentials"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/paths.ts::ensurePaths": {
+      "kind": "function",
+      "summary": "Creates the application directory and token file if missing, with owner-only permissions.",
+      "tags": ["filesystem", "bootstrap", "security"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/proxy.ts::initProxyFromEnv": {
+      "kind": "function",
+      "summary": "Registers a global undici dispatcher that picks a cached ProxyAgent or a direct Agent per request URL according to the proxy environment variables.",
+      "tags": ["networking", "proxy", "bootstrap"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts::checkRateLimit": {
+      "kind": "function",
+      "summary": "Compares the elapsed time since the last request against the configured interval, then either waits or throws a rate-limit error.",
+      "tags": ["rate-limiting", "throttling"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/shell.ts::getShell": {
+      "kind": "function",
+      "summary": "Identifies the invoking shell from the parent process on Windows or the SHELL environment variable elsewhere.",
+      "tags": ["shell", "cross-platform", "detection"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/shell.ts::generateEnvScript": {
+      "kind": "function",
+      "summary": "Renders environment-variable assignments (and an optional command) in the syntax of the detected shell.",
+      "tags": ["shell", "code-generation", "cross-platform"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/token.ts::setupCopilotToken": {
+      "kind": "function",
+      "summary": "Exchanges the GitHub token for a short-lived Copilot token and schedules a timer to refresh it before expiry.",
+      "tags": ["authentication", "token-refresh", "scheduling"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/token.ts::setupGitHubToken": {
+      "kind": "function",
+      "summary": "Loads the cached GitHub token or, when absent or forced, runs the full device-code flow and writes the new token to disk.",
+      "tags": ["authentication", "device-flow", "credentials", "github"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts::getTokenCount": {
+      "kind": "function",
+      "summary": "Top-level entry point that splits a payload into input and output messages and returns token totals for both, including tool definitions.",
+      "tags": ["tokenization", "cost-estimation", "entry-point"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts::numTokensForTools": {
+      "kind": "function",
+      "summary": "Sums the token cost of every tool definition plus the fixed per-request tool overhead.",
+      "tags": ["tokenization", "tools", "cost-estimation"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts::getTokenizerFromModel": {
+      "kind": "function",
+      "summary": "Maps a model id to the gpt-tokenizer encoding used to count its tokens.",
+      "tags": ["tokenization", "model-catalog"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts::calculateMessageTokens": {
+      "kind": "function",
+      "summary": "Counts one chat message, covering plain text, multimodal content parts, tool calls and the per-message structural overhead.",
+      "tags": ["tokenization", "algorithm"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts::calculateParameterTokens": {
+      "kind": "function",
+      "summary": "Recursively walks a JSON-Schema property (nested objects, arrays, enums, descriptions) accumulating its token cost inside a tool definition.",
+      "tags": ["tokenization", "json-schema", "recursion", "algorithm"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/utils.ts::cacheModels": {
+      "kind": "function",
+      "summary": "Fetches the Copilot model catalog once and stores it in global state for later lookups.",
+      "tags": ["caching", "model-catalog", "bootstrap"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/lib/utils.ts::cacheVSCodeVersion": {
+      "kind": "function",
+      "summary": "Resolves the VS Code version string used in editor identification headers and caches it in global state.",
+      "tags": ["caching", "bootstrap", "http-headers"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts::handleCompletion": {
+      "kind": "function",
+      "summary": "Rate-limits and optionally gates the request, forwards it to Copilot, then returns JSON or relays the SSE stream verbatim.",
+      "tags": ["api-handler", "streaming", "proxy"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts::handleCountTokens": {
+      "kind": "function",
+      "summary": "Translates the Anthropic count-tokens payload to OpenAI shape and returns the locally computed input token total.",
+      "tags": ["api-handler", "tokenization", "anthropic"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts::handleCompletion": {
+      "kind": "function",
+      "summary": "Anthropic /v1/messages entry point: picks the Copilot backend for the requested model and transparently retries on /responses when /chat/completions rejects it.",
+      "tags": ["api-handler", "routing", "fallback", "anthropic"],
+      "complexity": "moderate"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts::isUnsupportedApiError": {
+      "kind": "function",
+      "summary": "Detects the upstream `unsupported_api_for_model` rejection by reading a clone of the error response, leaving the original body readable for error forwarding.",
+      "tags": ["error-handling", "predicate", "fallback"],
+      "complexity": "simple"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts::handleWithChatCompletions": {
+      "kind": "function",
+      "summary": "Runs the Anthropic request through the /chat/completions backend, translating the payload out and the JSON or SSE reply back into Anthropic events.",
+      "tags": ["api-handler", "translation", "streaming"],
+      "complexity": "complex"
+    },
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts::handleWithResponses": {
+      "kind": "function",
+      "summary": "Runs the Anthropic request through the /responses backend, translating the payload out and the JSON or SSE reply back into Anthropic events.",
+      "tags": ["api-handler", "translation", "streaming", "local-patch"],
+      "complexity": "complex"
+    }
+  },
+  "extraEdges": []
+}

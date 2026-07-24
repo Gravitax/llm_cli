@@ -23,6 +23,8 @@ class ToolProfile:
     has_agent_hooks: bool
     # Claude Code reads user slash commands from <home>/commands/*.md.
     has_slash_commands: bool
+    # Claude Code installs marketplace plugins via the `claude plugin` CLI.
+    has_plugins: bool
     # "settings": durable proxy routing in settings.json (proxy must be up).
     # "launcher": no durable routing — the launch itself goes through `headroom wrap`.
     headroom_mode: str
@@ -46,6 +48,11 @@ class ToolProfile:
     def projects_dir(self) -> Path:
         return self.home / "projects"
 
+    @property
+    def skills_dir(self) -> Path:
+        """Where raw SKILL.md skills live (Claude Code auto-loads them)."""
+        return self.home / "skills"
+
 
 CLAUDE = ToolProfile(
     name="claude",
@@ -55,6 +62,7 @@ CLAUDE = ToolProfile(
     has_rtk_hook=True,
     has_agent_hooks=True,
     has_slash_commands=True,
+    has_plugins=True,
     headroom_mode="settings",
 )
 
@@ -66,6 +74,7 @@ COPILOT = ToolProfile(
     has_rtk_hook=False,
     has_agent_hooks=False,
     has_slash_commands=False,
+    has_plugins=False,
     headroom_mode="launcher",
 )
 

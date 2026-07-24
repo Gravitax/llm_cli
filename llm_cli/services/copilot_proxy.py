@@ -38,10 +38,13 @@ _DISABLED_VALUES = {"0", "false", "no", "off"}
 _PROXY_LOG_NAME = "copilot-api.log"
 _PROXY_START_ATTEMPTS = 20
 _ACCOUNT_TYPES = {"individual", "business", "enterprise"}
+# The gpt-5.4/5.5/5.6 models are served by the /responses endpoint, which the
+# proxy now translates to, so every catalog entry is reachable. The auto-picked
+# slots still default to a chat-completions model: it is the path with the
+# longest track record here, and the others remain one --model away.
 _MAIN_MODEL_PREFERENCES = (
-    "gpt-5.6-terra",
-    "gpt-5.5",
     "claude-sonnet-5",
+    "gpt-5.5",
     "claude-sonnet-4.6",
     "gpt-4.1",
 )
@@ -54,7 +57,6 @@ _OPUS_MODEL_PREFERENCES = (
     "claude-opus-4.1",
 )
 _SMALL_MODEL_PREFERENCES = (
-    "gpt-5.6-luna",
     "gpt-5-mini",
     "claude-haiku-4.5",
     "gpt-4.1",

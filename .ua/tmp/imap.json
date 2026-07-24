@@ -1,0 +1,664 @@
+{
+  "scriptCompleted": true,
+  "stats": {
+    "filesScanned": 134,
+    "filesWithImports": 89,
+    "totalEdges": 431
+  },
+  "importMap": {
+    ".gitattributes": [],
+    "README.md": [],
+    "docs/PLUGINS.md": [],
+    "install.py": [],
+    "llm_cli/__init__.py": [],
+    "llm_cli/__main__.py": [
+      "llm_cli/cli.py",
+      "llm_cli/services/crash_guard.py"
+    ],
+    "llm_cli/cli.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/activate.py",
+      "llm_cli/commands/bootstrap.py",
+      "llm_cli/commands/check.py",
+      "llm_cli/commands/copilot_models.py",
+      "llm_cli/commands/git_clone.py",
+      "llm_cli/commands/hooks.py",
+      "llm_cli/commands/launch.py",
+      "llm_cli/commands/prelaunch.py",
+      "llm_cli/commands/provider_models.py",
+      "llm_cli/commands/provider_usage.py",
+      "llm_cli/commands/setup_atlassian.py",
+      "llm_cli/commands/setup_context.py",
+      "llm_cli/commands/setup_context_cache.py",
+      "llm_cli/commands/setup_deps.py",
+      "llm_cli/commands/setup_env.py",
+      "llm_cli/commands/setup_git_hooks.py",
+      "llm_cli/commands/setup_headroom.py",
+      "llm_cli/commands/setup_mcp.py",
+      "llm_cli/commands/setup_plugins.py",
+      "llm_cli/commands/setup_rtk.py",
+      "llm_cli/commands/setup_shell_wrapper.py",
+      "llm_cli/commands/sync.py"
+    ],
+    "llm_cli/commands/__init__.py": [],
+    "llm_cli/commands/activate.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_env.py",
+      "llm_cli/commands/setup_shell_wrapper.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/bootstrap.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/activate.py",
+      "llm_cli/commands/check.py",
+      "llm_cli/commands/setup_atlassian.py",
+      "llm_cli/commands/setup_deps.py",
+      "llm_cli/commands/setup_mcp.py",
+      "llm_cli/paths.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py"
+    ],
+    "llm_cli/commands/check.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_shell_wrapper.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/cache.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/git.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/copilot_models.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/copilot_catalog.py",
+      "llm_cli/services/log.py"
+    ],
+    "llm_cli/commands/git_clone.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/log.py"
+    ],
+    "llm_cli/commands/hooks.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_context_cache.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/git.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/launch.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/copilot_models.py",
+      "llm_cli/commands/prelaunch.py",
+      "llm_cli/commands/provider_models.py",
+      "llm_cli/commands/setup_headroom.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/copilot_proxy.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/glm.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/prelaunch.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/cache.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/git.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/provider_models.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/anthropic_catalog.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/copilot_proxy.py",
+      "llm_cli/services/glm_api.py",
+      "llm_cli/services/log.py"
+    ],
+    "llm_cli/commands/provider_usage.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/copilot_proxy.py",
+      "llm_cli/services/glm_api.py",
+      "llm_cli/services/log.py"
+    ],
+    "llm_cli/commands/setup_atlassian.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_mcp.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/atlassian_api.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/git.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_context.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_context_cache.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_git_hooks.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/cache.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_deps.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_env.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/commands/__init__.py",
+      "llm_cli/commands/setup_context.py",
+      "llm_cli/commands/setup_headroom.py",
+      "llm_cli/commands/setup_plugins.py",
+      "llm_cli/commands/setup_rtk.py",
+      "llm_cli/commands/sync.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/services/slash_commands.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_git_hooks.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/git.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/text_blocks.py"
+    ],
+    "llm_cli/commands/setup_headroom.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_mcp.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py"
+    ],
+    "llm_cli/commands/setup_plugins.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/plugin_manager.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_rtk.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/services/text_blocks.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/commands/setup_shell_wrapper.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/platforms/base.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/text_blocks.py"
+    ],
+    "llm_cli/commands/sync.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/entry.py": [
+      "llm_cli/cli.py",
+      "llm_cli/services/crash_guard.py"
+    ],
+    "llm_cli/paths.py": [],
+    "llm_cli/platforms/__init__.py": [
+      "llm_cli/platforms/base.py"
+    ],
+    "llm_cli/platforms/base.py": [],
+    "llm_cli/platforms/posix.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/base.py"
+    ],
+    "llm_cli/platforms/windows.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/base.py"
+    ],
+    "llm_cli/queries/README.md": [],
+    "llm_cli/queries/bash-tags.scm": [],
+    "llm_cli/queries/c-tags.scm": [],
+    "llm_cli/queries/cpp-tags.scm": [],
+    "llm_cli/queries/go-tags.scm": [],
+    "llm_cli/queries/java-tags.scm": [],
+    "llm_cli/queries/javascript-tags.scm": [],
+    "llm_cli/queries/python-tags.scm": [],
+    "llm_cli/queries/ruby-tags.scm": [],
+    "llm_cli/queries/rust-tags.scm": [],
+    "llm_cli/queries/typescript-tags.scm": [],
+    "llm_cli/services/__init__.py": [],
+    "llm_cli/services/anthropic_catalog.py": [],
+    "llm_cli/services/atlassian_api.py": [],
+    "llm_cli/services/cache.py": [
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/services/claude_config.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py"
+    ],
+    "llm_cli/services/claude_provider.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/config.py"
+    ],
+    "llm_cli/services/config.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py"
+    ],
+    "llm_cli/services/copilot_catalog.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/headroom.py"
+    ],
+    "llm_cli/services/copilot_proxy.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/claude_config.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/deps.py",
+      "llm_cli/services/headroom.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/model_picker.py",
+      "llm_cli/services/vendored.py"
+    ],
+    "llm_cli/services/crash_guard.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py"
+    ],
+    "llm_cli/services/deps.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py"
+    ],
+    "llm_cli/services/fs.py": [],
+    "llm_cli/services/git.py": [],
+    "llm_cli/services/glm.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/platforms/base.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/claude_config.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/model_picker.py",
+      "llm_cli/services/text_blocks.py"
+    ],
+    "llm_cli/services/glm_api.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/glm.py"
+    ],
+    "llm_cli/services/headroom.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/claude_provider.py",
+      "llm_cli/services/config.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/log.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/services/indexer.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/services/instructions.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/platforms/__init__.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/templates.py",
+      "llm_cli/services/text_blocks.py",
+      "llm_cli/tool_profile.py"
+    ],
+    "llm_cli/services/log.py": [],
+    "llm_cli/services/model_picker.py": [],
+    "llm_cli/services/plugin_manager.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/log.py",
+      "llm_cli/services/settings_editor.py",
+      "llm_cli/services/templates.py"
+    ],
+    "llm_cli/services/repomap.py": [],
+    "llm_cli/services/settings_editor.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py"
+    ],
+    "llm_cli/services/slash_commands.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py",
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py",
+      "llm_cli/services/instructions.py",
+      "llm_cli/services/templates.py"
+    ],
+    "llm_cli/services/templates.py": [],
+    "llm_cli/services/text_blocks.py": [
+      "llm_cli/services/__init__.py",
+      "llm_cli/services/fs.py"
+    ],
+    "llm_cli/services/vendored.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py"
+    ],
+    "llm_cli/templates/instructions.yaml": [],
+    "llm_cli/templates/plugins.yaml": [],
+    "llm_cli/templates/slash_commands.yaml": [],
+    "llm_cli/tool_profile.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py"
+    ],
+    "llm_cli/vendor/copilot-api/LOCAL_CHANGES.patch": [],
+    "llm_cli/vendor/copilot-api/README.md": [],
+    "llm_cli/vendor/copilot-api/VENDORED.md": [],
+    "llm_cli/vendor/copilot-api/eslint.config.js": [],
+    "llm_cli/vendor/copilot-api/package.json": [],
+    "llm_cli/vendor/copilot-api/src/auth.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+      "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/token.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/check-usage.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+      "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "llm_cli/vendor/copilot-api/src/lib/token.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/debug.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+      "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/api-config.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/approval.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/enterprise.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/error.ts": [],
+    "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts": [],
+    "llm_cli/vendor/copilot-api/src/lib/paths.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/proxy.ts": [],
+    "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/utils.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/shell.ts": [],
+    "llm_cli/vendor/copilot-api/src/lib/state.ts": [
+      "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/token.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/get-user.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts": [
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/lib/utils.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts",
+      "llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/main.ts": [
+      "llm_cli/vendor/copilot-api/src/auth.ts",
+      "llm_cli/vendor/copilot-api/src/check-usage.ts",
+      "llm_cli/vendor/copilot-api/src/debug.ts",
+      "llm_cli/vendor/copilot-api/src/start.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/approval.ts",
+      "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+      "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts": [],
+    "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/approval.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+      "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/responses-translation.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/route.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/messages/utils.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/models/route.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/utils.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/token/route.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/routes/usage/route.ts": [
+      "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/server.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+      "llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/route.ts",
+      "llm_cli/vendor/copilot-api/src/routes/models/route.ts",
+      "llm_cli/vendor/copilot-api/src/routes/token/route.ts",
+      "llm_cli/vendor/copilot-api/src/routes/usage/route.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-embeddings.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/copilot/create-responses.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/copilot/get-models.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/get-vscode-version.ts": [],
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-token.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/github/get-copilot-usage.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/github/get-user.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/services/github/poll-access-token.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+      "llm_cli/vendor/copilot-api/src/services/github/get-device-code.ts"
+    ],
+    "llm_cli/vendor/copilot-api/src/start.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+      "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+      "llm_cli/vendor/copilot-api/src/lib/shell.ts",
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/lib/token.ts",
+      "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+      "llm_cli/vendor/copilot-api/src/server.ts"
+    ],
+    "llm_cli/vendor/copilot-api/tests/anthropic-request.test.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts"
+    ],
+    "llm_cli/vendor/copilot-api/tests/anthropic-response.test.ts": [
+      "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/non-stream-translation.ts",
+      "llm_cli/vendor/copilot-api/src/routes/messages/stream-translation.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts"
+    ],
+    "llm_cli/vendor/copilot-api/tests/create-chat-completions.test.ts": [
+      "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "llm_cli/vendor/copilot-api/src/services/copilot/create-chat-completions.ts"
+    ],
+    "llm_cli/vendor/copilot-api/tsconfig.json": [],
+    "llm_cli/vendor/copilot-api/tsdown.config.ts": [],
+    "pyproject.toml": [],
+    "run.py": [
+      "llm_cli/cli.py",
+      "llm_cli/services/crash_guard.py"
+    ],
+    "tests/test_paths.py": [
+      "llm_cli/__init__.py",
+      "llm_cli/paths.py"
+    ]
+  }
+}

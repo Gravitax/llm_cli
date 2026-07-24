@@ -4,6 +4,8 @@ import consola from "consola"
 import { streamSSE } from "hono/streaming"
 
 import { awaitApproval } from "~/lib/approval"
+import { HTTPError } from "~/lib/error"
+import { ERROR_UNSUPPORTED_API, usesResponsesApi } from "~/lib/model-endpoints"
 import { checkRateLimit } from "~/lib/rate-limit"
 import { state } from "~/lib/state"
 import {
@@ -11,6 +13,11 @@ import {
   type ChatCompletionChunk,
   type ChatCompletionResponse,
 } from "~/services/copilot/create-chat-completions"
+import {
+  createResponses,
+  type ResponsesResult,
+  type ResponsesStreamEvent,
+} from "~/services/copilot/create-responses"
 
 import {
   type AnthropicMessagesPayload,
@@ -20,6 +27,12 @@ import {
   translateToAnthropic,
   translateToOpenAI,
 } from "./non-stream-translation"
+import {
+  createResponsesStreamState,
+  translateResponsesChunkToAnthropicEvents,
+  translateResponsesToAnthropic,
+  translateToResponses,
+} from "./responses-translation"
 import { translateChunkToAnthropicEvents } from "./stream-translation"
 
 export async function handleCompletion(c: Context) {
@@ -28,6 +41,38 @@ export async function handleCompletion(c: Context) {
   const anthropicPayload = await c.req.json<AnthropicMessagesPayload>()
   consola.debug("Anthropic request payload:", JSON.stringify(anthropicPayload))
 
+  if (usesResponsesApi(anthropicPayload.model)) {
+    return await handleWithResponses(c, anthropicPayload)
+  }
+
+  // The prefix list cannot know every Responses-only model, so a rejection from
+  // /chat/completions is retried on /responses instead of surfacing a 400.
+  try {
+    return await handleWithChatCompletions(c, anthropicPayload)
+  } catch (error) {
+    if (!(await isUnsupportedApiError(error))) throw error
+    consola.debug(
+      `Model ${anthropicPayload.model} rejected /chat/completions, retrying on /responses`,
+    )
+    return await handleWithResponses(c, anthropicPayload)
+  }
+}
+
+async function isUnsupportedApiError(error: unknown): Promise<boolean> {
+  if (!(error instanceof HTTPError)) return false
+  try {
+    // Cloned so forwardError can still read the body when this is not a match.
+    const body = await error.response.clone().text()
+    return body.includes(ERROR_UNSUPPORTED_API)
+  } catch {
+    return false
+  }
+}
+
+async function handleWithChatCompletions(
+  c: Context,
+  anthropicPayload: AnthropicMessagesPayload,
+) {
   const openAIPayload = translateToOpenAI(anthropicPayload)
   consola.debug(
     "Translated OpenAI request payload:",
@@ -86,6 +131,70 @@ export async function handleCompletion(c: Context) {
   })
 }
 
+async function handleWithResponses(
+  c: Context,
+  anthropicPayload: AnthropicMessagesPayload,
+) {
+  const responsesPayload = translateToResponses(anthropicPayload)
+  consola.debug(
+    "Translated Responses request payload:",
+    JSON.stringify(responsesPayload),
+  )
+
+  if (state.manualApprove) {
+    await awaitApproval()
+  }
+
+  const response = await createResponses(responsesPayload)
+
+  if (isNonStreamingResponses(response)) {
+    consola.debug(
+      "Non-streaming response from Copilot (/responses):",
+      JSON.stringify(response).slice(-400),
+    )
+    const anthropicResponse = translateResponsesToAnthropic(response)
+    consola.debug(
+      "Translated Anthropic response:",
+      JSON.stringify(anthropicResponse),
+    )
+    return c.json(anthropicResponse)
+  }
+
+  consola.debug("Streaming response from Copilot (/responses)")
+  return streamSSE(c, async (stream) => {
+    const streamState = createResponsesStreamState()
+
+    for await (const rawEvent of response) {
+      consola.debug("Copilot raw stream event:", JSON.stringify(rawEvent))
+      if (rawEvent.data === "[DONE]") {
+        break
+      }
+
+      if (!rawEvent.data) {
+        continue
+      }
+
+      const chunk = JSON.parse(rawEvent.data) as ResponsesStreamEvent
+      const events = translateResponsesChunkToAnthropicEvents(
+        chunk,
+        streamState,
+      )
+
+      for (const event of events) {
+        consola.debug("Translated Anthropic event:", JSON.stringify(event))
+        await stream.writeSSE({
+          event: event.type,
+          data: JSON.stringify(event),
+        })
+      }
+    }
+  })
+}
+
 const isNonStreaming = (
   response: Awaited<ReturnType<typeof createChatCompletions>>,
 ): response is ChatCompletionResponse => Object.hasOwn(response, "choices")
+
+const isNonStreamingResponses = (
+  response: Awaited<ReturnType<typeof createResponses>>,
+): response is ResponsesResult => Object.hasOwn(response, "output")

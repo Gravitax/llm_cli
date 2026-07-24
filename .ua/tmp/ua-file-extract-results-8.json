@@ -1,0 +1,1058 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 8,
+  "filesSkipped": [
+    ".gitattributes",
+    "llm_cli/queries/bash-tags.scm",
+    "llm_cli/queries/c-tags.scm",
+    "llm_cli/queries/cpp-tags.scm",
+    "llm_cli/queries/go-tags.scm",
+    "llm_cli/queries/java-tags.scm",
+    "llm_cli/queries/javascript-tags.scm",
+    "llm_cli/queries/python-tags.scm",
+    "llm_cli/queries/ruby-tags.scm",
+    "llm_cli/queries/rust-tags.scm",
+    "llm_cli/queries/typescript-tags.scm",
+    "llm_cli/vendor/copilot-api/LOCAL_CHANGES.patch"
+  ],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 8,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 4,
+      "failed": 0,
+      "skipped": 4
+    }
+  },
+  "results": [
+    {
+      "path": "README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 258,
+      "nonEmptyLines": 207,
+      "sections": [
+        {
+          "heading": "llm_cli — Token-optimization layer for Claude Code & Copilot CLI",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "What it does",
+          "level": 2,
+          "line": 11
+        },
+        {
+          "heading": "Layout",
+          "level": 2,
+          "line": 24
+        },
+        {
+          "heading": "Setup",
+          "level": 2,
+          "line": 49
+        },
+        {
+          "heading": "What `/model` can show",
+          "level": 2,
+          "line": 128
+        },
+        {
+          "heading": "Windows notes",
+          "level": 2,
+          "line": 174
+        },
+        {
+          "heading": "MCP — Atlassian & Bitbucket (global, one-time)",
+          "level": 2,
+          "line": 189
+        },
+        {
+          "heading": "Headroom — API-level context compression (opt-in, off by default)",
+          "level": 2,
+          "line": 214
+        },
+        {
+          "heading": "Diagnostics",
+          "level": 2,
+          "line": 251
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 9
+      }
+    },
+    {
+      "path": "docs/PLUGINS.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 23,
+      "nonEmptyLines": 17,
+      "sections": [
+        {
+          "heading": "PLUGINS",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "CODE",
+          "level": 2,
+          "line": 3
+        },
+        {
+          "heading": "SKILLS",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "MCP",
+          "level": 2,
+          "line": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 4
+      }
+    },
+    {
+      "path": "install.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 213,
+      "nonEmptyLines": 177,
+      "functions": [
+        {
+          "name": "_version_of",
+          "startLine": 56,
+          "endLine": 65,
+          "params": [
+            "python"
+          ]
+        },
+        {
+          "name": "_base_pythons",
+          "startLine": 68,
+          "endLine": 86,
+          "params": []
+        },
+        {
+          "name": "_create_venv",
+          "startLine": 89,
+          "endLine": 105,
+          "params": []
+        },
+        {
+          "name": "_ensure_venv",
+          "startLine": 108,
+          "endLine": 123,
+          "params": []
+        },
+        {
+          "name": "_pip_install",
+          "startLine": 126,
+          "endLine": 129,
+          "params": []
+        },
+        {
+          "name": "_run_core",
+          "startLine": 132,
+          "endLine": 135,
+          "params": []
+        },
+        {
+          "name": "main",
+          "startLine": 138,
+          "endLine": 170,
+          "params": []
+        },
+        {
+          "name": "_guarded",
+          "startLine": 173,
+          "endLine": 189,
+          "params": [
+            "entry"
+          ]
+        },
+        {
+          "name": "_persist_crash",
+          "startLine": 192,
+          "endLine": 200,
+          "params": [
+            "details"
+          ]
+        },
+        {
+          "name": "_pause_interactive_windows_console",
+          "startLine": 203,
+          "endLine": 209,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "_version_of",
+          "line": 56,
+          "isDefault": false
+        },
+        {
+          "name": "_base_pythons",
+          "line": 68,
+          "isDefault": false
+        },
+        {
+          "name": "_create_venv",
+          "line": 89,
+          "isDefault": false
+        },
+        {
+          "name": "_ensure_venv",
+          "line": 108,
+          "isDefault": false
+        },
+        {
+          "name": "_pip_install",
+          "line": 126,
+          "isDefault": false
+        },
+        {
+          "name": "_run_core",
+          "line": 132,
+          "isDefault": false
+        },
+        {
+          "name": "main",
+          "line": 138,
+          "isDefault": false
+        },
+        {
+          "name": "_guarded",
+          "line": 173,
+          "isDefault": false
+        },
+        {
+          "name": "_persist_crash",
+          "line": 192,
+          "isDefault": false
+        },
+        {
+          "name": "_pause_interactive_windows_console",
+          "line": 203,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_version_of",
+          "callee": "subprocess.run(\n            [str(python), \"-c\", code], capture_output=True, text=True, check=True\n        ).stdout.split",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_version_of",
+          "callee": "subprocess.run",
+          "lineNumber": 60
+        },
+        {
+          "caller": "_version_of",
+          "callee": "str",
+          "lineNumber": 61
+        },
+        {
+          "caller": "_version_of",
+          "callee": "int",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_version_of",
+          "callee": "int",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_version_of",
+          "callee": "len",
+          "lineNumber": 65
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "set",
+          "lineNumber": 72
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "shutil.which",
+          "lineNumber": 73
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "candidates.insert",
+          "lineNumber": 75
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "str",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "Path(candidate).resolve",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "Path",
+          "lineNumber": 79
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "seen.add",
+          "lineNumber": 82
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "_version_of",
+          "lineNumber": 83
+        },
+        {
+          "caller": "_base_pythons",
+          "callee": "found.append",
+          "lineNumber": 85
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "_VENV_DIR.parent.mkdir",
+          "lineNumber": 92
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "_base_pythons",
+          "lineNumber": 93
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "print",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "subprocess.run",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "str",
+          "lineNumber": 95
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "shutil.rmtree",
+          "lineNumber": 97
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "print",
+          "lineNumber": 98
+        },
+        {
+          "caller": "_create_venv",
+          "callee": "print",
+          "lineNumber": 99
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "_version_of",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "_VENV_PYTHON.exists",
+          "lineNumber": 110
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "print",
+          "lineNumber": 112
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "\".\".join",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "str",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "print",
+          "lineNumber": 116
+        },
+        {
+          "caller": "_ensure_venv",
+          "callee": "_create_venv",
+          "lineNumber": 123
+        },
+        {
+          "caller": "_pip_install",
+          "callee": "print",
+          "lineNumber": 127
+        },
+        {
+          "caller": "_pip_install",
+          "callee": "str",
+          "lineNumber": 128
+        },
+        {
+          "caller": "_pip_install",
+          "callee": "str",
+          "lineNumber": 128
+        },
+        {
+          "caller": "_pip_install",
+          "callee": "subprocess.run",
+          "lineNumber": 129
+        },
+        {
+          "caller": "_run_core",
+          "callee": "str",
+          "lineNumber": 134
+        },
+        {
+          "caller": "_run_core",
+          "callee": "str",
+          "lineNumber": 134
+        },
+        {
+          "caller": "_run_core",
+          "callee": "subprocess.run",
+          "lineNumber": 135
+        },
+        {
+          "caller": "main",
+          "callee": "argparse.ArgumentParser",
+          "lineNumber": 139
+        },
+        {
+          "caller": "main",
+          "callee": "parser.add_argument",
+          "lineNumber": 140
+        },
+        {
+          "caller": "main",
+          "callee": "parser.parse_args",
+          "lineNumber": 143
+        },
+        {
+          "caller": "main",
+          "callee": "_ensure_venv",
+          "lineNumber": 145
+        },
+        {
+          "caller": "main",
+          "callee": "_pip_install",
+          "lineNumber": 148
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 149
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 153
+        },
+        {
+          "caller": "main",
+          "callee": "_run_core",
+          "lineNumber": 154
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 157
+        },
+        {
+          "caller": "main",
+          "callee": "_run_core",
+          "lineNumber": 158
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 159
+        },
+        {
+          "caller": "main",
+          "callee": "print",
+          "lineNumber": 166
+        },
+        {
+          "caller": "_guarded",
+          "callee": "entry",
+          "lineNumber": 178
+        },
+        {
+          "caller": "_guarded",
+          "callee": "print",
+          "lineNumber": 180
+        },
+        {
+          "caller": "_guarded",
+          "callee": "traceback.format_exc",
+          "lineNumber": 183
+        },
+        {
+          "caller": "_guarded",
+          "callee": "print",
+          "lineNumber": 184
+        },
+        {
+          "caller": "_guarded",
+          "callee": "_persist_crash",
+          "lineNumber": 185
+        },
+        {
+          "caller": "_guarded",
+          "callee": "print",
+          "lineNumber": 187
+        },
+        {
+          "caller": "_guarded",
+          "callee": "_pause_interactive_windows_console",
+          "lineNumber": 188
+        },
+        {
+          "caller": "_persist_crash",
+          "callee": "_ERROR_LOG.parent.mkdir",
+          "lineNumber": 194
+        },
+        {
+          "caller": "_persist_crash",
+          "callee": "datetime.datetime.now().isoformat",
+          "lineNumber": 195
+        },
+        {
+          "caller": "_persist_crash",
+          "callee": "datetime.datetime.now",
+          "lineNumber": 195
+        },
+        {
+          "caller": "_persist_crash",
+          "callee": "open",
+          "lineNumber": 196
+        },
+        {
+          "caller": "_persist_crash",
+          "callee": "handle.write",
+          "lineNumber": 197
+        },
+        {
+          "caller": "_pause_interactive_windows_console",
+          "callee": "sys.stdin.isatty",
+          "lineNumber": 204
+        },
+        {
+          "caller": "_pause_interactive_windows_console",
+          "callee": "input",
+          "lineNumber": 207
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 10,
+        "functionCount": 10,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/queries/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 15,
+      "nonEmptyLines": 11,
+      "sections": [
+        {
+          "heading": "Tree-sitter tags queries",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Attribution",
+          "level": 2,
+          "line": 7
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 2
+      }
+    },
+    {
+      "path": "llm_cli/services/repomap.py",
+      "language": "python",
+      "fileCategory": "code",
+      "totalLines": 204,
+      "nonEmptyLines": 167,
+      "functions": [
+        {
+          "name": "_load_query",
+          "startLine": 36,
+          "endLine": 48,
+          "params": [
+            "lang"
+          ]
+        },
+        {
+          "name": "supported_lang",
+          "startLine": 51,
+          "endLine": 56,
+          "params": [
+            "abs_path"
+          ]
+        },
+        {
+          "name": "get_tags",
+          "startLine": 59,
+          "endLine": 82,
+          "params": [
+            "abs_path",
+            "rel_path",
+            "lang"
+          ]
+        },
+        {
+          "name": "_outgoing_shares",
+          "startLine": 85,
+          "endLine": 96,
+          "params": [
+            "graph"
+          ]
+        },
+        {
+          "name": "_pagerank",
+          "startLine": 99,
+          "endLine": 126,
+          "params": [
+            "graph"
+          ]
+        },
+        {
+          "name": "_rank",
+          "startLine": 129,
+          "endLine": 166,
+          "params": [
+            "all_tags"
+          ]
+        },
+        {
+          "name": "extract_symbols",
+          "startLine": 169,
+          "endLine": 204,
+          "params": [
+            "files"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "_load_query",
+          "line": 36,
+          "isDefault": false
+        },
+        {
+          "name": "supported_lang",
+          "line": 51,
+          "isDefault": false
+        },
+        {
+          "name": "get_tags",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "_outgoing_shares",
+          "line": 85,
+          "isDefault": false
+        },
+        {
+          "name": "_pagerank",
+          "line": 99,
+          "isDefault": false
+        },
+        {
+          "name": "_rank",
+          "line": 129,
+          "isDefault": false
+        },
+        {
+          "name": "extract_symbols",
+          "line": 169,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "_load_query",
+          "callee": "scm_file.is_file",
+          "lineNumber": 42
+        },
+        {
+          "caller": "_load_query",
+          "callee": "ts.Query",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_load_query",
+          "callee": "get_language",
+          "lineNumber": 44
+        },
+        {
+          "caller": "_load_query",
+          "callee": "scm_file.read_text",
+          "lineNumber": 44
+        },
+        {
+          "caller": "supported_lang",
+          "callee": "filename_to_lang",
+          "lineNumber": 53
+        },
+        {
+          "caller": "supported_lang",
+          "callee": "str",
+          "lineNumber": 53
+        },
+        {
+          "caller": "supported_lang",
+          "callee": "_load_query",
+          "lineNumber": 54
+        },
+        {
+          "caller": "get_tags",
+          "callee": "_load_query",
+          "lineNumber": 61
+        },
+        {
+          "caller": "get_tags",
+          "callee": "abs_path.read_text",
+          "lineNumber": 65
+        },
+        {
+          "caller": "get_tags",
+          "callee": "get_parser(lang).parse",
+          "lineNumber": 66
+        },
+        {
+          "caller": "get_tags",
+          "callee": "get_parser",
+          "lineNumber": 66
+        },
+        {
+          "caller": "get_tags",
+          "callee": "bytes",
+          "lineNumber": 66
+        },
+        {
+          "caller": "get_tags",
+          "callee": "ts.QueryCursor(query).captures",
+          "lineNumber": 70
+        },
+        {
+          "caller": "get_tags",
+          "callee": "ts.QueryCursor",
+          "lineNumber": 70
+        },
+        {
+          "caller": "get_tags",
+          "callee": "captures.items",
+          "lineNumber": 72
+        },
+        {
+          "caller": "get_tags",
+          "callee": "cap_name.startswith",
+          "lineNumber": 73
+        },
+        {
+          "caller": "get_tags",
+          "callee": "cap_name.startswith",
+          "lineNumber": 75
+        },
+        {
+          "caller": "get_tags",
+          "callee": "node.text.decode",
+          "lineNumber": 80
+        },
+        {
+          "caller": "get_tags",
+          "callee": "tags.append",
+          "lineNumber": 81
+        },
+        {
+          "caller": "get_tags",
+          "callee": "Tag",
+          "lineNumber": 81
+        },
+        {
+          "caller": "_outgoing_shares",
+          "callee": "graph.items",
+          "lineNumber": 90
+        },
+        {
+          "caller": "_outgoing_shares",
+          "callee": "sum",
+          "lineNumber": 91
+        },
+        {
+          "caller": "_outgoing_shares",
+          "callee": "targets.values",
+          "lineNumber": 91
+        },
+        {
+          "caller": "_outgoing_shares",
+          "callee": "targets.items",
+          "lineNumber": 94
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "_outgoing_shares",
+          "lineNumber": 106
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "graph.items",
+          "lineNumber": 107
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "len",
+          "lineNumber": 108
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "range",
+          "lineNumber": 114
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "sum",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "rank.items",
+          "lineNumber": 115
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "shares.items",
+          "lineNumber": 118
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "targets.items",
+          "lineNumber": 120
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "sum",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_pagerank",
+          "callee": "abs",
+          "lineNumber": 122
+        },
+        {
+          "caller": "_rank",
+          "callee": "defaultdict",
+          "lineNumber": 136
+        },
+        {
+          "caller": "_rank",
+          "callee": "defaultdict",
+          "lineNumber": 137
+        },
+        {
+          "caller": "_rank",
+          "callee": "Counter",
+          "lineNumber": 138
+        },
+        {
+          "caller": "_rank",
+          "callee": "defines[tag.name].add",
+          "lineNumber": 142
+        },
+        {
+          "caller": "_rank",
+          "callee": "referencers[tag.name].add",
+          "lineNumber": 144
+        },
+        {
+          "caller": "_rank",
+          "callee": "defaultdict",
+          "lineNumber": 150
+        },
+        {
+          "caller": "_rank",
+          "callee": "defines.items",
+          "lineNumber": 151
+        },
+        {
+          "caller": "_rank",
+          "callee": "referencers.get",
+          "lineNumber": 152
+        },
+        {
+          "caller": "_rank",
+          "callee": "_pagerank",
+          "lineNumber": 158
+        },
+        {
+          "caller": "_rank",
+          "callee": "defines.items",
+          "lineNumber": 161
+        },
+        {
+          "caller": "_rank",
+          "callee": "referencers.get",
+          "lineNumber": 162
+        },
+        {
+          "caller": "_rank",
+          "callee": "set",
+          "lineNumber": 162
+        },
+        {
+          "caller": "_rank",
+          "callee": "len",
+          "lineNumber": 164
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "supported_lang",
+          "lineNumber": 184
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "get_tags",
+          "lineNumber": 187
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "all_tags.extend",
+          "lineNumber": 188
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "_rank",
+          "lineNumber": 191
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "defs_by_file.items",
+          "lineNumber": 194
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "importance.setdefault",
+          "lineNumber": 199
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "symbol_refs.get",
+          "lineNumber": 199
+        },
+        {
+          "caller": "extract_symbols",
+          "callee": "sorted",
+          "lineNumber": 200
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 7,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/eslint.config.js",
+      "language": "javascript",
+      "fileCategory": "code",
+      "totalLines": 7,
+      "nonEmptyLines": 6,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/tsdown.config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 17,
+      "nonEmptyLines": 13,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "pyproject.toml",
+      "language": "toml",
+      "fileCategory": "config",
+      "totalLines": 29,
+      "nonEmptyLines": 25,
+      "sections": [
+        {
+          "heading": "build-system",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "project",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "project.scripts",
+          "level": 2,
+          "line": 13
+        },
+        {
+          "heading": "tool.setuptools",
+          "level": 2,
+          "line": 18
+        },
+        {
+          "heading": "tool.setuptools.package-data",
+          "level": 3,
+          "line": 21
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 5
+      }
+    }
+  ]
+}

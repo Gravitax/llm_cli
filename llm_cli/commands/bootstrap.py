@@ -71,7 +71,7 @@ def _ask_yes_no(prompt: str, default: str = "n") -> bool:
 
 def _offer_atlassian_setup() -> None:
     log.print_step("Atlassian + Bitbucket credentials")
-    credentials_file = paths.atlassian_env()
+    credentials_file = paths.config_env()
     if credentials_file.is_file():
         log.print_ok(f"credentials already configured ({credentials_file}).")
         if not _ask_yes_no("  Rotate/reconfigure tokens now?"):
@@ -86,7 +86,7 @@ def _offer_atlassian_setup() -> None:
 
 def _offer_global_mcp() -> None:
     log.print_step("Global MCP registration (user scope)")
-    if not paths.atlassian_env().is_file():
+    if not paths.config_env().is_file():
         log.print_info("No credentials yet — configure them first (step above) to enable MCP.")
         return
     if _mcp_already_registered():

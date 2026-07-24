@@ -1,0 +1,147 @@
+{
+ "projectRoot": "/opt/eca/llm_cli",
+ "batchFiles": [
+  {
+   "path": ".gitattributes",
+   "language": "unknown",
+   "sizeLines": 4,
+   "fileCategory": "code"
+  },
+  {
+   "path": "README.md",
+   "language": "markdown",
+   "sizeLines": 258,
+   "fileCategory": "docs"
+  },
+  {
+   "path": "docs/PLUGINS.md",
+   "language": "markdown",
+   "sizeLines": 23,
+   "fileCategory": "docs"
+  },
+  {
+   "path": "install.py",
+   "language": "python",
+   "sizeLines": 213,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/README.md",
+   "language": "markdown",
+   "sizeLines": 15,
+   "fileCategory": "docs"
+  },
+  {
+   "path": "llm_cli/queries/bash-tags.scm",
+   "language": "scm",
+   "sizeLines": 8,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/c-tags.scm",
+   "language": "scm",
+   "sizeLines": 9,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/cpp-tags.scm",
+   "language": "scm",
+   "sizeLines": 15,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/go-tags.scm",
+   "language": "scm",
+   "sizeLines": 42,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/java-tags.scm",
+   "language": "scm",
+   "sizeLines": 20,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/javascript-tags.scm",
+   "language": "scm",
+   "sizeLines": 88,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/python-tags.scm",
+   "language": "scm",
+   "sizeLines": 14,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/ruby-tags.scm",
+   "language": "scm",
+   "sizeLines": 64,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/rust-tags.scm",
+   "language": "scm",
+   "sizeLines": 60,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/queries/typescript-tags.scm",
+   "language": "scm",
+   "sizeLines": 41,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/services/repomap.py",
+   "language": "python",
+   "sizeLines": 204,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/LOCAL_CHANGES.patch",
+   "language": "patch",
+   "sizeLines": 643,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/eslint.config.js",
+   "language": "javascript",
+   "sizeLines": 7,
+   "fileCategory": "code"
+  },
+  {
+   "path": "llm_cli/vendor/copilot-api/tsdown.config.ts",
+   "language": "typescript",
+   "sizeLines": 17,
+   "fileCategory": "code"
+  },
+  {
+   "path": "pyproject.toml",
+   "language": "toml",
+   "sizeLines": 29,
+   "fileCategory": "config"
+  }
+ ],
+ "batchImportData": {
+  ".gitattributes": [],
+  "README.md": [],
+  "docs/PLUGINS.md": [],
+  "install.py": [],
+  "llm_cli/queries/README.md": [],
+  "llm_cli/queries/bash-tags.scm": [],
+  "llm_cli/queries/c-tags.scm": [],
+  "llm_cli/queries/cpp-tags.scm": [],
+  "llm_cli/queries/go-tags.scm": [],
+  "llm_cli/queries/java-tags.scm": [],
+  "llm_cli/queries/javascript-tags.scm": [],
+  "llm_cli/queries/python-tags.scm": [],
+  "llm_cli/queries/ruby-tags.scm": [],
+  "llm_cli/queries/rust-tags.scm": [],
+  "llm_cli/queries/typescript-tags.scm": [],
+  "llm_cli/services/repomap.py": [],
+  "llm_cli/vendor/copilot-api/LOCAL_CHANGES.patch": [],
+  "llm_cli/vendor/copilot-api/eslint.config.js": [],
+  "llm_cli/vendor/copilot-api/tsdown.config.ts": [],
+  "pyproject.toml": []
+ }
+}

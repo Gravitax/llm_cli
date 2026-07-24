@@ -1,0 +1,2545 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 23,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 23,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 23,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "results": [
+    {
+      "path": "llm_cli/vendor/copilot-api/src/auth.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 60,
+      "nonEmptyLines": 53,
+      "functions": [
+        {
+          "name": "runAuth",
+          "startLine": 17,
+          "endLine": 32,
+          "params": [
+            "options"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "runAuth",
+          "line": 17,
+          "isDefault": false
+        },
+        {
+          "name": "auth",
+          "line": 34,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "runAuth",
+          "callee": "consola.info",
+          "lineNumber": 20
+        },
+        {
+          "caller": "runAuth",
+          "callee": "applyEnterpriseDomain",
+          "lineNumber": 24
+        },
+        {
+          "caller": "runAuth",
+          "callee": "consola.info",
+          "lineNumber": 26
+        },
+        {
+          "caller": "runAuth",
+          "callee": "ensurePaths",
+          "lineNumber": 29
+        },
+        {
+          "caller": "runAuth",
+          "callee": "setupGitHubToken",
+          "lineNumber": 30
+        },
+        {
+          "caller": "runAuth",
+          "callee": "consola.success",
+          "lineNumber": 31
+        },
+        {
+          "caller": "runAuth",
+          "callee": "githubTokenPath",
+          "lineNumber": 31
+        },
+        {
+          "caller": "run",
+          "callee": "runAuth",
+          "lineNumber": 54
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/check-usage.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 61,
+      "nonEmptyLines": 56,
+      "exports": [
+        {
+          "name": "checkUsage",
+          "line": 12,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "run",
+          "callee": "applyEnterpriseDomain",
+          "lineNumber": 19
+        },
+        {
+          "caller": "run",
+          "callee": "ensurePaths",
+          "lineNumber": 20
+        },
+        {
+          "caller": "run",
+          "callee": "setupGitHubToken",
+          "lineNumber": 21
+        },
+        {
+          "caller": "run",
+          "callee": "getCopilotUsage",
+          "lineNumber": 23
+        },
+        {
+          "caller": "summarizeQuota",
+          "callee": "percentUsed.toFixed",
+          "lineNumber": 38
+        },
+        {
+          "caller": "summarizeQuota",
+          "callee": "percentRemaining.toFixed",
+          "lineNumber": 38
+        },
+        {
+          "caller": "run",
+          "callee": "premiumPercentUsed.toFixed",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "premiumPercentRemaining.toFixed",
+          "lineNumber": 41
+        },
+        {
+          "caller": "run",
+          "callee": "summarizeQuota",
+          "lineNumber": 42
+        },
+        {
+          "caller": "run",
+          "callee": "summarizeQuota",
+          "lineNumber": 43
+        },
+        {
+          "caller": "run",
+          "callee": "consola.box",
+          "lineNumber": 48
+        },
+        {
+          "caller": "run",
+          "callee": "consola.error",
+          "lineNumber": 57
+        },
+        {
+          "caller": "run",
+          "callee": "process.exit",
+          "lineNumber": 58
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/debug.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 137,
+      "nonEmptyLines": 118,
+      "functions": [
+        {
+          "name": "getPackageVersion",
+          "startLine": 33,
+          "endLine": 45,
+          "params": []
+        },
+        {
+          "name": "getRuntimeInfo",
+          "startLine": 47,
+          "endLine": 56,
+          "params": []
+        },
+        {
+          "name": "checkTokenExists",
+          "startLine": 58,
+          "endLine": 68,
+          "params": [
+            "tokenPath"
+          ]
+        },
+        {
+          "name": "getDebugInfo",
+          "startLine": 70,
+          "endLine": 88,
+          "params": []
+        },
+        {
+          "name": "printDebugInfoPlain",
+          "startLine": 90,
+          "endLine": 101,
+          "params": [
+            "info"
+          ]
+        },
+        {
+          "name": "printDebugInfoJson",
+          "startLine": 103,
+          "endLine": 105,
+          "params": [
+            "info"
+          ]
+        },
+        {
+          "name": "runDebug",
+          "startLine": 107,
+          "endLine": 116,
+          "params": [
+            "options"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "runDebug",
+          "line": 107,
+          "isDefault": false
+        },
+        {
+          "name": "debug",
+          "line": 118,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getPackageVersion",
+          "callee": "JSON.parse",
+          "lineNumber": 38
+        },
+        {
+          "caller": "getPackageVersion",
+          "callee": "fs.readFile",
+          "lineNumber": 38
+        },
+        {
+          "caller": "getRuntimeInfo",
+          "callee": "process.version.slice",
+          "lineNumber": 52
+        },
+        {
+          "caller": "getRuntimeInfo",
+          "callee": "os.platform",
+          "lineNumber": 53
+        },
+        {
+          "caller": "getRuntimeInfo",
+          "callee": "os.arch",
+          "lineNumber": 54
+        },
+        {
+          "caller": "checkTokenExists",
+          "callee": "fs.stat",
+          "lineNumber": 60
+        },
+        {
+          "caller": "checkTokenExists",
+          "callee": "stats.isFile",
+          "lineNumber": 61
+        },
+        {
+          "caller": "checkTokenExists",
+          "callee": "fs.readFile",
+          "lineNumber": 63
+        },
+        {
+          "caller": "checkTokenExists",
+          "callee": "content.trim",
+          "lineNumber": 64
+        },
+        {
+          "caller": "getDebugInfo",
+          "callee": "githubTokenPath",
+          "lineNumber": 72
+        },
+        {
+          "caller": "getDebugInfo",
+          "callee": "Promise.all",
+          "lineNumber": 73
+        },
+        {
+          "caller": "getDebugInfo",
+          "callee": "getPackageVersion",
+          "lineNumber": 74
+        },
+        {
+          "caller": "getDebugInfo",
+          "callee": "checkTokenExists",
+          "lineNumber": 75
+        },
+        {
+          "caller": "getDebugInfo",
+          "callee": "getRuntimeInfo",
+          "lineNumber": 80
+        },
+        {
+          "caller": "printDebugInfoPlain",
+          "callee": "consola.info",
+          "lineNumber": 91
+        },
+        {
+          "caller": "printDebugInfoJson",
+          "callee": "console.log",
+          "lineNumber": 104
+        },
+        {
+          "caller": "printDebugInfoJson",
+          "callee": "JSON.stringify",
+          "lineNumber": 104
+        },
+        {
+          "caller": "runDebug",
+          "callee": "applyEnterpriseDomain",
+          "lineNumber": 108
+        },
+        {
+          "caller": "runDebug",
+          "callee": "getDebugInfo",
+          "lineNumber": 109
+        },
+        {
+          "caller": "runDebug",
+          "callee": "printDebugInfoJson",
+          "lineNumber": 112
+        },
+        {
+          "caller": "runDebug",
+          "callee": "printDebugInfoPlain",
+          "lineNumber": 114
+        },
+        {
+          "caller": "run",
+          "callee": "runDebug",
+          "lineNumber": 132
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 2,
+        "functionCount": 7,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/api-config.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 64,
+      "nonEmptyLines": 54,
+      "functions": [
+        {
+          "name": "standardHeaders",
+          "startLine": 5,
+          "endLine": 8,
+          "params": []
+        },
+        {
+          "name": "copilotBaseUrl",
+          "startLine": 16,
+          "endLine": 25,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "copilotHeaders",
+          "startLine": 26,
+          "endLine": 43,
+          "params": [
+            "state",
+            "vision"
+          ]
+        },
+        {
+          "name": "githubApiBaseUrl",
+          "startLine": 45,
+          "endLine": 48,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "githubHeaders",
+          "startLine": 49,
+          "endLine": 57,
+          "params": [
+            "state"
+          ]
+        },
+        {
+          "name": "githubBaseUrl",
+          "startLine": 59,
+          "endLine": 62,
+          "params": [
+            "state"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "standardHeaders",
+          "line": 5,
+          "isDefault": false
+        },
+        {
+          "name": "copilotBaseUrl",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "copilotHeaders",
+          "line": 26,
+          "isDefault": false
+        },
+        {
+          "name": "githubApiBaseUrl",
+          "line": 45,
+          "isDefault": false
+        },
+        {
+          "name": "githubHeaders",
+          "line": 49,
+          "isDefault": false
+        },
+        {
+          "name": "githubBaseUrl",
+          "line": 59,
+          "isDefault": false
+        },
+        {
+          "name": "GITHUB_CLIENT_ID",
+          "line": 63,
+          "isDefault": false
+        },
+        {
+          "name": "GITHUB_APP_SCOPES",
+          "line": 64,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "copilotHeaders",
+          "callee": "standardHeaders",
+          "lineNumber": 29
+        },
+        {
+          "caller": "copilotHeaders",
+          "callee": "randomUUID",
+          "lineNumber": 36
+        },
+        {
+          "caller": "githubHeaders",
+          "callee": "standardHeaders",
+          "lineNumber": 50
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 8,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/approval.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 12,
+      "functions": [
+        {
+          "name": "awaitApproval",
+          "startLine": 5,
+          "endLine": 15,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "awaitApproval",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "awaitApproval",
+          "callee": "consola.prompt",
+          "lineNumber": 6
+        },
+        {
+          "caller": "awaitApproval",
+          "callee": "Response.json",
+          "lineNumber": 13
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/enterprise.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 33,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "normalizeDomain",
+          "startLine": 19,
+          "endLine": 22,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "applyEnterpriseDomain",
+          "startLine": 26,
+          "endLine": 33,
+          "params": [
+            "value"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "enterpriseArgs",
+          "line": 12,
+          "isDefault": false
+        },
+        {
+          "name": "normalizeDomain",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "applyEnterpriseDomain",
+          "line": 26,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "normalizeDomain",
+          "callee": "(value ?? \"\").replace(/^https?:\\/\\//, \"\").replace",
+          "lineNumber": 20
+        },
+        {
+          "caller": "normalizeDomain",
+          "callee": "(value ?? \"\").replace",
+          "lineNumber": 20
+        },
+        {
+          "caller": "applyEnterpriseDomain",
+          "callee": "normalizeDomain",
+          "lineNumber": 29
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/error.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 47,
+      "nonEmptyLines": 41,
+      "functions": [
+        {
+          "name": "forwardError",
+          "startLine": 15,
+          "endLine": 47,
+          "params": [
+            "c",
+            "error"
+          ]
+        }
+      ],
+      "classes": [
+        {
+          "name": "HTTPError",
+          "startLine": 6,
+          "endLine": 13,
+          "methods": [
+            "constructor"
+          ],
+          "properties": [
+            "response"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "HTTPError",
+          "line": 6,
+          "isDefault": false
+        },
+        {
+          "name": "forwardError",
+          "line": 15,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "constructor",
+          "callee": "super",
+          "lineNumber": 10
+        },
+        {
+          "caller": "forwardError",
+          "callee": "consola.error",
+          "lineNumber": 16
+        },
+        {
+          "caller": "forwardError",
+          "callee": "error.response.text",
+          "lineNumber": 19
+        },
+        {
+          "caller": "forwardError",
+          "callee": "JSON.parse",
+          "lineNumber": 22
+        },
+        {
+          "caller": "forwardError",
+          "callee": "consola.error",
+          "lineNumber": 26
+        },
+        {
+          "caller": "forwardError",
+          "callee": "c.json",
+          "lineNumber": 27
+        },
+        {
+          "caller": "forwardError",
+          "callee": "c.json",
+          "lineNumber": 38
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 1
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/model-endpoints.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 20,
+      "nonEmptyLines": 17,
+      "functions": [
+        {
+          "name": "usesResponsesApi",
+          "startLine": 19,
+          "endLine": 20,
+          "params": [
+            "model"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "ERROR_UNSUPPORTED_API",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "usesResponsesApi",
+          "line": 19,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "usesResponsesApi",
+          "callee": "RESPONSES_ONLY_PREFIXES.some",
+          "lineNumber": 20
+        },
+        {
+          "caller": "usesResponsesApi",
+          "callee": "model.startsWith",
+          "lineNumber": 20
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 2,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/paths.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 35,
+      "nonEmptyLines": 28,
+      "functions": [
+        {
+          "name": "githubTokenPath",
+          "startLine": 19,
+          "endLine": 21,
+          "params": [
+            "domain"
+          ]
+        },
+        {
+          "name": "ensurePaths",
+          "startLine": 23,
+          "endLine": 26,
+          "params": []
+        },
+        {
+          "name": "ensureFile",
+          "startLine": 28,
+          "endLine": 35,
+          "params": [
+            "filePath"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "PATHS",
+          "line": 11,
+          "isDefault": false
+        },
+        {
+          "name": "githubTokenPath",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "ensurePaths",
+          "line": 23,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "ensurePaths",
+          "callee": "fs.mkdir",
+          "lineNumber": 24
+        },
+        {
+          "caller": "ensurePaths",
+          "callee": "ensureFile",
+          "lineNumber": 25
+        },
+        {
+          "caller": "ensurePaths",
+          "callee": "githubTokenPath",
+          "lineNumber": 25
+        },
+        {
+          "caller": "ensureFile",
+          "callee": "fs.access",
+          "lineNumber": 30
+        },
+        {
+          "caller": "ensureFile",
+          "callee": "fs.writeFile",
+          "lineNumber": 32
+        },
+        {
+          "caller": "ensureFile",
+          "callee": "fs.chmod",
+          "lineNumber": 33
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 3,
+        "functionCount": 3,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/proxy.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 66,
+      "nonEmptyLines": 62,
+      "functions": [
+        {
+          "name": "initProxyFromEnv",
+          "startLine": 5,
+          "endLine": 66,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "initProxyFromEnv",
+          "line": 5,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "dispatch",
+          "callee": "get",
+          "lineNumber": 29
+        },
+        {
+          "caller": "dispatch",
+          "callee": "origin.toString",
+          "lineNumber": 29
+        },
+        {
+          "caller": "dispatch",
+          "callee": "consola.debug",
+          "lineNumber": 32
+        },
+        {
+          "caller": "dispatch",
+          "callee": "(direct as unknown as Dispatcher).dispatch",
+          "lineNumber": 33
+        },
+        {
+          "caller": "dispatch",
+          "callee": "proxies.get",
+          "lineNumber": 35
+        },
+        {
+          "caller": "dispatch",
+          "callee": "proxies.set",
+          "lineNumber": 38
+        },
+        {
+          "caller": "dispatch",
+          "callee": "consola.debug",
+          "lineNumber": 47
+        },
+        {
+          "caller": "dispatch",
+          "callee": "(agent as unknown as Dispatcher).dispatch",
+          "lineNumber": 48
+        },
+        {
+          "caller": "dispatch",
+          "callee": "(direct as unknown as Dispatcher).dispatch",
+          "lineNumber": 50
+        },
+        {
+          "caller": "close",
+          "callee": "direct.close",
+          "lineNumber": 54
+        },
+        {
+          "caller": "destroy",
+          "callee": "direct.destroy",
+          "lineNumber": 57
+        },
+        {
+          "caller": "initProxyFromEnv",
+          "callee": "setGlobalDispatcher",
+          "lineNumber": 61
+        },
+        {
+          "caller": "initProxyFromEnv",
+          "callee": "consola.debug",
+          "lineNumber": 62
+        },
+        {
+          "caller": "initProxyFromEnv",
+          "callee": "consola.debug",
+          "lineNumber": 64
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/rate-limit.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 46,
+      "nonEmptyLines": 36,
+      "functions": [
+        {
+          "name": "checkRateLimit",
+          "startLine": 8,
+          "endLine": 46,
+          "params": [
+            "state"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "checkRateLimit",
+          "line": 8,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "checkRateLimit",
+          "callee": "Date.now",
+          "lineNumber": 11
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "Math.ceil",
+          "lineNumber": 25
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "consola.warn",
+          "lineNumber": 28
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "Response.json",
+          "lineNumber": 33
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "consola.warn",
+          "lineNumber": 38
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "sleep",
+          "lineNumber": 41
+        },
+        {
+          "caller": "checkRateLimit",
+          "callee": "consola.info",
+          "lineNumber": 44
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/shell.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 88,
+      "nonEmptyLines": 77,
+      "functions": [
+        {
+          "name": "getShell",
+          "startLine": 7,
+          "endLine": 33,
+          "params": []
+        },
+        {
+          "name": "generateEnvScript",
+          "startLine": 42,
+          "endLine": 88,
+          "params": [
+            "envVars",
+            "commandToRun"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "generateEnvScript",
+          "line": 42,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "getShell",
+          "callee": "execSync(command, { stdio: \"pipe\" }).toString",
+          "lineNumber": 13
+        },
+        {
+          "caller": "getShell",
+          "callee": "execSync",
+          "lineNumber": 13
+        },
+        {
+          "caller": "getShell",
+          "callee": "parentProcess.toLowerCase().includes",
+          "lineNumber": 15
+        },
+        {
+          "caller": "getShell",
+          "callee": "parentProcess.toLowerCase",
+          "lineNumber": 15
+        },
+        {
+          "caller": "getShell",
+          "callee": "shellPath.endsWith",
+          "lineNumber": 26
+        },
+        {
+          "caller": "getShell",
+          "callee": "shellPath.endsWith",
+          "lineNumber": 27
+        },
+        {
+          "caller": "getShell",
+          "callee": "shellPath.endsWith",
+          "lineNumber": 28
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "getShell",
+          "lineNumber": 46
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "Object.entries(envVars).filter",
+          "lineNumber": 47
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "Object.entries",
+          "lineNumber": 47
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map(([key, value]) => `$env:${key} = ${value}`)\n        .join",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map",
+          "lineNumber": 55
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map(([key, value]) => `set ${key}=${value}`)\n        .join",
+          "lineNumber": 61
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map",
+          "lineNumber": 61
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map(([key, value]) => `set -gx ${key} ${value}`)\n        .join",
+          "lineNumber": 67
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map",
+          "lineNumber": 67
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map(([key, value]) => `${key}=${value}`)\n        .join",
+          "lineNumber": 74
+        },
+        {
+          "caller": "generateEnvScript",
+          "callee": "filteredEnvVars\n        .map",
+          "lineNumber": 74
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/state.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 29,
+      "nonEmptyLines": 23,
+      "exports": [
+        {
+          "name": "state",
+          "line": 24,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 1,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/token.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 99,
+      "nonEmptyLines": 82,
+      "functions": [
+        {
+          "name": "readGithubToken",
+          "startLine": 13,
+          "endLine": 14,
+          "params": []
+        },
+        {
+          "name": "writeGithubToken",
+          "startLine": 16,
+          "endLine": 17,
+          "params": [
+            "token"
+          ]
+        },
+        {
+          "name": "setupCopilotToken",
+          "startLine": 19,
+          "endLine": 47,
+          "params": []
+        },
+        {
+          "name": "setupGitHubToken",
+          "startLine": 53,
+          "endLine": 94,
+          "params": [
+            "options"
+          ]
+        },
+        {
+          "name": "logUser",
+          "startLine": 96,
+          "endLine": 99,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "setupCopilotToken",
+          "line": 19,
+          "isDefault": false
+        },
+        {
+          "name": "setupGitHubToken",
+          "line": 53,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "readGithubToken",
+          "callee": "fs.readFile",
+          "lineNumber": 14
+        },
+        {
+          "caller": "readGithubToken",
+          "callee": "githubTokenPath",
+          "lineNumber": 14
+        },
+        {
+          "caller": "writeGithubToken",
+          "callee": "fs.writeFile",
+          "lineNumber": 17
+        },
+        {
+          "caller": "writeGithubToken",
+          "callee": "githubTokenPath",
+          "lineNumber": 17
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "getCopilotToken",
+          "lineNumber": 20
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.debug",
+          "lineNumber": 24
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.info",
+          "lineNumber": 26
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "setInterval",
+          "lineNumber": 30
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.debug",
+          "lineNumber": 31
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "getCopilotToken",
+          "lineNumber": 33
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.debug",
+          "lineNumber": 35
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.info",
+          "lineNumber": 37
+        },
+        {
+          "caller": "setupCopilotToken",
+          "callee": "consola.error",
+          "lineNumber": 44
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "readGithubToken",
+          "lineNumber": 57
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.info",
+          "lineNumber": 62
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "logUser",
+          "lineNumber": 64
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.info",
+          "lineNumber": 69
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "getDeviceCode",
+          "lineNumber": 70
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.debug",
+          "lineNumber": 71
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.info",
+          "lineNumber": 73
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "pollAccessToken",
+          "lineNumber": 77
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "writeGithubToken",
+          "lineNumber": 78
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.info",
+          "lineNumber": 82
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "logUser",
+          "lineNumber": 84
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.error",
+          "lineNumber": 87
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "error.response.json",
+          "lineNumber": 87
+        },
+        {
+          "caller": "setupGitHubToken",
+          "callee": "consola.error",
+          "lineNumber": 91
+        },
+        {
+          "caller": "logUser",
+          "callee": "getGitHubUser",
+          "lineNumber": 97
+        },
+        {
+          "caller": "logUser",
+          "callee": "consola.info",
+          "lineNumber": 98
+        }
+      ],
+      "metrics": {
+        "importCount": 7,
+        "exportCount": 2,
+        "functionCount": 5,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/tokenizer.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 348,
+      "nonEmptyLines": 315,
+      "functions": [
+        {
+          "name": "calculateToolCallsTokens",
+          "startLine": 32,
+          "endLine": 44,
+          "params": [
+            "toolCalls",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "calculateContentPartsTokens",
+          "startLine": 49,
+          "endLine": 62,
+          "params": [
+            "contentParts",
+            "encoder"
+          ]
+        },
+        {
+          "name": "calculateMessageTokens",
+          "startLine": 67,
+          "endLine": 97,
+          "params": [
+            "message",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "calculateTokens",
+          "startLine": 102,
+          "endLine": 117,
+          "params": [
+            "messages",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "getEncodeChatFunction",
+          "startLine": 122,
+          "endLine": 140,
+          "params": [
+            "encoding"
+          ]
+        },
+        {
+          "name": "getTokenizerFromModel",
+          "startLine": 145,
+          "endLine": 147,
+          "params": [
+            "model"
+          ]
+        },
+        {
+          "name": "getModelConstants",
+          "startLine": 152,
+          "endLine": 170,
+          "params": [
+            "model"
+          ]
+        },
+        {
+          "name": "calculateParameterTokens",
+          "startLine": 175,
+          "endLine": 235,
+          "params": [
+            "key",
+            "prop",
+            "context"
+          ]
+        },
+        {
+          "name": "calculateParametersTokens",
+          "startLine": 240,
+          "endLine": 272,
+          "params": [
+            "parameters",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "calculateToolTokens",
+          "startLine": 277,
+          "endLine": 298,
+          "params": [
+            "tool",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "numTokensForTools",
+          "startLine": 303,
+          "endLine": 314,
+          "params": [
+            "tools",
+            "encoder",
+            "constants"
+          ]
+        },
+        {
+          "name": "getTokenCount",
+          "startLine": 319,
+          "endLine": 348,
+          "params": [
+            "payload",
+            "model"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "getTokenizerFromModel",
+          "line": 145,
+          "isDefault": false
+        },
+        {
+          "name": "numTokensForTools",
+          "line": 303,
+          "isDefault": false
+        },
+        {
+          "name": "getTokenCount",
+          "line": 319,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "calculateToolCallsTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 40
+        },
+        {
+          "caller": "calculateToolCallsTokens",
+          "callee": "JSON.stringify",
+          "lineNumber": 40
+        },
+        {
+          "caller": "calculateContentPartsTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 56
+        },
+        {
+          "caller": "calculateContentPartsTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 58
+        },
+        {
+          "caller": "calculateMessageTokens",
+          "callee": "Object.entries",
+          "lineNumber": 75
+        },
+        {
+          "caller": "calculateMessageTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 77
+        },
+        {
+          "caller": "calculateMessageTokens",
+          "callee": "calculateToolCallsTokens",
+          "lineNumber": 83
+        },
+        {
+          "caller": "calculateMessageTokens",
+          "callee": "Array.isArray",
+          "lineNumber": 89
+        },
+        {
+          "caller": "calculateMessageTokens",
+          "callee": "calculateContentPartsTokens",
+          "lineNumber": 90
+        },
+        {
+          "caller": "calculateTokens",
+          "callee": "calculateMessageTokens",
+          "lineNumber": 112
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "encodingCache.has",
+          "lineNumber": 123
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "encodingCache.get",
+          "lineNumber": 124
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "ENCODING_MAP.o200k_base",
+          "lineNumber": 132
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "encodingCache.set",
+          "lineNumber": 133
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "ENCODING_MAP[supportedEncoding]",
+          "lineNumber": 137
+        },
+        {
+          "caller": "getEncodeChatFunction",
+          "callee": "encodingCache.set",
+          "lineNumber": 138
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "Array.isArray",
+          "lineNumber": 204
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 208
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "String",
+          "lineNumber": 208
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "paramDesc.endsWith",
+          "lineNumber": 213
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "paramDesc.slice",
+          "lineNumber": 214
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 219
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "Object.keys",
+          "lineNumber": 223
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "excludedKeys.has",
+          "lineNumber": 224
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "JSON.stringify",
+          "lineNumber": 228
+        },
+        {
+          "caller": "calculateParameterTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 230
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "Object.entries",
+          "lineNumber": 252
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "Object.keys",
+          "lineNumber": 255
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "Object.keys",
+          "lineNumber": 257
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "calculateParameterTokens",
+          "lineNumber": 258
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "JSON.stringify",
+          "lineNumber": 266
+        },
+        {
+          "caller": "calculateParametersTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 267
+        },
+        {
+          "caller": "calculateToolTokens",
+          "callee": "fDesc.endsWith",
+          "lineNumber": 286
+        },
+        {
+          "caller": "calculateToolTokens",
+          "callee": "fDesc.slice",
+          "lineNumber": 287
+        },
+        {
+          "caller": "calculateToolTokens",
+          "callee": "encoder.encode",
+          "lineNumber": 290
+        },
+        {
+          "caller": "calculateToolTokens",
+          "callee": "calculateParametersTokens",
+          "lineNumber": 295
+        },
+        {
+          "caller": "numTokensForTools",
+          "callee": "calculateToolTokens",
+          "lineNumber": 310
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "getTokenizerFromModel",
+          "lineNumber": 324
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "getEncodeChatFunction",
+          "lineNumber": 327
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "simplifiedMessages.filter",
+          "lineNumber": 330
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "simplifiedMessages.filter",
+          "lineNumber": 333
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "getModelConstants",
+          "lineNumber": 337
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "calculateTokens",
+          "lineNumber": 338
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "numTokensForTools",
+          "lineNumber": 340
+        },
+        {
+          "caller": "getTokenCount",
+          "callee": "calculateTokens",
+          "lineNumber": 342
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 3,
+        "functionCount": 12,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/lib/utils.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 26,
+      "nonEmptyLines": 19,
+      "functions": [
+        {
+          "name": "sleep",
+          "startLine": 8,
+          "endLine": 11,
+          "params": [
+            "ms"
+          ]
+        },
+        {
+          "name": "isNullish",
+          "startLine": 13,
+          "endLine": 14,
+          "params": [
+            "value"
+          ]
+        },
+        {
+          "name": "cacheModels",
+          "startLine": 16,
+          "endLine": 19,
+          "params": []
+        },
+        {
+          "name": "cacheVSCodeVersion",
+          "startLine": 21,
+          "endLine": 26,
+          "params": []
+        }
+      ],
+      "exports": [
+        {
+          "name": "sleep",
+          "line": 8,
+          "isDefault": false
+        },
+        {
+          "name": "isNullish",
+          "line": 13,
+          "isDefault": false
+        },
+        {
+          "name": "cacheModels",
+          "line": 16,
+          "isDefault": false
+        },
+        {
+          "name": "cacheVSCodeVersion",
+          "line": 21,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "sleep",
+          "callee": "setTimeout",
+          "lineNumber": 10
+        },
+        {
+          "caller": "cacheModels",
+          "callee": "getModels",
+          "lineNumber": 17
+        },
+        {
+          "caller": "cacheVSCodeVersion",
+          "callee": "getVSCodeVersion",
+          "lineNumber": 22
+        },
+        {
+          "caller": "cacheVSCodeVersion",
+          "callee": "consola.info",
+          "lineNumber": 25
+        }
+      ],
+      "metrics": {
+        "importCount": 3,
+        "exportCount": 4,
+        "functionCount": 4,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/main.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 19,
+      "nonEmptyLines": 15,
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/chat-completions/handler.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 68,
+      "nonEmptyLines": 56,
+      "functions": [
+        {
+          "name": "handleCompletion",
+          "startLine": 17,
+          "endLine": 64,
+          "params": [
+            "c"
+          ]
+        },
+        {
+          "name": "isNonStreaming",
+          "startLine": 66,
+          "endLine": 68,
+          "params": [
+            "response"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "handleCompletion",
+          "line": 17,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "handleCompletion",
+          "callee": "checkRateLimit",
+          "lineNumber": 18
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "await c.req.json",
+          "lineNumber": 20
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 21
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify(payload).slice",
+          "lineNumber": 21
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify",
+          "lineNumber": 21
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "state.models?.data.find",
+          "lineNumber": 24
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "getTokenCount",
+          "lineNumber": 31
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.info",
+          "lineNumber": 32
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.warn",
+          "lineNumber": 34
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.warn",
+          "lineNumber": 37
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "awaitApproval",
+          "lineNumber": 40
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "isNullish",
+          "lineNumber": 42
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 47
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify",
+          "lineNumber": 47
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "createChatCompletions",
+          "lineNumber": 50
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "isNonStreaming",
+          "lineNumber": 52
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 53
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify",
+          "lineNumber": 53
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "c.json",
+          "lineNumber": 54
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 57
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "streamSSE",
+          "lineNumber": 58
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 60
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify",
+          "lineNumber": 60
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "stream.writeSSE",
+          "lineNumber": 61
+        },
+        {
+          "caller": "isNonStreaming",
+          "callee": "Object.hasOwn",
+          "lineNumber": 68
+        }
+      ],
+      "metrics": {
+        "importCount": 6,
+        "exportCount": 1,
+        "functionCount": 2,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/chat-completions/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 15,
+      "nonEmptyLines": 11,
+      "exports": [
+        {
+          "name": "completionRoutes",
+          "line": 7,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/embeddings/route.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 20,
+      "nonEmptyLines": 16,
+      "exports": [
+        {
+          "name": "embeddingRoutes",
+          "line": 9,
+          "isDefault": false
+        }
+      ],
+      "metrics": {
+        "importCount": 2,
+        "exportCount": 1,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/anthropic-types.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 206,
+      "nonEmptyLines": 182,
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/count-tokens-handler.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 70,
+      "nonEmptyLines": 57,
+      "functions": [
+        {
+          "name": "handleCountTokens",
+          "startLine": 14,
+          "endLine": 70,
+          "params": [
+            "c"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "handleCountTokens",
+          "line": 14,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "handleCountTokens",
+          "callee": "c.req.header",
+          "lineNumber": 16
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "await c.req.json",
+          "lineNumber": 18
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "translateToOpenAI",
+          "lineNumber": 20
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "state.models?.data.find",
+          "lineNumber": 22
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "consola.warn",
+          "lineNumber": 27
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "c.json",
+          "lineNumber": 28
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "getTokenCount",
+          "lineNumber": 33
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicBeta?.startsWith",
+          "lineNumber": 37
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicPayload.tools.some",
+          "lineNumber": 38
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "tool.name.startsWith",
+          "lineNumber": 39
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicPayload.model.startsWith",
+          "lineNumber": 43
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicPayload.model.startsWith",
+          "lineNumber": 46
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicPayload.model.startsWith",
+          "lineNumber": 53
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "Math.round",
+          "lineNumber": 54
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "anthropicPayload.model.startsWith",
+          "lineNumber": 55
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "Math.round",
+          "lineNumber": 56
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "consola.info",
+          "lineNumber": 59
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "c.json",
+          "lineNumber": 61
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "consola.error",
+          "lineNumber": 65
+        },
+        {
+          "caller": "handleCountTokens",
+          "callee": "c.json",
+          "lineNumber": 66
+        }
+      ],
+      "metrics": {
+        "importCount": 4,
+        "exportCount": 1,
+        "functionCount": 1,
+        "classCount": 0
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/src/routes/messages/handler.ts",
+      "language": "typescript",
+      "fileCategory": "code",
+      "totalLines": 200,
+      "nonEmptyLines": 172,
+      "functions": [
+        {
+          "name": "handleCompletion",
+          "startLine": 38,
+          "endLine": 59,
+          "params": [
+            "c"
+          ]
+        },
+        {
+          "name": "isUnsupportedApiError",
+          "startLine": 61,
+          "endLine": 70,
+          "params": [
+            "error"
+          ]
+        },
+        {
+          "name": "handleWithChatCompletions",
+          "startLine": 72,
+          "endLine": 132,
+          "params": [
+            "c",
+            "anthropicPayload"
+          ]
+        },
+        {
+          "name": "handleWithResponses",
+          "startLine": 134,
+          "endLine": 192,
+          "params": [
+            "c",
+            "anthropicPayload"
+          ]
+        },
+        {
+          "name": "isNonStreaming",
+          "startLine": 194,
+          "endLine": 196,
+          "params": [
+            "response"
+          ]
+        },
+        {
+          "name": "isNonStreamingResponses",
+          "startLine": 198,
+          "endLine": 200,
+          "params": [
+            "response"
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "name": "handleCompletion",
+          "line": 38,
+          "isDefault": false
+        }
+      ],
+      "callGraph": [
+        {
+          "caller": "handleCompletion",
+          "callee": "checkRateLimit",
+          "lineNumber": 39
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "await c.req.json",
+          "lineNumber": 41
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 42
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "JSON.stringify",
+          "lineNumber": 42
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "usesResponsesApi",
+          "lineNumber": 44
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "handleWithResponses",
+          "lineNumber": 45
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "handleWithChatCompletions",
+          "lineNumber": 51
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "isUnsupportedApiError",
+          "lineNumber": 53
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "consola.debug",
+          "lineNumber": 54
+        },
+        {
+          "caller": "handleCompletion",
+          "callee": "handleWithResponses",
+          "lineNumber": 57
+        },
+        {
+          "caller": "isUnsupportedApiError",
+          "callee": "error.response.clone().text",
+          "lineNumber": 65
+        },
+        {
+          "caller": "isUnsupportedApiError",
+          "callee": "error.response.clone",
+          "lineNumber": 65
+        },
+        {
+          "caller": "isUnsupportedApiError",
+          "callee": "body.includes",
+          "lineNumber": 66
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "translateToOpenAI",
+          "lineNumber": 76
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 77
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 79
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "awaitApproval",
+          "lineNumber": 83
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "createChatCompletions",
+          "lineNumber": 86
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "isNonStreaming",
+          "lineNumber": 88
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 89
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify(response).slice",
+          "lineNumber": 91
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 91
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "translateToAnthropic",
+          "lineNumber": 93
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 94
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 96
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "c.json",
+          "lineNumber": 98
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 101
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "streamSSE",
+          "lineNumber": 102
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 111
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 111
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.parse",
+          "lineNumber": 120
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "translateChunkToAnthropicEvents",
+          "lineNumber": 121
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "consola.debug",
+          "lineNumber": 124
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 124
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "stream.writeSSE",
+          "lineNumber": 125
+        },
+        {
+          "caller": "handleWithChatCompletions",
+          "callee": "JSON.stringify",
+          "lineNumber": 127
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "translateToResponses",
+          "lineNumber": 138
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 139
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 141
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "awaitApproval",
+          "lineNumber": 145
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "createResponses",
+          "lineNumber": 148
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "isNonStreamingResponses",
+          "lineNumber": 150
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 151
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify(response).slice",
+          "lineNumber": 153
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 153
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "translateResponsesToAnthropic",
+          "lineNumber": 155
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 156
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 158
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "c.json",
+          "lineNumber": 160
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 163
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "streamSSE",
+          "lineNumber": 164
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "createResponsesStreamState",
+          "lineNumber": 165
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 168
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 168
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.parse",
+          "lineNumber": 177
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "translateResponsesChunkToAnthropicEvents",
+          "lineNumber": 178
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "consola.debug",
+          "lineNumber": 184
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 184
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "stream.writeSSE",
+          "lineNumber": 185
+        },
+        {
+          "caller": "handleWithResponses",
+          "callee": "JSON.stringify",
+          "lineNumber": 187
+        },
+        {
+          "caller": "isNonStreaming",
+          "callee": "Object.hasOwn",
+          "lineNumber": 196
+        },
+        {
+          "caller": "isNonStreamingResponses",
+          "callee": "Object.hasOwn",
+          "lineNumber": 200
+        }
+      ],
+      "metrics": {
+        "importCount": 11,
+        "exportCount": 1,
+        "functionCount": 6,
+        "classCount": 0
+      }
+    }
+  ]
+}

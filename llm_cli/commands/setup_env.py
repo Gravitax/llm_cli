@@ -12,7 +12,7 @@ import json
 import shutil
 
 from llm_cli import platforms, tool_profile
-from llm_cli.commands import setup_context, setup_headroom, setup_rtk, sync
+from llm_cli.commands import setup_context, setup_headroom, setup_plugins, setup_rtk, sync
 from llm_cli.services import log, settings_editor, slash_commands
 from llm_cli.tool_profile import TOOL_NAMES, ToolProfile
 
@@ -50,6 +50,8 @@ def run(args: argparse.Namespace) -> int:
         _ensure_cache_read_permission(profile)
     if profile.has_slash_commands:
         _install_slash_commands(profile)
+    if profile.has_plugins:
+        setup_plugins.run(argparse.Namespace(tool=profile.name))
     setup_headroom.run(
         argparse.Namespace(tool=profile.name, ensure=True, remove=False)
     )

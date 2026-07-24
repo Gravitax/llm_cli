@@ -1,0 +1,312 @@
+{
+  "scriptCompleted": true,
+  "filesAnalyzed": 4,
+  "filesSkipped": [],
+  "analysisOutcomes": {
+    "structure": {
+      "succeeded": 4,
+      "failed": 0
+    },
+    "callGraph": {
+      "succeeded": 0,
+      "failed": 0,
+      "skipped": 4
+    }
+  },
+  "results": [
+    {
+      "path": "llm_cli/vendor/copilot-api/README.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 351,
+      "nonEmptyLines": 245,
+      "sections": [
+        {
+          "heading": "Copilot API Proxy",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Project Overview",
+          "level": 2,
+          "line": 28
+        },
+        {
+          "heading": "Features",
+          "level": 2,
+          "line": 32
+        },
+        {
+          "heading": "Demo",
+          "level": 2,
+          "line": 43
+        },
+        {
+          "heading": "Prerequisites",
+          "level": 2,
+          "line": 47
+        },
+        {
+          "heading": "Installation",
+          "level": 2,
+          "line": 52
+        },
+        {
+          "heading": "Using with Docker",
+          "level": 2,
+          "line": 60
+        },
+        {
+          "heading": "Docker with Environment Variables",
+          "level": 3,
+          "line": 83
+        },
+        {
+          "heading": "Docker Compose Example",
+          "level": 3,
+          "line": 98
+        },
+        {
+          "heading": "Using with npx",
+          "level": 2,
+          "line": 119
+        },
+        {
+          "heading": "Command Structure",
+          "level": 2,
+          "line": 139
+        },
+        {
+          "heading": "Command Line Options",
+          "level": 2,
+          "line": 148
+        },
+        {
+          "heading": "Start Command Options",
+          "level": 3,
+          "line": 150
+        },
+        {
+          "heading": "Auth Command Options",
+          "level": 3,
+          "line": 167
+        },
+        {
+          "heading": "Debug Command Options",
+          "level": 3,
+          "line": 174
+        },
+        {
+          "heading": "API Endpoints",
+          "level": 2,
+          "line": 180
+        },
+        {
+          "heading": "OpenAI Compatible Endpoints",
+          "level": 3,
+          "line": 184
+        },
+        {
+          "heading": "Anthropic Compatible Endpoints",
+          "level": 3,
+          "line": 194
+        },
+        {
+          "heading": "Usage Monitoring Endpoints",
+          "level": 3,
+          "line": 203
+        },
+        {
+          "heading": "Example Usage",
+          "level": 2,
+          "line": 212
+        },
+        {
+          "heading": "Using the Usage Viewer",
+          "level": 2,
+          "line": 260
+        },
+        {
+          "heading": "Using with Claude Code",
+          "level": 2,
+          "line": 281
+        },
+        {
+          "heading": "Interactive Setup with `--claude-code` flag",
+          "level": 3,
+          "line": 287
+        },
+        {
+          "heading": "Manual Configuration with `settings.json`",
+          "level": 3,
+          "line": 299
+        },
+        {
+          "heading": "Running from Source",
+          "level": 2,
+          "line": 329
+        },
+        {
+          "heading": "Development Mode",
+          "level": 3,
+          "line": 333
+        },
+        {
+          "heading": "Production Mode",
+          "level": 3,
+          "line": 339
+        },
+        {
+          "heading": "Usage Tips",
+          "level": 2,
+          "line": 345
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 28
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/VENDORED.md",
+      "language": "markdown",
+      "fileCategory": "docs",
+      "totalLines": 48,
+      "nonEmptyLines": 39,
+      "sections": [
+        {
+          "heading": "Vendored copy",
+          "level": 1,
+          "line": 1
+        },
+        {
+          "heading": "Local changes",
+          "level": 2,
+          "line": 12
+        },
+        {
+          "heading": "dist/ is committed on purpose",
+          "level": 2,
+          "line": 32
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 3
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/package.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 59,
+      "nonEmptyLines": 59,
+      "sections": [
+        {
+          "heading": "name",
+          "level": 1,
+          "line": 2
+        },
+        {
+          "heading": "version",
+          "level": 1,
+          "line": 3
+        },
+        {
+          "heading": "description",
+          "level": 1,
+          "line": 4
+        },
+        {
+          "heading": "keywords",
+          "level": 1,
+          "line": 5
+        },
+        {
+          "heading": "homepage",
+          "level": 1,
+          "line": 10
+        },
+        {
+          "heading": "bugs",
+          "level": 1,
+          "line": 11
+        },
+        {
+          "heading": "repository",
+          "level": 1,
+          "line": 12
+        },
+        {
+          "heading": "author",
+          "level": 1,
+          "line": 16
+        },
+        {
+          "heading": "type",
+          "level": 1,
+          "line": 13
+        },
+        {
+          "heading": "bin",
+          "level": 1,
+          "line": 18
+        },
+        {
+          "heading": "files",
+          "level": 1,
+          "line": 21
+        },
+        {
+          "heading": "scripts",
+          "level": 1,
+          "line": 24
+        },
+        {
+          "heading": "dependencies",
+          "level": 1,
+          "line": 33
+        },
+        {
+          "heading": "devDependencies",
+          "level": 1,
+          "line": 46
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 14
+      }
+    },
+    {
+      "path": "llm_cli/vendor/copilot-api/tsconfig.json",
+      "language": "json",
+      "fileCategory": "config",
+      "totalLines": 25,
+      "nonEmptyLines": 23,
+      "sections": [
+        {
+          "heading": "compilerOptions",
+          "level": 1,
+          "line": 2
+        }
+      ],
+      "metrics": {
+        "importCount": 0,
+        "exportCount": 0,
+        "functionCount": 0,
+        "classCount": 0,
+        "sectionCount": 1
+      }
+    }
+  ]
+}

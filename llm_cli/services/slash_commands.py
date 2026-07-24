@@ -34,7 +34,7 @@ def install(home: Path) -> list[Path]:
         body = (
             templates.text(_TEMPLATE, name)
             .replace("{{RUN}}", instructions.run_command_prefix())
-            .replace("{{CONFIG_FILE}}", str(paths.atlassian_env()))
+            .replace("{{CONFIG_FILE}}", str(paths.config_env()))
         )
         command_file = target / f"{name}.md"
         fs.write_text_atomic(command_file, body)
