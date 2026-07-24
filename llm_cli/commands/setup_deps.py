@@ -11,12 +11,25 @@ from __future__ import annotations
 
 import argparse
 
-from llm_cli.services import deps, log
+from llm_cli.services import copilot_proxy, deps, log, vendored
 from llm_cli.tool_profile import TOOL_NAMES
+
+# Same recovery command on every platform: the proxy is vendored, not fetched
+# from the registry, and its bundle needs its dependencies alongside it.
+_COPILOT_API_DIR = vendored.target_dir(vendored.COPILOT_API)
+_COPILOT_API_HINT = (
+    f"npm install -g {_COPILOT_API_DIR} "
+    f"&& npm install --prefix {_COPILOT_API_DIR} --omit=dev"
+)
 
 _TOOL_PACKAGES = {
     "claude": ("@anthropic-ai/claude-code", "claude"),
     "copilot": ("@github/copilot", "copilot"),
+}
+
+# Extra per-tool dependencies that are not a plain global npm package.
+_TOOL_EXTRAS = {
+    "claude": [("copilot-api", copilot_proxy.ensure_installed)],
 }
 
 _WINDOWS_INSTALL_HINTS = {
@@ -31,6 +44,7 @@ _WINDOWS_INSTALL_HINTS = {
     "headroom": 'pip install --user --prefer-binary "headroom-ai[all]"',
     "claude": "npm install -g @anthropic-ai/claude-code",
     "copilot": "npm install -g @github/copilot",
+    "copilot-api": _COPILOT_API_HINT,
 }
 
 _POSIX_INSTALL_HINTS = {
@@ -45,6 +59,7 @@ _POSIX_INSTALL_HINTS = {
     "headroom": 'uv tool install "headroom-ai[all]"',
     "claude": "npm install -g @anthropic-ai/claude-code",
     "copilot": "npm install -g @github/copilot",
+    "copilot-api": _COPILOT_API_HINT,
 }
 
 
@@ -81,6 +96,7 @@ def run(args: argparse.Namespace) -> int:
         steps.append(
             (binary, lambda pkg=package, exe=binary: installer.ensure_npm_cli(pkg, exe))
         )
+        steps += _TOOL_EXTRAS.get(tool, [])
 
     missing = [name for name, step in steps if not step()]
     if missing:

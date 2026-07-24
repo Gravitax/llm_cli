@@ -86,7 +86,7 @@ def toggle() -> bool:
 
 def prepare() -> ModelSlots | None:
     """Ensures the proxy is usable and returns the models to route to."""
-    if not _ensure_installed():
+    if not ensure_installed():
         return None
     binary = shutil.which(_BINARY)
     if binary is None:
@@ -244,7 +244,9 @@ def _enterprise_source_dir() -> Path:
     return vendored.target_dir(vendored.COPILOT_API)
 
 
-def _ensure_installed() -> bool:
+def ensure_installed() -> bool:
+    """Deploys the vendored proxy and installs it — called by setup-deps so a
+    plain `python install.py` leaves nothing to download on first use."""
     installer = deps.installer()
     if not installer.ensure_node():
         return False
